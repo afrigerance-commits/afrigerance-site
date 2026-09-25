@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+/*
+ * Charte graphique : couleurs relevées sur la maquette d'accueil.
+ * Chaque jeton génère ses utilitaires Tailwind (ex. --color-brand → bg-brand, text-brand).
+ */
+@theme {
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+
+  /* Couleurs principales */
+  --color-brand: #0066ff; /* boutons, lien actif, flèches */
+  --color-brand-dark: #0050cc; /* survol des boutons */
+  --color-ink: #0b1038; /* titres et textes principaux */
+  --color-muted: #5d6991; /* descriptions */
+  --color-line: #dbe0ec; /* séparateurs */
+
+  /* Bandeau d'accueil */
+  --color-hero-start: #062659;
+  --color-hero-middle: #03318a;
+  --color-hero-end: #0165ff;
+  --color-hero-accent: #a8dcff; /* seconde partie du titre */
+  --color-hero-text: #a3d4ff; /* description */
+  --color-hero-dot: #70bffb; /* pastille du badge */
+  --color-hero-border: #5f8fd6; /* contour du badge */
+  --color-hero-circle: rgb(84 132 255 / 0.32); /* cercle en haut à droite */
+  --color-hero-circle-alt: rgb(14 165 233 / 0.25); /* cercle en bas à gauche */
+}
+
+@utility site-container {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 82rem;
+  padding-inline: 1.25rem;
+
+  @variant sm {
+    padding-inline: 2rem;
+  }
+
+  @variant lg {
+    padding-inline: 3rem;
+  }
+}
+
+@utility bg-hero {
+  background-color: var(--color-hero-start);
+  background-image: linear-gradient(
+    84deg,
+    var(--color-hero-start) 0%,
+    var(--color-hero-start) 36%,
+    var(--color-hero-middle) 58%,
+    var(--color-hero-end) 97%
+  );
+
+  /* Sur mobile, le texte occupe toute la largeur : on éclaircit plus tard pour garder le contraste. */
+  @media (width < 40rem) {
+    background-image: linear-gradient(
+      84deg,
+      var(--color-hero-start) 0%,
+      var(--color-hero-start) 45%,
+      var(--color-hero-middle) 72%,
+      var(--color-hero-end) 112%
+    );
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: #ffffff;
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-brand);
+    outline-offset: 3px;
+  }
+}
