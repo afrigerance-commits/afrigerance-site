@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { servicePoles } from "@/content/site";
+import { servicePoles } from "@/content/services";
 import { ArrowRightIcon } from "./icons";
 
 /** Garde le dernier mot du titre et la flèche sur la même ligne. */

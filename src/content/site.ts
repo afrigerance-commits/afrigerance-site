@@ -1,6 +1,6 @@
 /**
- * Contenus centralisés du site AFRIGÉRANCE.
- * Modifier les textes, liens et libellés ici : les composants les lisent tels quels.
+ * Contenus centralisés du site AFRIGÉRANCE : identité, navigation, coordonnées.
+ * Les autres textes sont dans src/content/ (services.ts, pages.ts, forms.ts).
  * Ne jamais ajouter de chiffre, client, tarif, certification ou coordonnée non validés.
  */
 
@@ -13,15 +13,13 @@ export const site = {
   name: "AFRIGÉRANCE",
   tagline: "Votre système, notre responsabilité",
   description:
-    "Infogérance et intégration de solutions technologiques pour les entreprises au\u00a0Sénégal.",
+    "Infogérance et intégration de solutions technologiques pour les entreprises au Sénégal.",
   locale: "fr_SN",
 } as const;
 
 export const routes = {
   home: "/",
   services: "/services",
-  infogerance: "/services/infogerance",
-  integration: "/services/integration-solutions-technologiques",
   about: "/a-propos",
   contact: "/contact",
   quote: "/devis",
@@ -54,29 +52,48 @@ export const hero = {
   secondaryCta: { label: "Nous contacter", href: routes.contact },
 } as const;
 
-export type ServicePole = {
-  id: string;
-  title: string;
-  description: string;
-  href: string;
+/** Libellés d'interface communs (accessibilité, navigation, pages d'attente). */
+export const uiText = {
+  skipLink: "Aller au contenu principal",
+  mainNavLabel: "Navigation principale",
+  footerNavLabel: "Liens du pied de page",
+  openMenu: "Ouvrir le menu",
+  closeMenu: "Fermer le menu",
+  homeLink: "retour à l’accueil",
+  backHome: "Retour à l’accueil",
+  placeholderBadge: "Page en préparation",
+  notFound: {
+    eyebrow: "Erreur 404",
+    title: "Page introuvable",
+    text: "La page demandée n’existe pas ou a été déplacée.",
+  },
+} as const;
+
+/**
+ * Coordonnées publiques d'AFRIGÉRANCE.
+ * Renseigner une valeur UNIQUEMENT lorsqu'elle est confirmée par AFRIGÉRANCE :
+ * chaque ligne (et son lien téléphone, email ou WhatsApp) n'apparaît que si elle est remplie.
+ */
+export type ContactDetails = {
+  /** Numéro affiché et appelable, format international. Ex. : "+221 00 000 00 00" */
+  phone: string | null;
+  /** Adresse email publique. */
+  email: string | null;
+  /** Numéro WhatsApp au format international (chiffres, espaces et + acceptés). */
+  whatsapp: string | null;
+  /** Adresse postale, une ligne par élément du tableau. */
+  address: string[] | null;
+  /** Horaires d'ouverture, une ligne par élément du tableau. */
+  hours: string[] | null;
 };
 
-export const servicePoles: ServicePole[] = [
-  {
-    id: "infogerance",
-    title: "Infogérance",
-    description:
-      "Gestion du parc, support, infrastructures, cybersécurité, téléphonie IP, sauvegardes et audit.",
-    href: routes.infogerance,
-  },
-  {
-    id: "integration",
-    title: "Intégration de solutions technologiques",
-    description:
-      "Câblage réseau Ethernet et fibre, installation de systèmes de vidéosurveillance, contrôle d’accès biométrique, systèmes de pointage et sécurité incendie.",
-    href: routes.integration,
-  },
-];
+export const contactDetails: ContactDetails = {
+  phone: null,
+  email: null,
+  whatsapp: null,
+  address: null,
+  hours: null,
+};
 
 /**
  * Pages pas encore développées : elles existent pour que chaque lien mène
@@ -89,39 +106,6 @@ export type PlaceholderPage = {
 };
 
 export const placeholderPages = {
-  services: {
-    title: "Nos services",
-    intro:
-      "AFRIGÉRANCE intervient sur deux pôles : l’infogérance et l’intégration de solutions technologiques.",
-    status: "La présentation détaillée de nos services est en cours de préparation.",
-  },
-  infogerance: {
-    title: servicePoles[0].title,
-    intro: servicePoles[0].description,
-    status: "La présentation détaillée de ce pôle est en cours de préparation.",
-  },
-  integration: {
-    title: servicePoles[1].title,
-    intro: servicePoles[1].description,
-    status: "La présentation détaillée de ce pôle est en cours de préparation.",
-  },
-  about: {
-    title: "À propos",
-    intro: "Cette page présentera AFRIGÉRANCE, sa mission et sa démarche.",
-    status: "Son contenu est en cours de préparation.",
-  },
-  contact: {
-    title: "Contact",
-    intro:
-      "Les coordonnées d’AFRIGÉRANCE et le formulaire de contact seront publiés sur cette page dès leur validation.",
-    status: "Aucun message ne peut encore être envoyé depuis le site.",
-  },
-  quote: {
-    title: "Demander un devis",
-    intro:
-      "Le formulaire de demande de devis est en cours de mise en place. Il sera publié dès qu’il pourra réellement transmettre votre demande à notre équipe.",
-    status: "Aucune demande ne peut encore être envoyée depuis le site.",
-  },
   legal: {
     title: "Mentions légales",
     intro:

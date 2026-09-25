@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Figtree } from "next/font/google";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { site } from "@/content/site";
+import { site, uiText } from "@/content/site";
 import "./globals.css";
 
 const figtree = Figtree({
@@ -32,7 +32,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           href="#contenu"
           className="bg-brand sr-only z-50 rounded-md px-4 py-3 font-semibold text-white focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:px-4 focus:py-3"
         >
-          Aller au contenu principal
+          {uiText.skipLink}
         </a>
         <SiteHeader />
         <main id="contenu" tabIndex={-1} className="flex-1 focus:outline-none">

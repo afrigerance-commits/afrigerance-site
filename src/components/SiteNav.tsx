@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
-import { headerCta, mainNav, routes } from "@/content/site";
+import { headerCta, mainNav, routes, uiText } from "@/content/site";
 import { ArrowUpRightIcon, CloseIcon, MenuIcon } from "./icons";
 
 function isActive(pathname: string, href: string) {
@@ -52,7 +52,7 @@ export function SiteNav() {
 
   return (
     <div className="flex items-center gap-3 lg:gap-10">
-      <nav aria-label="Navigation principale" className="hidden lg:block">
+      <nav aria-label={uiText.mainNavLabel} className="hidden lg:block">
         <ul className="flex items-center gap-8">
           {mainNav.map((item) => {
             const active = isActive(pathname, item.href);
@@ -75,6 +75,7 @@ export function SiteNav() {
 
       <Link
         href={headerCta.href}
+        aria-current={isActive(pathname, headerCta.href) ? "page" : undefined}
         className="hidden h-11 items-center gap-2.5 rounded-md bg-brand px-5 text-[0.9375rem] font-medium text-white transition-colors hover:bg-brand-dark sm:inline-flex"
       >
         {headerCta.label}
@@ -86,7 +87,7 @@ export function SiteNav() {
         type="button"
         aria-expanded={open}
         aria-controls={menuId}
-        aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
+        aria-label={open ? uiText.closeMenu : uiText.openMenu}
         onClick={() => setOpen((value) => !value)}
         className="inline-flex size-11 items-center justify-center rounded-md text-ink transition-colors hover:bg-ink/5 lg:hidden"
       >
@@ -99,7 +100,7 @@ export function SiteNav() {
         hidden={!open}
         className="absolute inset-x-0 top-full border-t border-line bg-white shadow-lg shadow-ink/10 lg:hidden"
       >
-        <nav aria-label="Navigation principale" className="site-container py-4">
+        <nav aria-label={uiText.mainNavLabel} className="site-container py-4">
           <ul className="flex flex-col">
             {mainNav.map((item) => {
               const active = isActive(pathname, item.href);
@@ -121,6 +122,7 @@ export function SiteNav() {
           </ul>
           <Link
             href={headerCta.href}
+            aria-current={isActive(pathname, headerCta.href) ? "page" : undefined}
             onClick={close}
             className="mt-3 flex h-12 items-center justify-center gap-2.5 rounded-md bg-brand px-5 text-base font-semibold text-white transition-colors hover:bg-brand-dark sm:hidden"
           >

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { footerNav } from "@/content/site";
+import { footerNav, uiText } from "@/content/site";
 import { Logo } from "./Logo";
 
 export function SiteFooter() {
@@ -7,7 +7,7 @@ export function SiteFooter() {
     <footer className="border-t border-line bg-white">
       <div className="site-container flex flex-col gap-6 py-6 sm:flex-row sm:items-center sm:justify-between">
         <Logo width={180} className="h-12 sm:h-[3.75rem]" />
-        <nav aria-label="Liens du pied de page">
+        <nav aria-label={uiText.footerNavLabel}>
           <ul className="flex flex-wrap items-center gap-x-9 gap-y-2">
             {footerNav.map((item) => (
               <li key={item.href}>

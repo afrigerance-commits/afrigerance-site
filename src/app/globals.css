@@ -13,6 +13,12 @@
   --color-ink: #0b1038; /* titres et textes principaux */
   --color-muted: #5d6991; /* descriptions */
   --color-line: #dbe0ec; /* séparateurs */
+  --color-surface: #f4f6fb; /* fonds de sections alternées */
+  --color-field: #7b86a3; /* contour des champs de formulaire */
+  --color-danger: #b42318; /* messages d'erreur */
+  --color-danger-bg: #fef3f2;
+  --color-success: #067647; /* confirmation d'envoi */
+  --color-success-bg: #ecfdf3;
 
   /* Bandeau d'accueil */
   --color-hero-start: #062659;

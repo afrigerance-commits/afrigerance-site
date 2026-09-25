@@ -145,3 +145,4 @@ vite.config.ts.timestamp-*
 # Next.js
 next-env.d.ts
 .DS_Store
+!.env.example

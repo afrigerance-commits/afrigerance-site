@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { routes, type PlaceholderPage } from "@/content/site";
+import { routes, uiText, type PlaceholderPage } from "@/content/site";
 
 /** Métadonnées d'une page en préparation : titre propre, exclue de l'indexation. */
 export function placeholderMetadata(page: PlaceholderPage): Metadata {
@@ -16,7 +16,7 @@ export function PagePlaceholder({ page }: { page: PlaceholderPage }) {
   return (
     <section aria-labelledby="page-title" className="site-container py-16 sm:py-24 lg:py-28">
       <p className="border-line text-muted inline-flex items-center rounded-full border px-4 py-1.5 text-sm font-medium">
-        Page en préparation
+        {uiText.placeholderBadge}
       </p>
       <h1
         id="page-title"
@@ -34,7 +34,7 @@ export function PagePlaceholder({ page }: { page: PlaceholderPage }) {
         href={routes.home}
         className="border-brand text-brand hover:bg-brand mt-10 inline-flex h-12 items-center rounded-md border-[1.5px] px-6 text-base font-semibold transition-colors hover:text-white"
       >
-        Retour à l’accueil
+        {uiText.backHome}
       </Link>
     </section>
   );

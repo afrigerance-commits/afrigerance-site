@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/afrigerance-logo.png";
-import { routes, site } from "@/content/site";
+import { routes, site, uiText } from "@/content/site";
 
 type LogoProps = {
   /** Classes de hauteur : la largeur suit le ratio du fichier original. */
@@ -16,7 +16,7 @@ export function Logo({ className, width, eager = false }: LogoProps) {
   return (
     <Link
       href={routes.home}
-      aria-label={`${site.name}, retour à l’accueil`}
+      aria-label={`${site.name}, ${uiText.homeLink}`}
       className="inline-flex shrink-0 rounded-sm"
     >
       <Image
