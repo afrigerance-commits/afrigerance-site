@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Figtree } from "next/font/google";
-import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader } from "@/components/SiteHeader";
-import { site, uiText } from "@/content/site";
+import { site } from "@/content/site";
 import "./globals.css";
 
 const figtree = Figtree({
@@ -27,19 +25,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="fr" className={`${figtree.variable} antialiased`}>
-      <body className="flex min-h-dvh flex-col font-sans">
-        <a
-          href="#contenu"
-          className="bg-brand sr-only z-50 rounded-md px-4 py-3 font-semibold text-white focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:px-4 focus:py-3"
-        >
-          {uiText.skipLink}
-        </a>
-        <SiteHeader />
-        <main id="contenu" tabIndex={-1} className="flex-1 focus:outline-none">
-          {children}
-        </main>
-        <SiteFooter />
-      </body>
+      <body className="flex min-h-dvh flex-col font-sans">{children}</body>
     </html>
   );
 }

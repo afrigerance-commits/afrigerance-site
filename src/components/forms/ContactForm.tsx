@@ -10,6 +10,7 @@ import {
   type ContactField,
 } from "@/lib/forms/contact";
 import { postForm } from "@/lib/forms/submission";
+import { useSubmissionMeta } from "@/lib/forms/useSubmissionMeta";
 import { CheckCircleIcon } from "../icons";
 import { buttonClasses } from "../ui/button";
 import {
@@ -37,6 +38,7 @@ export function ContactForm() {
   const successRef = useRef<HTMLHeadingElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const sendingRef = useRef(false);
+  const submission = useSubmissionMeta();
 
   useEffect(() => {
     if (!focusRequest) return;
@@ -74,7 +76,7 @@ export function ContactForm() {
     setSubmitError(null);
     sendingRef.current = true;
     setStatus("submitting");
-    const result = await postForm("/api/contact", data);
+    const result = await postForm("/api/contact", { ...data, ...submission.meta() });
     sendingRef.current = false;
 
     if (result.ok) {
@@ -94,6 +96,7 @@ export function ContactForm() {
   }
 
   function reset() {
+    submission.renew();
     setData(emptyContact());
     setErrors({});
     setSubmitError(null);

@@ -19,16 +19,21 @@ export const formCommon = {
   referenceLabel: "Référence :",
   submitErrors: {
     not_configured:
-      "Rien n’a été envoyé : l’envoi en ligne n’est pas encore activé sur ce site. Vos réponses sont conservées sur cette page.",
-    send_failed:
-      "L’envoi a échoué à cause d’un problème technique : rien n’a été transmis. Vos réponses sont conservées, réessayez dans quelques instants.",
+      "Rien n’a été envoyé : l’enregistrement des demandes n’est pas encore activé sur ce site. Vos réponses sont conservées sur cette page.",
+    storage_failed:
+      "Votre demande n’a pas pu être enregistrée à cause d’un problème technique : rien n’a été transmis. Vos réponses sont conservées, réessayez dans quelques instants.",
+    rate_limited:
+      "Trop de demandes ont été envoyées depuis votre connexion : rien n’a été transmis. Réessayez plus tard.",
+    server_error:
+      "Un problème technique a empêché de confirmer l’envoi. Vos réponses sont conservées : réessayez dans quelques instants, un nouvel essai ne crée pas de doublon.",
     network:
-      "Le serveur n’a pas pu être joint : rien n’a été transmis. Vérifiez votre connexion Internet puis réessayez. Vos réponses sont conservées.",
+      "La connexion au serveur a échoué avant la confirmation. Vérifiez votre connexion Internet puis réessayez : vos réponses sont conservées et un nouvel essai ne crée pas de doublon.",
     invalid:
       "Certaines informations ne sont pas valides. Corrigez les champs signalés puis renvoyez le formulaire.",
     bad_request:
       "Le formulaire n’a pas pu être traité : rien n’a été transmis. Rechargez la page puis réessayez.",
   },
+
 } as const;
 
 export type SubmitErrorCode = keyof typeof formCommon.submitErrors;

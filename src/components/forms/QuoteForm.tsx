@@ -16,6 +16,7 @@ import {
   type QuoteField,
 } from "@/lib/forms/quote";
 import { postForm } from "@/lib/forms/submission";
+import { useSubmissionMeta } from "@/lib/forms/useSubmissionMeta";
 import { ArrowLeftIcon, CheckCircleIcon } from "../icons";
 import { ButtonLink, buttonClasses } from "../ui/button";
 import {
@@ -75,6 +76,7 @@ export function QuoteForm({ initialPoles }: { initialPoles: PoleId[] }) {
   const successRef = useRef<HTMLHeadingElement>(null);
   const formTopRef = useRef<HTMLDivElement>(null);
   const sendingRef = useRef(false);
+  const submission = useSubmissionMeta();
 
   useEffect(() => {
     if (!focusRequest) return;
@@ -139,7 +141,7 @@ export function QuoteForm({ initialPoles }: { initialPoles: PoleId[] }) {
     sendingRef.current = true;
     setStatus("submitting");
     setSubmitError(null);
-    const result = await postForm("/api/devis", payload);
+    const result = await postForm("/api/devis", { ...payload, ...submission.meta() });
     sendingRef.current = false;
 
     if (result.ok) {

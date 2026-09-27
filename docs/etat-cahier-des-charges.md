@@ -1,6 +1,6 @@
 # État du cahier des charges — site AFRIGÉRANCE
 
-Mise à jour : 25 septembre 2026 · Branche `claude/afrigerance-homepage-7974ch` · Site **non déployé**.
+Mise à jour : 27 septembre 2026 · Branche `claude/afrigerance-homepage-7974ch` · Site **non déployé**.
 
 Référence : « TDR AFRIGERANCE — Cahier des charges » v1.0, avec les précisions données ensuite. Ces précisions priment sur le document :
 
@@ -13,7 +13,7 @@ Légende :
 - **À développer** : aucune information ne manque, il reste du travail de développement.
 - **Bloqué** : en attente d’une information ou d’une décision d’AFRIGÉRANCE.
 
-> **Le site n’est pas terminé.** Les demandes de devis et de contact ne sont **pas encore reçues** : l’envoi par email est prêt dans le code, mais il reste à le configurer (voir § 8).
+> **Le site n’est pas terminé.** Enregistrement des demandes, espace administrateur et notification par email sont développés et testés sur une base de test. Ils n’ont **pas encore été raccordés à de vrais services** : il faut fournir la base de données et les paramètres email (voir § 8 et § 16). Tant que ce n’est pas fait, aucune demande réelle n’est reçue.
 
 ## 1–2. Présentation, objectifs, rédaction
 
@@ -24,11 +24,11 @@ Légende :
 | S’adresser au lecteur avec « vous », termes simples | Réalisé | |
 | N’inventer aucun chiffre, client, certification, engagement | Réalisé | Vérifié sur toutes les pages. Aucune disponibilité ni aucun délai n’est promis. |
 | Aider à identifier le service adapté | Réalisé | Page Services + formulaire guidé |
-| Générer des demandes de devis qualifiées | Bloqué | Formulaire réalisé. Réception bloquée tant que l’envoi n’est pas configuré. |
+| Générer des demandes de devis qualifiées | Bloqué | Formulaire, enregistrement et administration réalisés et testés. Réception réelle bloquée tant que la base de données (`DATABASE_URL`) n’est pas fournie. |
 | Générer des rendez-vous | À développer | Formulaire de rendez-vous non créé |
 | Valoriser des réalisations réelles | Bloqué | Aucune réalisation ni autorisation fournie |
 | Visibilité locale (SEO) | Bloqué | Voir § 13 : domaine et zones desservies manquants |
-| Mise à jour sans intervention technique | À développer | Aujourd’hui, textes centralisés dans `src/content/`. Pas encore d’interface d’administration (voir § 12). |
+| Mise à jour sans intervention technique | À développer | Les demandes se traitent dans `/admin`. Les textes des pages restent dans `src/content/` : pas encore d’édition de contenu en ligne (voir § 12). |
 
 ## 3. Arborescence
 
@@ -42,12 +42,12 @@ Légende :
 | Secteurs (PME, éducation, administrations, commerce, BTP, résidentiel) | À développer | Textes de base disponibles dans le TDR § 6 |
 | Réalisations | Bloqué | Cas vérifiés et autorisations nécessaires. Aucun cas fictif ne sera publié. |
 | Ressources / FAQ | À développer | Plusieurs réponses sont bloquées (voir § 7) |
-| Demander un devis | Réalisé | Formulaire complet. **Envoi à connecter** (§ 8). |
+| Demander un devis | Réalisé | Formulaire complet, demandes enregistrées. **Base réelle à connecter** (§ 8). |
 | Prendre rendez-vous | À développer | Voir § 9 |
-| Contact | Réalisé | Formulaire court. **Envoi à connecter.** Coordonnées : bloquées. |
+| Contact | Réalisé | Formulaire court, messages enregistrés. **Base réelle à connecter.** Coordonnées : bloquées. |
 | Mentions légales | Bloqué | Page d’attente non indexée. Informations légales à fournir. |
 | Politique de confidentialité | Bloqué | Responsable des données, finalités, durées de conservation et contact pour les droits à fournir |
-| Bannière cookies | Réalisé | Non nécessaire à ce jour : le site ne dépose aucun cookie ni traceur. À revoir si un outil d’audience est ajouté. |
+| Bannière cookies | Réalisé | Non nécessaire à ce jour : le site public ne dépose aucun cookie ni traceur. Seul l’espace administrateur utilise un cookie de session, strictement nécessaire. À revoir si un outil d’audience est ajouté. |
 
 ## 5. Services et prestations
 
@@ -82,25 +82,30 @@ Légende :
 | Récapitulatif modifiable avant envoi | Réalisé | |
 | Réponses conservées lors du retour en arrière | Réalisé | Vérifié |
 | Erreurs compréhensibles | Réalisé | Liste d’erreurs cliquable + message sous chaque champ, lus par les lecteurs d’écran |
-| États chargement, succès, erreur | Réalisé | Succès affiché **uniquement** après acceptation réelle de l’email |
+| États chargement, succès, erreur | Réalisé | Succès affiché **uniquement** si la demande est enregistrée en base. Enregistrement impossible : message d’erreur, rien n’est confirmé. |
 | Aucun tarif calculé | Réalisé | |
 | Validation côté serveur | Réalisé | Mêmes règles que dans le navigateur ; valeurs inattendues refusées |
-| Anti-spam de base | Réalisé | Champ piège invisible, taille limitée |
-| Limitation du nombre d’envois, captcha | À développer | Si du spam apparaît après la mise en ligne |
-| Notification par email avec référence et résumé | Bloqué | Code prêt (Resend). Il manque la clé API et l’adresse de réception ; un nom de domaine est recommandé. |
+| Anti-spam | Réalisé | Champ piège invisible, délai minimal de 2 s, taille limitée, au plus 5 demandes en 10 minutes et 20 par jour par connexion (empreinte IP, jamais l’adresse elle-même) |
+| Doubles soumissions | Réalisé | Clé unique par formulaire : un double clic ou un nouvel essai n’enregistre qu’une demande |
+| Captcha | À développer | Seulement si du spam passe malgré les protections |
+| Notification par email au gestionnaire | Bloqué | Réalisé et testé avec un service d’email simulé : envoi, échec, renvoi. Il manque la clé Resend et l’adresse du gestionnaire ; un nom de domaine est recommandé. |
+| Demande conservée si l’email échoue | Réalisé | Échec visible dans l’administration (bandeau, filtre, badge, erreur) avec un bouton « Renvoyer la notification » |
 | Accusé de réception à l’écran | Réalisé | Texte du TDR § 8.3 + référence |
 | Email de confirmation au visiteur | À développer | Nécessite un domaine d’envoi vérifié |
 | Type d’organisation, préférence de contact, fonction, calendrier dédié | À développer | Facultatifs dans le TDR. Le calendrier est aujourd’hui évoqué dans l’aide du champ « Description ». |
 | Pièces jointes | À développer | Nécessite un stockage sécurisé (contrôle du type et de la taille) |
-| Enregistrement protégé, statuts, historique, export | À développer | Nécessite une base de données et un espace d’administration |
-| Accès limité et durée de conservation | Bloqué | Dépend de la politique de données |
+| Enregistrement protégé avec date, type, réponses, statut | Réalisé | PostgreSQL. Statut initial « Nouveau », puis « En cours » et « Traité » (statuts validés, qui remplacent la liste du TDR § 8.3). |
+| Historique minimal | Réalisé | Réception, changements de statut (avec l’auteur), notifications |
+| Accès limité | Réalisé | Espace `/admin` avec connexion : comptes nominatifs, mots de passe hachés, sessions expirant après 12 h, blocage après 5 échecs. Données invisibles sans connexion. |
+| Export des demandes | À développer | Si nécessaire (TDR § 12.2 : « export contrôlé ») |
+| Durée de conservation et suppression | Bloqué | Dépend de la politique de données. Aucune suppression automatique n’est prévue pour l’instant. |
 
 ## 9. Rendez-vous, contact, appels à l’action
 
 | Exigence | Statut | Commentaire |
 | --- | --- | --- |
-| Formulaire de rendez-vous (créneaux demandés, confirmation) | À développer | Agenda automatique seulement si un outil réel est choisi |
-| Contact : nom, moyen de contact, objet, message, information de confidentialité | Réalisé | **Envoi à connecter** |
+| Formulaire de rendez-vous (créneaux demandés, confirmation) | À développer | La base accepte déjà le type « rendez-vous » : le formulaire bénéficiera du même enregistrement, de la même notification et de la même administration. Agenda automatique seulement si un outil réel est choisi. |
+| Contact : nom, moyen de contact, objet, message, information de confidentialité | Réalisé | Messages enregistrés et visibles dans l’administration. **Base réelle à connecter.** |
 | Liens téléphone, email, WhatsApp | Réalisé | Affichés automatiquement dès qu’une coordonnée est renseignée dans `src/content/site.ts`. Aucune n’est confirmée à ce jour. |
 | Adresse et horaires | Bloqué | Non fournis, donc non publiés |
 | Appel « Demander un devis » dans l’en-tête et sur chaque pôle | Réalisé | |
@@ -116,7 +121,7 @@ Légende :
 | Incident IT : Accueil → Infogérance → devis présélectionné | Réalisé |
 | Responsable sécurité : Intégration → devis | Réalisé |
 | Établissement : secteur éducation → services | À développer (pages Secteurs) |
-| Prêt à contacter : bouton visible → formulaire → envoi confirmé | Réalisé jusqu’au serveur ; **réception bloquée** tant que l’envoi n’est pas configuré |
+| Prêt à contacter : bouton visible → formulaire → envoi confirmé | Réalisé et testé sur une base de test ; **réception réelle bloquée** tant que la base n’est pas fournie |
 | Mobile : actions visibles, retour sans perte, résumé | Réalisé |
 
 ## 11. UX / UI et accessibilité
@@ -136,9 +141,12 @@ Légende :
 | --- | --- | --- |
 | Site responsive, navigateurs modernes | Réalisé | |
 | Formulaires validés dans le navigateur et sur le serveur | Réalisé | |
-| Aucune clé secrète dans le navigateur | Réalisé | Variables lues uniquement par le serveur |
-| CMS ou interface d’administration (pages, services, FAQ, demandes, rôles) | À développer | Décision attendue : quel outil, selon le budget et les compétences |
-| Hébergement, domaine, email, sauvegardes, coûts récurrents | Bloqué | Choix de l’hébergeur et du nom de domaine |
+| Aucune clé secrète dans le navigateur ni dans le code | Réalisé | Variables lues uniquement par le serveur ; aucun mot de passe dans le code ; `.env.local` exclu de GitHub |
+| Migrations de base de données | Réalisé | `npm run db:migrate`, rejouable sans risque |
+| Administration des demandes (liste, filtres, fiche, statuts, notifications) | Réalisé | `/admin` : filtres par type, statut, dates et notification ; testé sur ordinateur et téléphone |
+| Rôles distincts | À développer | Un seul rôle aujourd’hui (gestionnaire) ; chaque compte est nominatif |
+| Édition en ligne des contenus (pages, services, FAQ) | À développer | Décision attendue : quel outil, selon le budget et les compétences |
+| Hébergement, domaine, email, sauvegardes, coûts récurrents | Bloqué | Choix de l’hébergeur du site, de la base (Neon recommandé) et du nom de domaine. Les sauvegardes de la base dépendent de l’offre choisie. |
 | Préproduction, mise en ligne, retour arrière | Bloqué | Pas de déploiement à ce stade, à votre demande |
 | HTTPS | Bloqué | Fourni par l’hébergeur à la mise en ligne |
 | Ne jamais demander de mot de passe ni de donnée sensible | Réalisé | Rappel affiché sur les formulaires |
@@ -163,14 +171,18 @@ Légende :
 | --- | --- |
 | Pages Accueil, Services, Devis, À propos, Contact | Réalisé |
 | Recette responsive, clavier, liens, formulaires, erreurs | Réalisé pour les pages existantes |
-| Formulaires et notifications testés avec un vrai compte d’envoi | Bloqué : configuration Resend |
-| Guide d’administration, transfert des accès, formation | À développer (après le choix de l’administration) |
+| Parcours complet testé sur une base de test : soumission → administration → statut → échec et renvoi de notification → accès refusé sans connexion | Réalisé |
+| Test avec une vraie base (Neon) et un vrai compte d’envoi (Resend) | Bloqué : paramètres à fournir |
+| Guide d’administration | Réalisé (README : « Consulter et traiter les demandes ») |
+| Transfert des accès, formation | À faire à la mise en ligne |
 
 ## 16. Informations à fournir par AFRIGÉRANCE
 
 | Élément | Débloque |
 | --- | --- |
-| Clé API Resend (ou autre service choisi) et adresse de réception des demandes | La réception des devis et messages |
+| Adresse de connexion de la base PostgreSQL (`DATABASE_URL`, ex. Neon) | L’enregistrement réel des demandes et l’espace administrateur |
+| Clé API Resend et adresse email du gestionnaire | Les emails de notification |
+| Adresse publique du site (`SITE_URL`), à la mise en ligne | Le lien direct vers la demande dans l’email |
 | Nom de domaine | Envoi depuis votre domaine, sitemap, référencement, mise en ligne |
 | Coordonnées : téléphone, email, WhatsApp, adresse, horaires | Page Contact, pied de page, données structurées |
 | Dénomination légale exacte (AFRIGÉRANCE ou AFRIGERANCE), forme, immatriculation, siège, responsable de publication, hébergeur | Mentions légales |

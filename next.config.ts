@@ -1,7 +1,20 @@
 import type { NextConfig } from "next";
 
+const adminHeaders = [
+  { key: "X-Robots-Tag", value: "noindex, nofollow" },
+  { key: "Cache-Control", value: "no-store" },
+  { key: "Referrer-Policy", value: "same-origin" },
+  { key: "X-Frame-Options", value: "DENY" },
+];
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  serverExternalPackages: ["postgres"],
+  async headers() {
+    return [
+      { source: "/admin", headers: adminHeaders },
+      { source: "/admin/:path*", headers: adminHeaders },
+    ];
+  },
 };
 
 export default nextConfig;

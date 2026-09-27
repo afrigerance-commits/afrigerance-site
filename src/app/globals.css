@@ -19,6 +19,8 @@
   --color-danger-bg: #fef3f2;
   --color-success: #067647; /* confirmation d'envoi */
   --color-success-bg: #ecfdf3;
+  --color-warning: #8a5300; /* statuts en cours / en attente (administration) */
+  --color-warning-bg: #fff4e0;
 
   /* Bandeau d'accueil */
   --color-hero-start: #062659;

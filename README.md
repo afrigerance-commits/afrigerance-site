@@ -2,141 +2,170 @@
 
 Site vitrine d’AFRIGÉRANCE : infogérance et intégration de solutions technologiques pour les entreprises au Sénégal.
 
-**État actuel** : les pages Accueil, Services, Demander un devis, À propos et Contact sont développées. Les formulaires de devis et de contact fonctionnent jusqu’au serveur. **L’envoi des demandes par email reste à connecter** : tant que les variables décrites plus bas ne sont pas renseignées, le site affiche « Rien n’a été envoyé » et aucune demande n’est reçue. Le site n’est pas déployé.
+**État actuel**
+- Pages Accueil, Services, Demander un devis, À propos et Contact terminées.
+- Chaque demande de devis ou de contact est **enregistrée dans une base de données** et consultable dans un **espace administrateur protégé** (`/admin`). Un **email avertit le gestionnaire** de chaque nouvelle demande.
+- Il reste à fournir les paramètres réels (base de données, email) : voir « Mise en route » ci-dessous.
+- Le site n’est pas déployé.
 
-Le suivi détaillé du cahier des charges est dans [`docs/etat-cahier-des-charges.md`](docs/etat-cahier-des-charges.md).
+Suivi détaillé du cahier des charges : [`docs/etat-cahier-des-charges.md`](docs/etat-cahier-des-charges.md).
 
-## Technologies
+## Technologies et choix
 
-- [Next.js 16](https://nextjs.org) (App Router), React 19, TypeScript
-- Tailwind CSS 4
-- Police Figtree, auto-hébergée par `next/font` (aucun appel à Google depuis le navigateur des visiteurs)
-- Aucune autre dépendance d’exécution : icônes SVG intégrées, envoi d’email par simple appel HTTPS
+- [Next.js 16](https://nextjs.org) (App Router), React 19, TypeScript, Tailwind CSS 4.
+- **Base de données : PostgreSQL**, avec le pilote [`postgres`](https://github.com/porsager/postgres) (aucune autre dépendance). PostgreSQL est une base fiable, gratuite et disponible chez de nombreux hébergeurs. Recommandé : [Neon](https://neon.tech), qui a une offre gratuite et fonctionne avec les hébergeurs Next.js. Toute base PostgreSQL 13 ou plus récente convient.
+- **Authentification intégrée**, sans service tiers :
+  - comptes créés uniquement en ligne de commande ;
+  - mots de passe hachés avec scrypt (module `crypto` de Node) ;
+  - sessions stockées en base, cookie `httpOnly` limité à `/admin` ;
+  - blocage de 15 minutes après 5 mots de passe erronés.
 
-## Lancer le projet
+  Pour un ou quelques gestionnaires, c’est plus simple et plus sûr que de dépendre d’un service externe.
+- **Email : [Resend](https://resend.com)**, appelé directement par le serveur.
 
-Prérequis : Node.js 20.9 ou plus récent.
+Aucun mot de passe ni aucune clé ne figure dans le code : tout passe par des variables d’environnement, qui restent sur le serveur et hors de GitHub.
 
-```bash
-npm install        # installe les dépendances
-npm run dev        # serveur de développement → http://localhost:3000
+## Fonctionnement des demandes
+
+1. Le visiteur remplit le formulaire de devis ou de contact. Les réponses sont vérifiées dans le navigateur, puis **à nouveau par le serveur**.
+2. Le serveur **enregistre la demande** : type, réponses, coordonnées, date de réception, statut « Nouveau ». La confirmation n’est affichée au visiteur **que si l’enregistrement a réussi**. En cas d’échec, il voit un message d’erreur et ses réponses restent dans le formulaire.
+3. Juste après, un **email de notification** part vers le gestionnaire. Il contient le type, la référence, le nom et l’objet, avec un lien vers la demande. Si l’email échoue, la demande est **conservée** : elle apparaît dans l’administration avec la mention « Échec » et un bouton **Renvoyer la notification**.
+
+Protections contre le spam et les doublons :
+- un champ invisible piège les robots, et un envoi fait en moins de 2 secondes est refusé ;
+- au plus 5 demandes par tranche de 10 minutes, et 20 par jour, depuis une même connexion. L’adresse IP n’est jamais stockée : seule une empreinte chiffrée l’est ;
+- un double clic ou un nouvel essai n’enregistre la demande qu’une fois.
+
+## Mise en route (à faire une fois)
+
+Toutes les commandes se tapent dans l’invite de commandes, ouverte dans le dossier du projet (celui qui contient `package.json`).
+
+### 1. Installer le projet
+
+```
+npm install
+copy .env.example .env.local
 ```
 
-Version de production en local :
+Le fichier `.env.local` contiendra vos paramètres secrets. Il n’est jamais envoyé sur GitHub. Pour le modifier :
 
-```bash
-npm run build
-npm run start      # → http://localhost:3000
+```
+notepad .env.local
 ```
 
-Contrôles qualité :
+### 2. Créer la base de données (Neon)
 
-```bash
-npm run lint       # ESLint (règles Next.js, accessibilité de base)
-npx tsc --noEmit   # vérification TypeScript
+1. Créez un compte gratuit sur https://neon.tech.
+2. Créez un projet. Choisissez une région en Europe, la plus proche du Sénégal.
+3. Cliquez sur **Connect**, cochez **Connection pooling** et copiez l’adresse affichée. Elle commence par `postgresql://`.
+4. Dans `.env.local`, collez-la après `DATABASE_URL=`, sans guillemets. Enregistrez.
+5. Créez les tables :
+
+   ```
+   npm run db:migrate
+   ```
+
+   Le message attendu est `✓ Migration appliquée : 0001_demandes_et_administration.sql`. Relancer la commande plus tard est sans risque : seules les nouvelles migrations sont appliquées.
+
+### 3. Créer le compte administrateur
+
 ```
+npm run admin:create
+```
+
+Saisissez l’adresse email du gestionnaire, puis un mot de passe d’au moins 12 caractères, deux fois. Le mot de passe s’affiche sous forme d’astérisques et n’est enregistré que haché.
+
+- **Changer un mot de passe** : relancez la même commande avec la même adresse. Toutes les sessions ouvertes de ce compte sont alors fermées.
+- **Ajouter un gestionnaire** : relancez la commande avec une autre adresse.
+
+### 4. Configurer l’email de notification (Resend)
+
+1. Créez un compte sur https://resend.com, idéalement avec l’adresse qui doit recevoir les notifications.
+2. Menu **API Keys** → **Create API Key**, avec l’accès « Sending access ». Copiez la clé : elle ne s’affiche qu’une fois.
+3. Dans `.env.local` :
+   - `RESEND_API_KEY=` suivi de la clé ;
+   - `NOTIFICATION_EMAIL_TO=` suivi de l’adresse du gestionnaire ;
+   - `NOTIFICATION_EMAIL_FROM=AFRIGERANCE <onboarding@resend.dev>`.
+
+   Cette adresse d’expédition de test ne peut écrire qu’à l’adresse du compte Resend. Une fois votre nom de domaine vérifié dans Resend (menu **Domains**), remplacez-la par une adresse de votre domaine.
+4. Après la mise en ligne, renseignez `SITE_URL` (ex. `https://www.votre-domaine.sn`) pour que l’email contienne un lien direct vers la demande.
+
+Sans ces valeurs, les demandes sont quand même enregistrées. L’administration les signale simplement comme « notification non envoyée ».
+
+### 5. Lancer le site
+
+```
+npm run dev
+```
+
+- Site public : http://localhost:3000
+- Espace administrateur : http://localhost:3000/admin
+
+## Consulter et traiter les demandes
+
+1. Ouvrez `/admin` et connectez-vous avec l’email et le mot de passe créés à l’étape 3. Sans connexion, aucune demande n’est visible, même en connaissant l’adresse.
+2. La page **Demandes reçues** liste les demandes, des plus récentes aux plus anciennes. Elle se filtre par type (devis, contact), statut, dates, et par notification non envoyée.
+3. Un bandeau rouge signale les demandes dont l’email de notification n’est pas parti.
+4. Cliquez sur une référence pour ouvrir la fiche : coordonnées (email et téléphone cliquables), toutes les réponses, historique.
+5. Dans **Suivi de la demande**, faites passer la demande de « Nouveau » à « En cours », puis « Traité ». Chaque changement est inscrit dans l’historique avec l’adresse du gestionnaire.
+6. Si la notification a échoué, corrigez la configuration email si besoin, puis cliquez sur **Renvoyer la notification**.
+7. Pensez à **Se déconnecter** sur un ordinateur partagé. Une session expire de toute façon après 12 heures.
+
+En local, utilisez bien l’adresse `localhost`. En ligne, le cookie de connexion n’est transmis qu’en HTTPS.
+
+## Commandes utiles
+
+| Commande | Rôle |
+| --- | --- |
+| `npm run dev` | Serveur de développement → http://localhost:3000 |
+| `npm run build` puis `npm run start` | Version de production en local |
+| `npm run db:migrate` | Crée ou met à jour les tables de la base |
+| `npm run admin:create` | Crée un compte administrateur ou change son mot de passe |
+| `npm run lint` / `npx tsc --noEmit` | Contrôles qualité |
+
+## À la mise en ligne (plus tard)
+
+- Définissez chez l’hébergeur les variables `DATABASE_URL`, `RESEND_API_KEY`, `NOTIFICATION_EMAIL_FROM`, `NOTIFICATION_EMAIL_TO` et `SITE_URL`.
+- Lancez `npm run db:migrate` une fois contre la base de production. Faites-le depuis votre PC, avec `DATABASE_URL` pointant vers cette base.
+- Créez le ou les comptes avec `npm run admin:create`.
+- La limitation des envois repose sur l’adresse IP transmise par l’hébergeur (en-têtes `X-Real-IP` / `X-Forwarded-For`), fiable sur les plateformes comme Vercel.
 
 ## Structure
 
 ```
-brand/                          Fichier original du logo (non modifié)
-.env.example                    Modèle des variables d’envoi (sans valeur secrète)
+db/migrations/                  Migrations SQL (appliquées par npm run db:migrate)
+scripts/                        db-migrate.mjs, admin-create.mjs
+.env.example                    Modèle des variables (sans valeur secrète)
 docs/etat-cahier-des-charges.md Suivi des exigences du cahier des charges
 src/
-  assets/afrigerance-logo.png   Logo original recadré (marges blanches retirées)
-  content/                      TOUS les textes du site
-    site.ts                     Identité, menus, liens, coordonnées confirmées
-    services.ts                 Les deux pôles et leurs prestations
-    pages.ts                    Textes des pages Services, À propos, Contact, Devis
-    forms.ts                    Libellés, options et messages des formulaires
+  content/                      TOUS les textes (site.ts, services.ts, pages.ts, forms.ts, admin.ts)
   lib/forms/                    Validation des formulaires (navigateur ET serveur)
-  lib/server/                   Envoi des emails (serveur uniquement)
+  lib/requests/                 Types, mise en forme et filtres des demandes
+  lib/server/                   Serveur uniquement : base, authentification, enregistrement, email
   app/
-    globals.css                 Couleurs et réglages de la charte (@theme)
-    layout.tsx                  En-tête, pied de page et métadonnées communs
-    page.tsx                    Accueil
-    services/, devis/, a-propos/, contact/, mentions-legales/
-    api/devis/route.ts          Réception des demandes de devis
-    api/contact/route.ts        Réception des messages de contact
-  components/                   En-tête, pied de page, bandeaux, formulaires…
+    (site)/                     Pages publiques (en-tête et pied de page communs)
+    admin/                      Espace administrateur : connexion, liste, fiche
+    api/devis, api/contact      Réception des formulaires
+  components/                   Composants du site, des formulaires et de l’administration
 ```
 
-## Modifier le contenu
-
-- **Textes, menus, liens** : fichiers de `src/content/`. Les composants n’ont pas de texte en dur.
-- **Prestations d’un pôle** : `src/content/services.ts`. Elles apparaissent automatiquement sur la page Services et dans le formulaire de devis.
-- **Couleurs** : variables `--color-*` dans `src/app/globals.css`.
-- **Logo** : remplacer `src/assets/afrigerance-logo.png` en gardant le même nom.
-
-### Coordonnées
-
-Dans `src/content/site.ts`, bloc `contactDetails` : téléphone, email, WhatsApp, adresse, horaires. Toutes les valeurs sont vides (`null`) pour l’instant. Chaque coordonnée renseignée apparaît sur la page Contact avec son lien : appel, email ou WhatsApp. **Ne renseigner que des informations confirmées.**
-
-Règle éditoriale (cahier des charges) : n’ajouter aucun chiffre, client, tarif, certification, témoignage ou coordonnée sans validation d’AFRIGÉRANCE.
-
-## Envoi des demandes (devis et contact)
-
-### Fonctionnement
-
-1. Le visiteur remplit le formulaire. Les réponses sont vérifiées dans le navigateur, puis **à nouveau sur le serveur**.
-2. Le serveur envoie un email de notification via [Resend](https://resend.com), avec une référence (ex. `DV-20260925-A1B2C3`) et le résumé de la demande.
-3. Le message de réussite n’est affiché **que si Resend a accepté l’email**. En cas d’échec ou d’absence de configuration, un message d’erreur clair s’affiche et les réponses restent dans le formulaire.
-
-Protection de base : un champ invisible piège les robots, la taille des envois est limitée, et les valeurs inattendues sont refusées. La clé API reste sur le serveur : elle n’est jamais envoyée au navigateur.
-
-### Variables à configurer
-
-| Variable | Rôle | Exemple |
-| --- | --- | --- |
-| `RESEND_API_KEY` | Clé API Resend (**secrète**) | `re_…` |
-| `NOTIFICATION_EMAIL_FROM` | Expéditeur des notifications | `AFRIGERANCE <onboarding@resend.dev>` |
-| `NOTIFICATION_EMAIL_TO` | Adresse(s) qui reçoivent les demandes, séparées par des virgules | l’adresse de réception d’AFRIGÉRANCE |
-
-### Mise en place avec Resend
-
-1. Créer un compte sur https://resend.com, idéalement avec l’adresse email qui doit recevoir les demandes.
-2. Menu **API Keys** → **Create API Key**, avec l’accès « Sending access ». Copier la clé : elle n’est affichée qu’une fois.
-3. **Sans nom de domaine** (pour tester) : expéditeur `AFRIGERANCE <onboarding@resend.dev>`. Dans ce mode, Resend n’envoie **qu’à l’adresse email du compte Resend** : `NOTIFICATION_EMAIL_TO` doit donc être cette adresse.
-4. **Avec un nom de domaine** (recommandé pour la mise en ligne) : menu **Domains** → **Add Domain**, puis ajouter chez le registraire les enregistrements DNS indiqués. Une fois le domaine vérifié, utiliser par exemple `AFRIGERANCE <site@votre-domaine>` comme expéditeur.
-
-### Tester en local (Windows)
-
-Dans l’invite de commandes, ouverte dans le dossier du projet :
-
-```
-copy .env.example .env.local
-notepad .env.local
-```
-
-Renseigner les trois valeurs, enregistrer, puis relancer `npm run dev`. Le fichier `.env.local` n’est jamais envoyé sur GitHub.
-
-### À la mise en ligne
-
-Définir les trois mêmes variables dans les réglages « Environment Variables » de l’hébergeur. Ne jamais les écrire dans le code.
-
-### Limites actuelles
-
-- Les demandes ne sont pas enregistrées dans une base de données : l’email est la seule trace. Il n’y a pas encore d’espace d’administration ni de suivi des statuts.
-- Aucun email de confirmation n’est envoyé au visiteur : la confirmation est affichée à l’écran, avec la référence.
-- Il n’y a pas de limitation du nombre d’envois (anti-abus) au-delà du champ piège. À ajouter si du spam apparaît après la mise en ligne.
-
-## Plan du site
-
-| Adresse | Statut |
-| --- | --- |
-| `/` | Accueil, terminée |
-| `/services` | Deux pôles et leurs prestations, terminée |
-| `/devis` | Formulaire en 4 étapes, terminé. `?pole=infogerance` ou `?pole=integration` présélectionne le pôle. **Envoi à connecter.** |
-| `/a-propos` | Terminée, avec les informations confirmées uniquement |
-| `/contact` | Formulaire court, terminé. **Envoi à connecter.** Coordonnées : aucune confirmée pour l’instant. |
-| `/mentions-legales` | En attente des informations légales (non indexée) |
+Pour modifier le contenu :
+- **Textes** : fichiers de `src/content/`.
+- **Couleurs** : variables `--color-*` de `src/app/globals.css`.
+- **Coordonnées publiques** : bloc `contactDetails` de `src/content/site.ts`. N’y mettez que des informations confirmées.
 
 ## Actualiser une copie téléchargée en ZIP (Windows)
 
-1. Arrêter le site s’il tourne : **Ctrl + C** dans la fenêtre noire, puis `O` et Entrée.
-2. Si vous avez créé un fichier `.env.local`, le copier de côté : il n’est pas dans le ZIP.
-3. Supprimer ou renommer l’ancien dossier du projet.
-4. Télécharger le nouveau ZIP depuis la branche (bouton **Code** → **Download ZIP**) et l’extraire.
-5. Ouvrir le dossier qui contient `package.json`, taper `cmd` dans la barre d’adresse, puis Entrée.
-6. Exécuter `npm install`, puis `npm run dev`. Remettre `.env.local` dans le dossier s’il existait.
-7. Ouvrir http://localhost:3000. En cas d’affichage ancien, forcer le rechargement avec **Ctrl + F5**.
+1. Arrêtez le site : **Ctrl + C** dans la fenêtre noire, puis `O` et Entrée.
+2. Copiez de côté votre fichier `.env.local`, qui n’est pas dans le ZIP.
+3. Supprimez ou renommez l’ancien dossier. Téléchargez le nouveau ZIP depuis la branche (**Code** → **Download ZIP**), puis extrayez-le.
+4. Ouvrez le dossier qui contient `package.json`, tapez `cmd` dans la barre d’adresse, puis Entrée.
+5. Remettez `.env.local` dans ce dossier, puis lancez :
+
+   ```
+   npm install
+   npm run db:migrate
+   npm run dev
+   ```
+
+6. Ouvrez http://localhost:3000 (ou `/admin`). En cas d’affichage ancien : **Ctrl + F5**.

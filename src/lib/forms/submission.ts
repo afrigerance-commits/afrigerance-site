@@ -10,7 +10,9 @@ export type SubmissionResponse =
 
 const knownCodes: SubmitErrorCode[] = [
   "not_configured",
-  "send_failed",
+  "storage_failed",
+  "rate_limited",
+  "server_error",
   "network",
   "invalid",
   "bad_request",
@@ -43,7 +45,7 @@ export async function postForm(url: string, data: unknown): Promise<SubmissionRe
   const code = knownCodes.includes(result.code as SubmitErrorCode)
     ? (result.code as SubmitErrorCode)
     : response.status >= 500
-      ? "send_failed"
+      ? "server_error"
       : "bad_request";
   const fieldErrors =
     result.fieldErrors && typeof result.fieldErrors === "object"

@@ -9,14 +9,17 @@ type LogoProps = {
   /** Largeur maximale affichée, utilisée pour choisir la résolution servie. */
   width: number;
   eager?: boolean;
+  /** Destination du lien (accueil par défaut) et son libellé accessible. */
+  href?: string;
+  label?: string;
 };
 
 /** Logo original (fichier fourni, uniquement recadré) renvoyant vers l'accueil. */
-export function Logo({ className, width, eager = false }: LogoProps) {
+export function Logo({ className, width, eager = false, href, label }: LogoProps) {
   return (
     <Link
-      href={routes.home}
-      aria-label={`${site.name}, ${uiText.homeLink}`}
+      href={href ?? routes.home}
+      aria-label={label ?? `${site.name}, ${uiText.homeLink}`}
       className="inline-flex shrink-0 rounded-sm"
     >
       <Image

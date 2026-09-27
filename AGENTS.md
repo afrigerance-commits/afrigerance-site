@@ -13,7 +13,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Site en français. Les textes, liens et menus vivent dans `src/content/` (site.ts, services.ts, pages.ts, forms.ts), les couleurs dans `src/app/globals.css` (`@theme`). Ne pas écrire de texte en dur dans les composants.
 - Logo : utiliser uniquement le fichier original (`brand/`, version recadrée dans `src/assets/`). Ne jamais le redessiner.
 - Ne jamais inventer de client, chiffre, tarif, certification, témoignage ou coordonnée. Les coordonnées publiques ne se renseignent que dans `contactDetails` (site.ts), une fois confirmées.
-- Formulaires : la validation est partagée navigateur/serveur (`src/lib/forms/`). Le succès ne s'affiche que si le serveur confirme l'envoi réel (`src/lib/server/`, variables dans `.env.example`). Ne jamais simuler une réussite ni exposer une clé côté navigateur.
+- Formulaires : la validation est partagée navigateur/serveur (`src/lib/forms/`). Le succès ne s'affiche que si la demande est réellement enregistrée en base (`src/lib/server/handleSubmission.ts`). L'email n'est qu'une notification : son échec est conservé sur la demande, jamais bloquant. Ne jamais simuler une réussite ni exposer une clé côté navigateur (variables dans `.env.example`).
+- Base de données : PostgreSQL via le pilote `postgres`. Toute évolution du schéma passe par un nouveau fichier `db/migrations/NNNN_*.sql` (ne jamais modifier une migration déjà appliquée).
+- Administration (`/admin`) : chaque page, action serveur et fonction d'accès aux données appelle `requireAdmin()`. Aucun mot de passe dans le code ; comptes créés par `npm run admin:create`. Textes dans `src/content/admin.ts`.
 - Aucun lien `#` sans fonction : chaque lien pointe vers une route ou une ancre existante.
 - Services : deux pôles uniquement, « Infogérance » et « Intégration de solutions technologiques ».
 - Vérifier le rendu à 1440, 768 et 390 px, sans défilement horizontal, et mettre à jour `docs/etat-cahier-des-charges.md`.
