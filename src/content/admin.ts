@@ -85,7 +85,9 @@ export const adminText = {
     lastError: "Dernière erreur :",
     resend: "Renvoyer la notification",
     resent: "La notification a été envoyée.",
-    resendFailed: "La notification n’a pas pu être envoyée. Consultez l’erreur ci-dessus.",
+    resendFailed: "La notification n’a pas pu être envoyée. Consultez l’erreur ci-dessous.",
+    resendBusy: "Un envoi de cette notification est déjà en cours. Actualisez la page dans quelques instants.",
+    alreadySent: "Cette notification a déjà été envoyée : aucun nouvel email n’est parti.",
     historyTitle: "Historique",
     notFound: "Cette demande n’existe pas ou a été supprimée.",
     call: "Appeler",
@@ -126,22 +128,46 @@ export const eventLabels = {
   systemActor: "Site",
 } as const;
 
-/** Email envoyé au gestionnaire à chaque nouvelle demande (notification uniquement). */
+/**
+ * Email envoyé au gestionnaire à chaque nouvelle demande.
+ * Il reprend toutes les réponses et coordonnées ; le suivi se fait dans l'espace administrateur.
+ */
 export const notificationEmail = {
-  subject: (typeLabel: string, reference: string, name: string) =>
-    `Nouvelle demande (${typeLabel}) ${reference} — ${name}`,
-  intro: "Une nouvelle demande est arrivée sur le site AFRIGÉRANCE.",
-  outroWithLink: "Consultez et traitez la demande dans l’espace administrateur :",
+  subject: {
+    devis: (reference: string, name: string) => `Nouvelle demande de devis ${reference} — ${name}`,
+    contact: (reference: string, name: string) => `Nouveau message de contact ${reference} — ${name}`,
+    "rendez-vous": (reference: string, name: string) =>
+      `Nouvelle demande de rendez-vous ${reference} — ${name}`,
+  } satisfies Record<RequestType, (reference: string, name: string) => string>,
+  intro: {
+    devis: "Une nouvelle demande de devis a été enregistrée sur le site AFRIGÉRANCE.",
+    contact: "Un nouveau message de contact a été enregistré sur le site AFRIGÉRANCE.",
+    "rendez-vous": "Une nouvelle demande de rendez-vous a été enregistrée sur le site AFRIGÉRANCE.",
+  } satisfies Record<RequestType, string>,
+  sectionTitle: {
+    devis: "BESOIN",
+    contact: "MESSAGE",
+    "rendez-vous": "DEMANDE",
+  } satisfies Record<RequestType, string>,
+  contactSection: "COORDONNÉES",
+  timezone: "(heure de Dakar)",
+  replyHint: "Répondre à cet email écrit directement au demandeur.",
+  outroWithLink: "Voir et traiter la demande dans l’espace administrateur :",
   outroWithoutLink:
-    "Consultez et traitez la demande dans l’espace administrateur du site (adresse du site suivie de /admin).",
+    "Pour la traiter, connectez-vous à l’espace administrateur du site (/admin). Renseignez SITE_URL pour recevoir un lien direct vers la fiche.",
   notConfigured:
     "Envoi d’email non configuré : renseigner RESEND_API_KEY, NOTIFICATION_EMAIL_FROM et NOTIFICATION_EMAIL_TO.",
+  notProvided: "Non renseigné",
+  receivedAt: {
+    devis: "Reçue le",
+    contact: "Reçu le",
+    "rendez-vous": "Reçue le",
+  } satisfies Record<RequestType, string>,
   labels: {
-    type: "Type",
     reference: "Référence",
-    receivedAt: "Reçue le",
     name: "Nom",
     company: "Entreprise",
-    summary: "Objet",
+    email: "Email",
+    phone: "Téléphone",
   },
 } as const;

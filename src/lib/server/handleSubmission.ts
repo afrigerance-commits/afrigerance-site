@@ -7,7 +7,7 @@ import type { RequestRecord } from "@/lib/requests/records";
 import type { RequestType } from "@/lib/requests/types";
 import { getSql } from "./db";
 import { clientIp, hashIp } from "./ip";
-import { findReferenceByKey, insertRequest, isRateLimited, notifyRequest } from "./requests";
+import { findReferenceByKey, insertRequest, isRateLimited, notifyNewRequest } from "./requests";
 
 /** Taille maximale acceptée pour le corps d'une requête (en caractères). */
 const MAX_BODY_LENGTH = 20_000;
@@ -93,7 +93,7 @@ export async function handleSubmission<T>(request: Request, handler: Handler<T>)
       idempotencyKey,
       ipHash,
     });
-    if (!saved.duplicate) after(() => notifyRequest(saved.id));
+    if (!saved.duplicate) after(() => notifyNewRequest(saved.id));
     return succeed(saved.reference);
   } catch (error) {
     console.error("[demandes] Enregistrement impossible :", (error as Error).message);

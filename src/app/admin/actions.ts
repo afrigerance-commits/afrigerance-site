@@ -39,6 +39,13 @@ export async function resendNotificationAction(formData: FormData): Promise<void
   await requireAdmin();
   const id = String(formData.get("id") ?? "");
   if (!isUuid(id)) redirect("/admin/demandes");
-  const sent = await resendRequestNotification(id);
-  redirect(`/admin/demandes/${id}?notification=${sent ? "envoyee" : "echec"}`);
+  const outcome = await resendRequestNotification(id);
+  const flash = {
+    sent: "envoyee",
+    failed: "echec",
+    busy: "en-cours",
+    already_sent: "deja-envoyee",
+    not_found: "echec",
+  }[outcome];
+  redirect(`/admin/demandes/${id}?notification=${flash}`);
 }

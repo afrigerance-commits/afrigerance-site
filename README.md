@@ -29,7 +29,8 @@ Aucun mot de passe ni aucune clé ne figure dans le code : tout passe par des va
 
 1. Le visiteur remplit le formulaire de devis ou de contact. Les réponses sont vérifiées dans le navigateur, puis **à nouveau par le serveur**.
 2. Le serveur **enregistre la demande** : type, réponses, coordonnées, date de réception, statut « Nouveau ». La confirmation n’est affichée au visiteur **que si l’enregistrement a réussi**. En cas d’échec, il voit un message d’erreur et ses réponses restent dans le formulaire.
-3. Juste après, un **email de notification** part vers le gestionnaire. Il contient le type, la référence, le nom et l’objet, avec un lien vers la demande. Si l’email échoue, la demande est **conservée** : elle apparaît dans l’administration avec la mention « Échec » et un bouton **Renvoyer la notification**.
+3. Juste après, un **email de notification** part vers le gestionnaire. Il reprend toute la demande : référence, date, pôles, prestations, description du besoin, ville, et coordonnées du demandeur. Il ajoute un lien vers la fiche `/admin` si `SITE_URL` est renseignée. Détails dans « Notification par email » ci-dessous.
+4. Si l’email échoue, la demande est **conservée**. Elle apparaît dans l’administration avec la mention « Échec » et l’erreur renvoyée par Resend, ainsi qu’un bouton **Renvoyer la notification**. Un renvoi n’envoie que l’email, sans jamais créer de seconde demande. La mention « La notification a été envoyée » n’apparaît que si Resend a accepté l’email.
 
 Protections contre le spam et les doublons :
 - un champ invisible piège les robots, et un envoi fait en moins de 2 secondes est refusé ;
@@ -80,17 +81,54 @@ Saisissez l’adresse email du gestionnaire, puis un mot de passe d’au moins 1
 
 ### 4. Configurer l’email de notification (Resend)
 
-1. Créez un compte sur https://resend.com, idéalement avec l’adresse qui doit recevoir les notifications.
-2. Menu **API Keys** → **Create API Key**, avec l’accès « Sending access ». Copiez la clé : elle ne s’affiche qu’une fois.
-3. Dans `.env.local` :
-   - `RESEND_API_KEY=` suivi de la clé ;
-   - `NOTIFICATION_EMAIL_TO=` suivi de l’adresse du gestionnaire ;
-   - `NOTIFICATION_EMAIL_FROM=AFRIGERANCE <onboarding@resend.dev>`.
+1. Créez un compte sur https://resend.com, **avec l’adresse email qui doit recevoir les notifications**. C’est indispensable tant que vous n’avez pas de domaine vérifié (voir plus bas).
+2. Menu **API Keys** → **Create API Key**. Nom : `site-afrigerance`, permission : **Sending access**. Copiez la clé, qui commence par `re_` : elle ne s’affiche qu’une fois.
+3. Ouvrez `.env.local` (`notepad .env.local`) et renseignez exactement ces lignes :
 
-   Cette adresse d’expédition de test ne peut écrire qu’à l’adresse du compte Resend. Une fois votre nom de domaine vérifié dans Resend (menu **Domains**), remplacez-la par une adresse de votre domaine.
-4. Après la mise en ligne, renseignez `SITE_URL` (ex. `https://www.votre-domaine.sn`) pour que l’email contienne un lien direct vers la demande.
+   ```
+   RESEND_API_KEY=re_votre_cle_copiee
+   NOTIFICATION_EMAIL_FROM=AFRIGERANCE <onboarding@resend.dev>
+   NOTIFICATION_EMAIL_TO=adresse-du-compte-resend@exemple.com
+   SITE_URL=http://localhost:3000
+   ```
 
-Sans ces valeurs, les demandes sont quand même enregistrées. L’administration les signale simplement comme « notification non envoyée ».
+   | Variable | Obligatoire | Contenu |
+   | --- | --- | --- |
+   | `RESEND_API_KEY` | oui | La clé copiée à l’étape 2. **Secrète** : ne la partagez pas et ne la mettez jamais dans le code. |
+   | `NOTIFICATION_EMAIL_FROM` | oui | L’expéditeur. Pour tester : `AFRIGERANCE <onboarding@resend.dev>`. Avec un domaine vérifié : par exemple `AFRIGERANCE <site@votre-domaine.sn>`. |
+   | `NOTIFICATION_EMAIL_TO` | oui | L’adresse du gestionnaire qui reçoit les notifications. Plusieurs adresses possibles, séparées par des virgules. **Avec l’expéditeur de test, ce doit être l’adresse du compte Resend.** |
+   | `SITE_URL` | non | L’adresse du site, sans `/` final : `http://localhost:3000` en local, `https://www.votre-domaine.sn` en ligne. Elle sert au lien vers la fiche dans l’email. |
+
+   Écrivez les valeurs sans guillemets et sans espace autour du `=`. Les chevrons `< >` de l’expéditeur sont normaux.
+4. **Arrêtez puis relancez** `npm run dev`. Les variables ne sont lues qu’au démarrage.
+
+Plus tard, avec un nom de domaine : Resend → **Domains** → **Add Domain**, puis ajoutez chez votre registraire les enregistrements DNS indiqués. Une fois le domaine « Verified », remplacez l’expéditeur par une adresse de ce domaine. `NOTIFICATION_EMAIL_TO` peut alors être n’importe quelle adresse.
+
+Sans ces valeurs, les demandes sont quand même enregistrées. L’administration les signale comme « notification non envoyée », avec la raison.
+
+#### Tester avec un vrai email reçu
+
+1. **Vérifier la configuration seule** : dans l’invite de commandes, lancez `npm run email:test`. Cette commande n’enregistre rien : elle envoie seulement un email « Test de notification AFRIGÉRANCE » à `NOTIFICATION_EMAIL_TO`.
+   - Réponse attendue : `✓ Email accepté par Resend`. L’email arrive en général en moins d’une minute : regardez aussi dans **Spam / Courrier indésirable**.
+   - En cas d’erreur, le message de Resend s’affiche avec une piste :
+     - **401** : clé invalide ;
+     - **403** : destinataire non autorisé avec l’expéditeur de test ;
+     - **422** : format d’adresse incorrect.
+2. **Tester le parcours complet** : lancez `npm run dev`, puis ouvrez http://localhost:3000/devis. Remplissez une demande en indiquant votre propre email comme contact, et envoyez-la.
+3. **Vérifications** :
+   - le site affiche « Demande envoyée » avec une référence `DV-…` ;
+   - dans http://localhost:3000/admin, la demande apparaît et la colonne **Notification** indique **Envoyée** (actualisez la page si elle indique encore « En attente ») ;
+   - vous recevez l’email « Nouvelle demande de devis DV-… — votre nom » : vérifiez la référence, la date, les pôles, les prestations, la description, la ville et les coordonnées ;
+   - le lien en bas de l’email ouvre la fiche dans `/admin`, après connexion ;
+   - **Répondre** à l’email écrit directement au demandeur ;
+   - dans le tableau de bord Resend, menu **Emails**, l’envoi apparaît comme « Delivered ».
+4. Faites de même avec http://localhost:3000/contact : l’email s’intitule « Nouveau message de contact CT-… ».
+5. **Tester un échec puis le renvoi** :
+   - dans `.env.local`, ajoutez une lettre à la fin de `RESEND_API_KEY`, puis relancez `npm run dev` ;
+   - envoyez une demande : le visiteur voit bien la confirmation, et l’administration affiche **Échec** avec l’erreur `HTTP 401` ;
+   - remettez la bonne clé et relancez `npm run dev` ;
+   - ouvrez la fiche, puis cliquez sur **Renvoyer la notification** ;
+   - le message « La notification a été envoyée » s’affiche, l’email arrive, et la liste compte toujours **une seule** demande.
 
 ### 5. Lancer le site
 
@@ -108,7 +146,7 @@ npm run dev
 3. Un bandeau rouge signale les demandes dont l’email de notification n’est pas parti.
 4. Cliquez sur une référence pour ouvrir la fiche : coordonnées (email et téléphone cliquables), toutes les réponses, historique.
 5. Dans **Suivi de la demande**, faites passer la demande de « Nouveau » à « En cours », puis « Traité ». Chaque changement est inscrit dans l’historique avec l’adresse du gestionnaire.
-6. Si la notification a échoué, corrigez la configuration email si besoin, puis cliquez sur **Renvoyer la notification**.
+6. Si la notification a échoué, corrigez la configuration email si besoin, puis cliquez sur **Renvoyer la notification**. Le bouton disparaît une fois l’email parti. Si deux personnes cliquent en même temps, un seul email est envoyé ; l’autre voit « Un envoi de cette notification est déjà en cours ».
 7. Pensez à **Se déconnecter** sur un ordinateur partagé. Une session expire de toute façon après 12 heures.
 
 En local, utilisez bien l’adresse `localhost`. En ligne, le cookie de connexion n’est transmis qu’en HTTPS.
@@ -121,6 +159,7 @@ En local, utilisez bien l’adresse `localhost`. En ligne, le cookie de connexio
 | `npm run build` puis `npm run start` | Version de production en local |
 | `npm run db:migrate` | Crée ou met à jour les tables de la base |
 | `npm run admin:create` | Crée un compte administrateur ou change son mot de passe |
+| `npm run email:test` | Envoie un email de test avec la configuration Resend (n’enregistre rien) |
 | `npm run lint` / `npx tsc --noEmit` | Contrôles qualité |
 
 ## À la mise en ligne (plus tard)

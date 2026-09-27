@@ -150,7 +150,7 @@ export const quoteForm = {
     labels: {
       poles: "Pôles",
       prestations: "Prestations",
-      description: "Description",
+      description: "Description du besoin",
       city: "Ville d’intervention",
       workstations: "Nombre de postes",
       infrastructure: "Infrastructure existante",

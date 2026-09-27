@@ -1,22 +1,32 @@
 import "server-only";
 
-import { notificationEmail, requestTypeLabels } from "@/content/admin";
+import { notificationEmail } from "@/content/admin";
+import { formatAnswers } from "@/lib/requests/records";
 import type { RequestType } from "@/lib/requests/types";
 
 type NotificationSource = {
   id: string;
   reference: string;
   type: RequestType;
+  answers: unknown;
   name: string;
   company: string | null;
   email: string | null;
-  summary: string;
+  phone: string | null;
   received_at: Date;
 };
 
-function adminLink(id: string): string | null {
-  const base = process.env.SITE_URL?.trim().replace(/\/+$/, "");
-  return base ? `${base}/admin/demandes/${id}` : null;
+/** Lien vers la fiche dans l'administration, seulement si SITE_URL est une adresse http(s) valide. */
+export function adminLink(id: string): string | null {
+  const raw = process.env.SITE_URL?.trim();
+  if (!raw) return null;
+  try {
+    const base = new URL(raw);
+    if (base.protocol !== "https:" && base.protocol !== "http:") return null;
+    return new URL(`/admin/demandes/${id}`, base).toString();
+  } catch {
+    return null;
+  }
 }
 
 export function formatDateTime(date: Date): string {
@@ -27,28 +37,46 @@ export function formatDateTime(date: Date): string {
   });
 }
 
+/** Retire retours à la ligne et caractères de contrôle d'un texte placé dans l'objet. */
+function oneLine(value: string): string {
+  return value.replace(/[\u0000-\u001f\u007f]+/g, " ").trim().slice(0, 120);
+}
+
 /**
- * Email envoyé au gestionnaire : il signale la demande sans en recopier tout le contenu.
- * Le suivi complet se fait dans l'espace administrateur.
+ * Email envoyé au gestionnaire pour chaque nouvelle demande :
+ * référence, date, toutes les réponses (pôles, prestations, description, ville…) et coordonnées,
+ * puis un lien vers la fiche d'administration si SITE_URL est configurée.
  */
 export function formatNotificationEmail(request: NotificationSource) {
   const labels = notificationEmail.labels;
-  const typeLabel = requestTypeLabels[request.type];
+  const empty = notificationEmail.notProvided;
+  const answers = formatAnswers(request.type, request.answers);
+  const shortRows = answers.filter((row) => !row.long);
+  const longRows = answers.filter((row) => row.long);
   const link = adminLink(request.id);
+
   const lines = [
-    notificationEmail.intro,
+    notificationEmail.intro[request.type],
     "",
-    `${labels.type} : ${typeLabel}`,
     `${labels.reference} : ${request.reference}`,
-    `${labels.receivedAt} : ${formatDateTime(request.received_at)}`,
+    `${notificationEmail.receivedAt[request.type]} : ${formatDateTime(request.received_at)} ${notificationEmail.timezone}`,
+    "",
+    `— ${notificationEmail.sectionTitle[request.type]} —`,
+    ...shortRows.map((row) => `${row.label} : ${row.value || empty}`),
+    ...longRows.flatMap((row) => ["", `${row.label} :`, row.value || empty]),
+    "",
+    `— ${notificationEmail.contactSection} —`,
     `${labels.name} : ${request.name}`,
-    ...(request.company ? [`${labels.company} : ${request.company}`] : []),
-    `${labels.summary} : ${request.summary}`,
+    ...(request.type === "devis" ? [`${labels.company} : ${request.company ?? empty}`] : []),
+    `${labels.email} : ${request.email ?? empty}`,
+    `${labels.phone} : ${request.phone ?? empty}`,
+    ...(request.email ? ["", notificationEmail.replyHint] : []),
     "",
     link ? `${notificationEmail.outroWithLink}\n${link}` : notificationEmail.outroWithoutLink,
   ];
+
   return {
-    subject: notificationEmail.subject(typeLabel, request.reference, request.name),
+    subject: oneLine(notificationEmail.subject[request.type](request.reference, request.name)),
     text: lines.join("\n"),
     replyTo: request.email ?? undefined,
   };

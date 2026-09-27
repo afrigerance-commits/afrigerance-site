@@ -32,6 +32,7 @@ export type RequestRow = {
   notification_status: NotificationStatus;
   notification_error: string | null;
   notification_attempts: number;
+  notification_claimed_at: Date | null;
   notified_at: Date | null;
   received_at: Date;
   updated_at: Date;
@@ -94,11 +95,12 @@ export async function insertRequest(
     const { record } = input;
     const inserted = await tx<{ id: string; reference: string }[]>`
       INSERT INTO requests (
-        reference, type, answers, name, company, email, phone, summary, idempotency_key, ip_hash
+        reference, type, answers, name, company, email, phone, summary, idempotency_key, ip_hash,
+        notification_claimed_at
       ) VALUES (
         ${input.reference}, ${input.type}, ${tx.json(record.answers as postgres.JSONValue)},
         ${record.name}, ${record.company}, ${record.email}, ${record.phone}, ${record.summary},
-        ${input.idempotencyKey}, ${input.ipHash}
+        ${input.idempotencyKey}, ${input.ipHash}, now()
       )
       ON CONFLICT (idempotency_key) DO NOTHING
       RETURNING id, reference`;
@@ -114,44 +116,84 @@ export async function insertRequest(
   });
 }
 
+/** Résultat d'une tentative de notification. */
+export type NotifyOutcome = "sent" | "failed" | "busy" | "already_sent" | "not_found";
+
+/** Au-delà de ce délai, un verrou d'envoi est considéré comme abandonné (envoi interrompu). */
+const CLAIM_EXPIRY = "2 minutes";
+
 /**
- * Envoie l'email de notification d'une demande et enregistre le résultat.
- * Ne lève jamais d'erreur : un échec est conservé sur la demande pour être signalé et renvoyé.
+ * Pose le verrou d'envoi s'il est libre (ou expiré) et que la notification n'est pas déjà partie.
+ * Empêche deux envois simultanés de la même notification.
  */
-export async function notifyRequest(id: string, actor: string = eventLabels.systemActor): Promise<boolean> {
+async function claimNotification(
+  sql: postgres.Sql,
+  id: string,
+): Promise<"claimed" | "busy" | "already_sent" | "not_found"> {
+  const claimed = await sql`
+    UPDATE requests SET notification_claimed_at = now()
+    WHERE id = ${id}
+      AND notification_status <> 'sent'
+      AND (notification_claimed_at IS NULL
+        OR notification_claimed_at < now() - ${CLAIM_EXPIRY}::interval)
+    RETURNING id`;
+  if (claimed.length > 0) return "claimed";
+  const [row] = await sql<{ notification_status: NotificationStatus }[]>`
+    SELECT notification_status FROM requests WHERE id = ${id}`;
+  if (!row) return "not_found";
+  return row.notification_status === "sent" ? "already_sent" : "busy";
+}
+
+/**
+ * Envoie l'email d'une demande dont le verrou est détenu, enregistre le résultat
+ * (statut, erreur, tentatives, historique) puis lève le verrou.
+ * Ne crée jamais de nouvelle demande et ne lève pas d'erreur.
+ */
+async function deliverNotification(
+  sql: postgres.Sql,
+  id: string,
+  actor: string,
+): Promise<"sent" | "failed" | "not_found"> {
+  const [request] = await sql<RequestRow[]>`SELECT * FROM requests WHERE id = ${id}`;
+  if (!request) return "not_found";
+
+  const config = getMailConfig();
+  const result = config
+    ? await sendMail(config, {
+        ...formatNotificationEmail(request),
+        idempotencyKey: `${request.reference}-notification-${request.notification_attempts + 1}`,
+      })
+    : ({ ok: false, reason: notificationEmail.notConfigured } as const);
+
+  const error = result.ok ? null : result.reason.slice(0, 500);
+  await sql.begin(async (tx) => {
+    await tx`
+      UPDATE requests SET
+        notification_status = ${result.ok ? "sent" : "failed"},
+        notification_error = ${error},
+        notification_attempts = notification_attempts + 1,
+        notified_at = CASE WHEN ${result.ok} THEN now() ELSE notified_at END,
+        notification_claimed_at = NULL,
+        updated_at = now()
+      WHERE id = ${id}`;
+    await tx`
+      INSERT INTO request_events (request_id, actor, kind, detail)
+      VALUES (${id}, ${actor}, ${result.ok ? "notification_sent" : "notification_failed"}, ${error})`;
+  });
+  if (!result.ok) console.error(`[demandes] Notification non envoyée pour ${request.reference} : ${error}`);
+  return result.ok ? "sent" : "failed";
+}
+
+/** Premier envoi, juste après l'enregistrement (le verrou a été posé à l'insertion). */
+export async function notifyNewRequest(id: string): Promise<NotifyOutcome> {
   const sql = getSql();
-  if (!sql) return false;
+  if (!sql) return "failed";
   try {
-    const [request] = await sql<RequestRow[]>`SELECT * FROM requests WHERE id = ${id}`;
-    if (!request) return false;
-
-    const config = getMailConfig();
-    const result = config
-      ? await sendMail(config, {
-          ...formatNotificationEmail(request),
-          idempotencyKey: `${request.reference}-notification-${request.notification_attempts + 1}`,
-        })
-      : ({ ok: false, reason: notificationEmail.notConfigured } as const);
-
-    const error = result.ok ? null : result.reason.slice(0, 500);
-    await sql.begin(async (tx) => {
-      await tx`
-        UPDATE requests SET
-          notification_status = ${result.ok ? "sent" : "failed"},
-          notification_error = ${error},
-          notification_attempts = notification_attempts + 1,
-          notified_at = CASE WHEN ${result.ok} THEN now() ELSE notified_at END,
-          updated_at = now()
-        WHERE id = ${id}`;
-      await tx`
-        INSERT INTO request_events (request_id, actor, kind, detail)
-        VALUES (${id}, ${actor}, ${result.ok ? "notification_sent" : "notification_failed"}, ${error})`;
-    });
-    if (!result.ok) console.error(`[demandes] Notification non envoyée pour ${request.reference} : ${error}`);
-    return result.ok;
+    return await deliverNotification(sql, id, eventLabels.systemActor);
   } catch (error) {
     console.error(`[demandes] Suivi de notification impossible pour ${id} :`, (error as Error).message);
-    return false;
+    await sql`UPDATE requests SET notification_claimed_at = NULL WHERE id = ${id}`.catch(() => undefined);
+    return "failed";
   }
 }
 
@@ -249,8 +291,21 @@ export async function updateRequestStatus(id: string, status: RequestStatus): Pr
   });
 }
 
-export async function resendRequestNotification(id: string): Promise<boolean> {
+/**
+ * Renvoi manuel depuis l'administration : uniquement si la notification n'est pas déjà partie
+ * et qu'aucun autre envoi n'est en cours. Ne crée jamais de seconde demande.
+ */
+export async function resendRequestNotification(id: string): Promise<NotifyOutcome> {
   const admin = await requireAdmin();
-  if (!isUuid(id)) return false;
-  return notifyRequest(id, admin.email);
+  if (!isUuid(id)) return "not_found";
+  const sql = requireSql();
+  const claim = await claimNotification(sql, id);
+  if (claim !== "claimed") return claim;
+  try {
+    return await deliverNotification(sql, id, admin.email);
+  } catch (error) {
+    console.error(`[demandes] Renvoi impossible pour ${id} :`, (error as Error).message);
+    await sql`UPDATE requests SET notification_claimed_at = NULL WHERE id = ${id}`.catch(() => undefined);
+    return "failed";
+  }
 }

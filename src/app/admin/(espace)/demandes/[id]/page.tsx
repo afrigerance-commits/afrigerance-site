@@ -79,6 +79,12 @@ export default async function RequestDetailPage({
           {text.resendFailed}
         </p>
       ) : null}
+      {notification === "en-cours" || notification === "deja-envoyee" ? (
+        <p role="status" className="bg-warning-bg text-warning mt-5 flex items-center gap-3 rounded-md p-4 font-medium">
+          <AlertIcon className="size-5 shrink-0" />
+          {notification === "en-cours" ? text.resendBusy : text.alreadySent}
+        </p>
+      ) : null}
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         <div className="space-y-6">

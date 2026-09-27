@@ -50,7 +50,8 @@ export function contactToRecord(data: ContactData): RequestRecord {
   };
 }
 
-export type AnswerRow = { label: string; value: string };
+/** Une réponse mise en forme ; `long` signale un texte libre (description, message). */
+export type AnswerRow = { label: string; value: string; long?: boolean };
 
 const quoteFields = quoteForm.fields;
 const quoteLabels = quoteForm.summary.labels;
@@ -83,7 +84,7 @@ function formatQuoteAnswers(answers: Record<string, unknown>): AnswerRow[] {
         )
         .join(", "),
     })),
-    { label: quoteLabels.description, value: text(answers.description) },
+    { label: quoteLabels.description, value: text(answers.description), long: true },
     { label: quoteLabels.city, value: text(answers.city) },
   ];
   if (poles.includes("infogerance")) {
@@ -104,7 +105,7 @@ function formatQuoteAnswers(answers: Record<string, unknown>): AnswerRow[] {
 function formatContactAnswers(answers: Record<string, unknown>): AnswerRow[] {
   return [
     { label: contactForm.fields.subject.label, value: text(answers.subject) },
-    { label: contactForm.fields.message.label, value: text(answers.message) },
+    { label: contactForm.fields.message.label, value: text(answers.message), long: true },
   ];
 }
 

@@ -88,8 +88,8 @@ Légende :
 | Anti-spam | Réalisé | Champ piège invisible, délai minimal de 2 s, taille limitée, au plus 5 demandes en 10 minutes et 20 par jour par connexion (empreinte IP, jamais l’adresse elle-même) |
 | Doubles soumissions | Réalisé | Clé unique par formulaire : un double clic ou un nouvel essai n’enregistre qu’une demande |
 | Captcha | À développer | Seulement si du spam passe malgré les protections |
-| Notification par email au gestionnaire | Bloqué | Réalisé et testé avec un service d’email simulé : envoi, échec, renvoi. Il manque la clé Resend et l’adresse du gestionnaire ; un nom de domaine est recommandé. |
-| Demande conservée si l’email échoue | Réalisé | Échec visible dans l’administration (bandeau, filtre, badge, erreur) avec un bouton « Renvoyer la notification » |
+| Notification par email au gestionnaire | Bloqué | Réalisé pour les devis et les messages de contact. L’email contient référence, date, pôles, prestations, description, ville, coordonnées et, si `SITE_URL` est renseignée, un lien vers la fiche `/admin`. Testé avec un service d’email simulé. **Réception d’un vrai email : en attente** de la clé Resend et de l’adresse du gestionnaire. Procédure dans le README (« Tester avec un vrai email reçu », commande `npm run email:test`). |
+| Demande conservée si l’email échoue | Réalisé | Échec visible dans l’administration (bandeau, filtre, badge, erreur Resend). Le bouton « Renvoyer la notification » renvoie seulement l’email, jamais une seconde demande ; deux clics simultanés ne produisent qu’un email. « Envoyée » n’est affiché qu’après acceptation par Resend. |
 | Accusé de réception à l’écran | Réalisé | Texte du TDR § 8.3 + référence |
 | Email de confirmation au visiteur | À développer | Nécessite un domaine d’envoi vérifié |
 | Type d’organisation, préférence de contact, fonction, calendrier dédié | À développer | Facultatifs dans le TDR. Le calendrier est aujourd’hui évoqué dans l’aide du champ « Description ». |
