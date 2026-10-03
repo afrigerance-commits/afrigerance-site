@@ -50,6 +50,13 @@ export const hero = {
   description: site.description,
   primaryCta: { label: "Demander un devis", href: routes.quote },
   secondaryCta: { label: "Nous contacter", href: routes.contact },
+  /**
+   * Image décorative fondue dans le dégradé bleu, côté droit (en bas sur mobile).
+   * Pour la changer : déposer une photo dans public/accueil/ (JPG ou WebP, 1600 px de large ou plus)
+   * et indiquer son chemin ici, ex. "/accueil/banniere.jpg". Mettre null pour la retirer.
+   * Illustration actuelle : motif « réseau » provisoire, créé pour le site.
+   */
+  image: { src: "/accueil/banniere.svg" } as { src: string } | null,
 } as const;
 
 /** Libellés d'interface communs (accessibilité, navigation, pages d'attente). */

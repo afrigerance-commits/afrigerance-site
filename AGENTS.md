@@ -12,6 +12,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 - Site en français. Les textes, liens et menus vivent dans `src/content/` (site.ts, services.ts, pages.ts, forms.ts), les couleurs dans `src/app/globals.css` (`@theme`). Ne pas écrire de texte en dur dans les composants.
 - Logo : utiliser uniquement le fichier original (`brand/`, version recadrée dans `src/assets/`). Ne jamais le redessiner.
+- Logos partenaires (`src/content/partners.ts`, fichiers dans `public/partenaires/`) : uniquement des organisations réelles ayant donné leur accord, fichiers fournis par AFRIGÉRANCE. Jamais de logo d'exemple ou deviné. Section masquée si la liste est vide.
 - Ne jamais inventer de client, chiffre, tarif, certification, témoignage ou coordonnée. Les coordonnées publiques ne se renseignent que dans `contactDetails` (site.ts), une fois confirmées.
 - Formulaires : la validation est partagée navigateur/serveur (`src/lib/forms/`). Le succès ne s'affiche que si la demande est réellement enregistrée en base (`src/lib/server/handleSubmission.ts`). L'email n'est qu'une notification : son échec est conservé sur la demande, jamais bloquant. Ne jamais simuler une réussite ni exposer une clé côté navigateur (variables dans `.env.example`).
 - Base de données : PostgreSQL via le pilote `postgres`. Toute évolution du schéma passe par un nouveau fichier `db/migrations/NNNN_*.sql` (ne jamais modifier une migration déjà appliquée).

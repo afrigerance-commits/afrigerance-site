@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { hero } from "@/content/site";
 import { ArrowUpRightIcon } from "./icons";
@@ -8,6 +9,22 @@ export function Hero() {
       aria-labelledby="hero-title"
       className="bg-hero relative isolate overflow-hidden text-white"
     >
+      {hero.image ? (
+        <div
+          aria-hidden="true"
+          className="hero-image pointer-events-none absolute inset-y-0 right-0 -z-10 w-full sm:w-[72%] lg:w-[62%]"
+        >
+          <Image
+            src={hero.image.src}
+            alt=""
+            fill
+            sizes="(min-width: 64rem) 62vw, (min-width: 40rem) 72vw, 100vw"
+            loading="eager"
+            className="object-cover"
+          />
+        </div>
+      ) : null}
+
       {/* Formes circulaires décoratives de la maquette */}
       <div
         aria-hidden="true"

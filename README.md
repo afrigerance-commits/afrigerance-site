@@ -263,6 +263,16 @@ Pour modifier le contenu :
 - **Textes** : fichiers de `src/content/`.
 - **Couleurs** : variables `--color-*` de `src/app/globals.css`.
 - **Coordonnées publiques** : bloc `contactDetails` de `src/content/site.ts`. N’y mettez que des informations confirmées.
+- **Logos « Ils nous font confiance »** (accueil) :
+  1. Déposez le logo dans `public/partenaires/`. Un SVG convient, ou un PNG à fond transparent d’environ 400 px de large.
+  2. Ajoutez une ligne dans `src/content/partners.ts`, par exemple `{ name: "Nom exact", logo: "/partenaires/nom.png" }`.
+
+  La section reste masquée tant que la liste est vide. N’ajoutez que des organisations qui ont accepté, de préférence par écrit, l’affichage de leur logo.
+- **Image de la bannière d’accueil** :
+  1. Déposez une photo dans `public/accueil/` (JPG ou WebP, 1600 px de large ou plus).
+  2. Indiquez son chemin dans `hero.image` (`src/content/site.ts`), par exemple `{ src: "/accueil/banniere.jpg" }`. Pour retirer l’image, mettez `null`.
+
+  L’image se fond automatiquement dans le dégradé bleu et s’efface vers le texte. L’illustration actuelle (motif « réseau ») est provisoire.
 
 ## Actualiser une copie téléchargée en ZIP (Windows)
 

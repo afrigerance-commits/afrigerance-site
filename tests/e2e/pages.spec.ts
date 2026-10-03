@@ -1,5 +1,7 @@
 /** Pages publiques : affichage aux trois largeurs, liens, menu mobile, présélection du pôle. */
 import { expect, test } from "@playwright/test";
+import { partners, partnersSection } from "@/content/partners";
+import { hero } from "@/content/site";
 import { hasHorizontalScroll } from "./support/helpers";
 import { servers } from "./support/settings";
 
@@ -72,6 +74,35 @@ test("le bouton de devis d'un pôle le présélectionne ; un pôle inconnu dans 
   await expect(page.getByRole("checkbox", { name: "Infogérance", exact: true })).not.toBeChecked();
   await page.goto(base + "/devis?pole=inconnu");
   await expect(page.locator("input[type=checkbox]:checked")).toHaveCount(0);
+});
+
+test("bannière d'accueil : image décorative chargée, ignorée par les lecteurs d'écran", async ({ page }) => {
+  test.skip(!hero.image, "Aucune image de bannière configurée (hero.image = null).");
+  await page.goto(base + "/");
+  const image = page.locator("#hero-title").locator("xpath=ancestor::section").locator('[aria-hidden="true"] img');
+  await expect(image).toHaveCount(1);
+  await expect(image).toHaveAttribute("alt", "");
+  expect(await image.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
+});
+
+test("« Ils nous font confiance » : masquée sans logo ; sinon chaque logo s'affiche avec le nom du partenaire", async ({ page }) => {
+  await page.goto(base + "/");
+  const heading = page.getByRole("heading", { name: partnersSection.title });
+  if (partners.length === 0) {
+    await expect(heading).toHaveCount(0);
+    return;
+  }
+  await expect(heading).toBeVisible();
+  for (const partner of partners) {
+    const logo = page.getByRole("img", { name: partner.name, exact: true });
+    await expect(logo).toBeVisible();
+    expect(await logo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), `logo ${partner.logo}`).toBe(true);
+    if (partner.url) {
+      const link = page.locator(`a[href="${partner.url}"]`);
+      await expect(link).toHaveAttribute("target", "_blank");
+      await expect(link).toHaveAttribute("rel", /noopener/);
+    }
+  }
 });
 
 test("page inexistante → erreur 404 avec l'en-tête et le pied de page du site", async ({ page }) => {

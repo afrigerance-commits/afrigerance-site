@@ -71,6 +71,25 @@
   }
 }
 
+/* Image décorative de la bannière : prend les teintes du dégradé et s'efface vers le texte. */
+@utility hero-image {
+  opacity: 0.6;
+  mix-blend-mode: luminosity;
+  mask-image: linear-gradient(to right, transparent 12%, rgb(0 0 0 / 0.5) 48%, #000 80%);
+
+  /* Tablette : le titre s'étend plus loin, l'image recule vers la droite. */
+  @media (width < 64rem) {
+    opacity: 0.35;
+    mask-image: linear-gradient(to right, transparent 45%, rgb(0 0 0 / 0.5) 78%, #000 100%);
+  }
+
+  /* Mobile : le texte occupe toute la largeur, l'image reste discrète en bas de la bannière. */
+  @media (width < 40rem) {
+    opacity: 0.35;
+    mask-image: linear-gradient(to top, #000 0%, rgb(0 0 0 / 0.4) 22%, transparent 50%);
+  }
+}
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
