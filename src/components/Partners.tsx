@@ -1,5 +1,15 @@
 import Image from "next/image";
-import { partners, partnersSection } from "@/content/partners";
+import { partners, partnersSection, type Partner } from "@/content/partners";
+
+const tileClass = "relative block h-24 w-36 rounded-lg border p-4 sm:h-28 sm:w-44 sm:p-5";
+
+function Logo({ partner }: { partner: Partner }) {
+  return (
+    <span className="relative block size-full">
+      <Image src={partner.logo} alt={partner.name} fill sizes="(min-width: 40rem) 136px, 112px" className="object-contain" />
+    </span>
+  );
+}
 
 /** Logos des organisations qui ont fait confiance à AFRIGÉRANCE. Masquée tant qu'aucun logo n'est renseigné. */
 export function Partners() {
@@ -14,13 +24,9 @@ export function Partners() {
         >
           {partnersSection.title}
         </h2>
-        <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-8 sm:mt-10 sm:gap-x-14 lg:gap-x-16">
+        <ul className="mt-8 flex flex-wrap justify-center gap-4 sm:mt-10 sm:gap-6">
           {partners.map((partner) => {
-            const logo = (
-              <span className="relative block h-14 w-32 sm:h-16 sm:w-40">
-                <Image src={partner.logo} alt={partner.name} fill sizes="160px" className="object-contain" />
-              </span>
-            );
+            const tone = partner.darkBackground ? "border-ink bg-ink" : "border-line bg-white";
             return (
               <li key={partner.name}>
                 {partner.url ? (
@@ -28,13 +34,15 @@ export function Partners() {
                     href={partner.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block rounded-md transition-opacity hover:opacity-80"
+                    className={`${tileClass} ${tone} hover:border-brand transition-colors`}
                   >
-                    {logo}
+                    <Logo partner={partner} />
                     <span className="sr-only">{partnersSection.newTab}</span>
                   </a>
                 ) : (
-                  logo
+                  <span className={`${tileClass} ${tone}`}>
+                    <Logo partner={partner} />
+                  </span>
                 )}
               </li>
             );

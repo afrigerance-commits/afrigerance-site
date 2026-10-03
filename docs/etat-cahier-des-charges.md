@@ -36,7 +36,7 @@ Légende :
 | --- | --- | --- |
 | Accueil | Réalisé | Version courte validée : bandeau, deux pôles, liens devis et contact. Secteurs, méthode, FAQ et réalisations volontairement absents de l’accueil. |
 | Accueil : image fondue dans le bandeau bleu | Réalisé | Illustration « réseau » provisoire, créée pour le site ; à remplacer par une photo d’AFRIGÉRANCE si disponible (`hero.image`). Contraste du texte vérifié à 1440, 768 et 390 px, y compris avec une photo claire. |
-| Accueil : logos « Ils nous font confiance » | Bloqué | Section prête, masquée tant qu’aucun logo n’est fourni. Logos et accord des organisations à fournir (`src/content/partners.ts`). |
+| Accueil : logos « Ils nous font confiance » | Réalisé | 11 logos fournis par AFRIGÉRANCE (`src/content/partners.ts`). Accord de chaque organisation à conserver par AFRIGÉRANCE. Versions haute définition souhaitées pour FIM Capital, Indigo Voyages et Tara Group, et version couleur de Fabrimetal (logo blanc affiché sur carte foncée). |
 | À propos | Réalisé | Présentation, slogan, deux pôles, démarche en 5 étapes (textes du TDR § 1.2, 4.2, 4.3). |
 | À propos : historique, date de création, équipe, valeurs officielles, partenaires, photos | Bloqué | Informations non fournies, donc non publiées |
 | Services : vue d’ensemble | Réalisé | `/services` : deux pôles, 12 prestations, bouton devis avec présélection du pôle |
