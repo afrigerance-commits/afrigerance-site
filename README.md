@@ -160,7 +160,77 @@ En local, utilisez bien l’adresse `localhost`. En ligne, le cookie de connexio
 | `npm run db:migrate` | Crée ou met à jour les tables de la base |
 | `npm run admin:create` | Crée un compte administrateur ou change son mot de passe |
 | `npm run email:test` | Envoie un email de test avec la configuration Resend (n’enregistre rien) |
+| `npm run test:e2e` | Tests automatiques complets dans un vrai navigateur (voir ci-dessous) |
 | `npm run lint` / `npx tsc --noEmit` | Contrôles qualité |
+
+## Tests automatiques
+
+`npm run test:e2e` ouvre un vrai navigateur (Chromium) et vérifie le site comme le ferait un visiteur, puis un gestionnaire. Cela représente 49 tests et environ 3 minutes.
+
+Ce qui est vérifié :
+
+- **Pages publiques** :
+  - à 1440, 768 et 390 px, ni défilement horizontal, ni erreur, et un seul titre principal ;
+  - aucun lien vide ou « # », et chaque lien interne mène à une page existante ;
+  - menu mobile, présélection du pôle et page 404.
+- **Formulaires** :
+  - la confirmation ne s’affiche qu’après l’enregistrement en base ;
+  - un triple clic n’enregistre qu’une seule demande ;
+  - base injoignable ou absente : message d’erreur et aucune confirmation ;
+  - robots refusés (champ piège, envoi trop rapide) ;
+  - un même envoi rejoué donne la même référence.
+- **Administration** :
+  - accès refusé sans connexion, même avec un cookie inventé ou l’adresse exacte d’une fiche ;
+  - connexion, filtres, fiche, statuts et déconnexion ;
+  - blocage après 5 mauvais mots de passe ;
+  - affichage mobile.
+- **Email** :
+  - contenu complet pour un devis et pour un message de contact ;
+  - lien vers la fiche seulement si `SITE_URL` est renseignée ;
+  - en cas d’échec, la demande est conservée puis la notification peut être renvoyée ;
+  - deux renvois simultanés ne produisent qu’un seul email ;
+  - aucune clé dans les pages ni dans les scripts du navigateur.
+
+Aucun vrai email n’est envoyé : un faux service Resend local reçoit les emails. Les tests n’utilisent ni votre base `DATABASE_URL` ni vos clés.
+
+### Préparer les tests (une fois)
+
+1. **Créez une base PostgreSQL réservée aux tests.** Son nom doit contenir « test », par exemple `afrigerance_test`, car les tests **effacent son contenu** à chaque lancement. Avec Neon, ajoutez une nouvelle base de données dans votre projet, puis copiez son adresse depuis **Connect**. Une base PostgreSQL installée sur l’ordinateur convient aussi.
+2. **Ajoutez son adresse dans `.env.local`** :
+
+   ```
+   TEST_DATABASE_URL=postgresql://utilisateur:motdepasse@hote/afrigerance_test?sslmode=require
+   ```
+
+   Les tests refusent de démarrer dans trois cas : si cette adresse est vide, si le nom de la base ne contient pas « test », ou si elle désigne la même base que `DATABASE_URL`.
+3. **Installez le navigateur de test** : `npx playwright install chromium`.
+
+### Lancer les tests
+
+1. Arrêtez `npm run dev` s’il tourne.
+2. Lancez `npm run test:e2e`. La commande fait tout dans l’ordre :
+   - elle construit le site ;
+   - elle démarre cinq configurations du site sur les ports 3101 à 3105 (avec email, sans email, sans base, base en panne, sans `SITE_URL`), plus le faux service d’email sur le port 4110 ;
+   - elle crée les tables de la base de test ;
+   - elle crée deux comptes administrateurs de test, avec des mots de passe tirés au hasard et jamais écrits sur le disque ;
+   - elle lance les tests.
+
+Pour lire le résultat :
+
+- chaque ligne **✓** est un test réussi ;
+- **« 49 passed »** à la fin signifie que tout est bon ;
+- les lignes `[WebServer] [demandes] Notification non envoyée…` ou `Enregistrement impossible…` sont **normales** : les tests provoquent ces pannes exprès.
+
+En cas d’échec, le test en cause est marqué **✘**. Une capture d’écran et une trace sont enregistrées dans `test-results/`. Pour rejouer la trace pas à pas : `npx playwright show-trace test-results/<dossier>/trace.zip`.
+
+Pour gagner du temps :
+
+- **Lancer un seul fichier** : `npm run test:e2e -- email.spec.ts`.
+- **Relancer sans reconstruire le site** (quand seuls les tests ont changé) :
+  - Windows (invite de commandes) : `set E2E_SKIP_BUILD=1 && npm run test:e2e`. Fermez ensuite la fenêtre pour revenir au mode normal.
+  - Linux ou macOS : `E2E_SKIP_BUILD=1 npm run test:e2e`.
+
+Ces tests ne vérifient pas la réception d’un vrai email ni le fonctionnement avec la vraie base. Pour cela, suivez « Tester avec un vrai email reçu » plus haut.
 
 ## À la mise en ligne (plus tard)
 
@@ -173,7 +243,8 @@ En local, utilisez bien l’adresse `localhost`. En ligne, le cookie de connexio
 
 ```
 db/migrations/                  Migrations SQL (appliquées par npm run db:migrate)
-scripts/                        db-migrate.mjs, admin-create.mjs
+scripts/                        db-migrate.mjs, admin-create.mjs, email-test.mjs
+tests/e2e/                      Tests automatiques (Playwright) ; réglages dans playwright.config.ts
 .env.example                    Modèle des variables (sans valeur secrète)
 docs/etat-cahier-des-charges.md Suivi des exigences du cahier des charges
 src/

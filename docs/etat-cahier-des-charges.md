@@ -172,6 +172,7 @@ Légende :
 | Pages Accueil, Services, Devis, À propos, Contact | Réalisé |
 | Recette responsive, clavier, liens, formulaires, erreurs | Réalisé pour les pages existantes |
 | Parcours complet testé sur une base de test : soumission → administration → statut → échec et renvoi de notification → accès refusé sans connexion | Réalisé |
+| Tests automatiques rejouables (`npm run test:e2e`, 49 tests : pages, formulaires, administration, email) | Réalisé (README : « Tests automatiques ») |
 | Test avec une vraie base (Neon) et un vrai compte d’envoi (Resend) | Bloqué : paramètres à fournir |
 | Guide d’administration | Réalisé (README : « Consulter et traiter les demandes ») |
 | Transfert des accès, formation | À faire à la mise en ligne |

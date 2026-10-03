@@ -19,3 +19,4 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Aucun lien `#` sans fonction : chaque lien pointe vers une route ou une ancre existante.
 - Services : deux pôles uniquement, « Infogérance » et « Intégration de solutions technologiques ».
 - Vérifier le rendu à 1440, 768 et 390 px, sans défilement horizontal, et mettre à jour `docs/etat-cahier-des-charges.md`.
+- Tests : `npm run test:e2e` (Playwright, dossier `tests/e2e/`, base `TEST_DATABASE_URL` dont le nom contient « test », faux service Resend local). Les lancer avant tout commit qui touche les pages, les formulaires, la base, l'administration ou l'email ; ajouter un test pour chaque nouvelle fonctionnalité. Ne jamais supprimer, désactiver ni affaiblir un test pour le faire passer.
