@@ -6,7 +6,7 @@ export function Logo({ className }: { className?: string }) {
   return (
     <Link href="/" className={`group flex items-center gap-3 ${className ?? ""}`}>
       <span
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-gold-500/60 font-display text-lg text-gold-600 transition-colors group-hover:bg-gold-500/10 dark:text-gold-500"
+        className="flex h-10 w-10 items-center justify-center rounded-full border border-gold-500/60 font-display text-lg text-gold-700 transition-colors group-hover:bg-gold-500/10 dark:text-gold-500"
         aria-hidden="true"
       >
         ع

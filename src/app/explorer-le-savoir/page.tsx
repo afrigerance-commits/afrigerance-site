@@ -13,7 +13,7 @@ export default function ExplorerLeSavoirPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
       <Reveal className="mx-auto mb-14 flex max-w-2xl flex-col gap-4 text-center">
-        <span className="mx-auto text-sm font-medium text-accent">Explorer le savoir</span>
+        <span className="mx-auto text-sm font-medium text-accent-text">Explorer le savoir</span>
         <h1 className="font-display text-4xl font-semibold sm:text-5xl">Les sciences islamiques</h1>
         <p className="text-muted">
           Chaque discipline possède sa propre collection de ressources : cours, articles, livres et vidéos, classés

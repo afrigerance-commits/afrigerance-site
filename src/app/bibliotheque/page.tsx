@@ -13,7 +13,7 @@ export default function BibliothequePage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
       <Reveal className="flex flex-col gap-4 text-center">
-        <span className="mx-auto text-sm font-medium text-accent">Bibliothèque islamique numérique</span>
+        <span className="mx-auto text-sm font-medium text-accent-text">Bibliothèque islamique numérique</span>
         <h1 className="font-display text-4xl font-semibold sm:text-5xl">Des références documentées</h1>
         <p className="mx-auto max-w-2xl text-muted">
           Chaque ouvrage affiche un statut de droits clair. Aucun fichier n’est mis en téléchargement sans

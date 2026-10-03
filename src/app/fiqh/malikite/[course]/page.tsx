@@ -6,6 +6,8 @@ import { Reveal } from "@/components/motion/reveal";
 import { EditorialStatusBadge, DemoBadge } from "@/components/islamic/reliability-badge";
 import { Card } from "@/components/ui/card";
 import { fiqhCourses, getFiqhCourse } from "@/lib/data/fiqh";
+import { JsonLd } from "@/components/seo/json-ld";
+import { siteConfig } from "@/lib/site-config";
 
 export function generateStaticParams() {
   return fiqhCourses.map((c) => ({ course: c.slug }));
@@ -27,6 +29,21 @@ export default async function FiqhCoursePage({ params }: PageProps<"/fiqh/maliki
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Course",
+          name: course.titre,
+          description: course.description,
+          provider: { "@type": "EducationalOrganization", name: siteConfig.name, sameAs: siteConfig.url },
+          educationalLevel: course.niveau,
+          hasCourseInstance: {
+            "@type": "CourseInstance",
+            courseMode: "online",
+            numberOfCredits: course.lessons.length,
+          },
+        }}
+      />
       <Link href="/fiqh/malikite" className="mb-8 inline-flex items-center gap-1.5 text-sm text-muted hover:text-primary">
         <ArrowLeft className="h-3.5 w-3.5" /> Académie de fiqh malikite
       </Link>

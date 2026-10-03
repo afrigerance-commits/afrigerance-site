@@ -12,6 +12,7 @@
   --color-emerald-700: #1a5a4f;
   --color-gold-500: #c6a667;
   --color-gold-600: #b08f4f;
+  --color-gold-700: #7a5c27;
   --color-ivory-50: #f8f5ee;
   --color-white: #ffffff;
   --color-muted-500: #68747b;
@@ -24,6 +25,10 @@
   --primary-foreground: var(--color-ivory-50);
   --accent: var(--color-gold-500);
   --accent-foreground: var(--color-ink-950);
+  /* Variante texte de l'accent : le gold-500 décoratif n'offre que ~2:1 de
+     contraste sur fond clair (AA exige 4.5:1). accent-text reste lisible
+     quel que soit le thème ; accent reste réservé aux fonds/bordures/icônes. */
+  --accent-text: var(--color-gold-700);
   --muted: var(--color-muted-500);
   --border: #e4ddcc;
   --ring: var(--color-gold-500);
@@ -38,6 +43,7 @@
   --primary-foreground: var(--color-ink-950);
   --accent: var(--color-gold-500);
   --accent-foreground: var(--color-ink-950);
+  --accent-text: var(--color-gold-500);
   --muted: #9aa7ad;
   --border: #1c3344;
   --ring: var(--color-gold-500);
@@ -52,6 +58,7 @@
   --color-primary-foreground: var(--primary-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-text: var(--accent-text);
   --color-muted: var(--muted);
   --color-border: var(--border);
   --color-ring: var(--ring);
@@ -59,6 +66,8 @@
   --color-ink-950: var(--color-ink-950);
   --color-emerald-900: var(--color-emerald-900);
   --color-gold-500: var(--color-gold-500);
+  --color-gold-600: var(--color-gold-600);
+  --color-gold-700: var(--color-gold-700);
   --color-ivory-50: var(--color-ivory-50);
 
   --font-sans: var(--font-body);

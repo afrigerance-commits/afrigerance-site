@@ -33,7 +33,7 @@ export default function AcademieFiqhMalikitePage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
       <Reveal className="flex flex-col gap-4 text-center">
-        <span className="mx-auto text-sm font-medium text-accent">Académie de fiqh malikite</span>
+        <span className="mx-auto text-sm font-medium text-accent-text">Académie de fiqh malikite</span>
         <h1 className="font-display text-4xl font-semibold sm:text-5xl">Apprendre le fiqh, étape par étape</h1>
         <p className="mx-auto max-w-2xl text-muted">{siteConfig.madhhab.note}</p>
       </Reveal>
@@ -45,7 +45,7 @@ export default function AcademieFiqhMalikitePage() {
             <ul className="mt-4 flex flex-col gap-2 text-sm text-muted">
               {niveau.items.map((item) => (
                 <li key={item} className="flex gap-2">
-                  <span className="text-accent">—</span> {item}
+                  <span className="text-accent-text">—</span> {item}
                 </li>
               ))}
             </ul>

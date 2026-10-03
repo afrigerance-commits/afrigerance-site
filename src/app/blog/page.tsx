@@ -13,7 +13,7 @@ export default function BlogPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
       <Reveal className="flex flex-col gap-4 text-center">
-        <span className="mx-auto text-sm font-medium text-accent">Blog éditorial</span>
+        <span className="mx-auto text-sm font-medium text-accent-text">Blog éditorial</span>
         <h1 className="font-display text-4xl font-semibold sm:text-5xl">Réflexions et rappels</h1>
         <p className="mx-auto max-w-2xl text-muted">
           Des articles pensés pour la lecture longue, chacun accompagné de ses références lorsqu’il en comporte.

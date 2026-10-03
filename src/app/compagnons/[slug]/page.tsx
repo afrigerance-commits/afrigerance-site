@@ -55,7 +55,7 @@ export default async function ScholarPage({ params }: PageProps<"/compagnons/[sl
           {scholar.demonstration && <DemoBadge />}
         </div>
         <h1 className="font-display text-3xl font-semibold sm:text-4xl">{scholar.transcriptionFrancaise}</h1>
-        <ArabicText className="text-2xl text-gold-600 dark:text-gold-500">{scholar.nomArabe}</ArabicText>
+        <ArabicText className="text-2xl text-gold-700 dark:text-gold-500">{scholar.nomArabe}</ArabicText>
       </Reveal>
 
       <Reveal delay={0.1} className="mt-10">

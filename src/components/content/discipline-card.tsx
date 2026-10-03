@@ -9,7 +9,7 @@ export function DisciplineCard({ discipline }: { discipline: Discipline }) {
     <Link href={`/explorer-le-savoir/${discipline.slug}`} className="group block h-full">
       <Card className="flex h-full flex-col justify-between gap-6 p-6 transition-all group-hover:-translate-y-1 group-hover:border-accent group-hover:shadow-md">
         <div className="flex items-start justify-between gap-3">
-          <ArabicText className="text-2xl text-gold-600 dark:text-gold-500">{discipline.nameArabic}</ArabicText>
+          <ArabicText className="text-2xl text-gold-700 dark:text-gold-500">{discipline.nameArabic}</ArabicText>
           <ArrowUpRight className="h-5 w-5 shrink-0 text-muted transition-colors group-hover:text-primary" />
         </div>
         <div className="flex flex-col gap-2">

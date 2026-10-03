@@ -13,7 +13,7 @@ export function Timeline({ events }: { events: SiraEvent[] }) {
             aria-hidden="true"
           />
           <Link href={`/sira/${event.slug}`} className="group flex flex-col gap-2">
-            <span className="text-xs font-medium uppercase tracking-wide text-accent">{event.periode}</span>
+            <span className="text-xs font-medium uppercase tracking-wide text-accent-text">{event.periode}</span>
             <h3 className="font-display text-xl font-semibold transition-colors group-hover:text-primary">
               {event.titre}
             </h3>

@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { fontDisplay, fontBody, fontArabic, fontQuran } from "@/lib/fonts";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/layout/header";
 import { HeaderAuth } from "@/components/layout/header-auth";
 import { Footer } from "@/components/layout/footer";
+import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/lib/site-config";
 import "./globals.css";
 
@@ -30,6 +31,22 @@ export const metadata: Metadata = {
     canonical: "/",
     types: { "application/rss+xml": "/blog/rss.xml" },
   },
+  icons: {
+    icon: [
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F8F5EE" },
+    { media: "(prefers-color-scheme: dark)", color: "#091C2B" },
+  ],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -40,6 +57,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${fontDisplay.variable} ${fontBody.variable} ${fontArabic.variable} ${fontQuran.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-foreground">
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "EducationalOrganization",
+            name: siteConfig.name,
+            alternateName: siteConfig.nameArabic,
+            description: siteConfig.description,
+            url: siteConfig.url,
+          }}
+        />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <a href="#contenu-principal" className="skip-link">
             Aller au contenu principal

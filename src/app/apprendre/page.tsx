@@ -15,7 +15,7 @@ export default function ApprendrePage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
       <Reveal className="flex flex-col gap-4 text-center">
-        <span className="mx-auto text-sm font-medium text-accent">Parcours d’apprentissage</span>
+        <span className="mx-auto text-sm font-medium text-accent-text">Parcours d’apprentissage</span>
         <h1 className="font-display text-4xl font-semibold sm:text-5xl">Commencer à apprendre</h1>
         <p className="mx-auto max-w-2xl text-muted">
           Aucune création de compte n’est nécessaire pour commencer un parcours. La connexion devient utile pour

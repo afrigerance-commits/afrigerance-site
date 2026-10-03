@@ -23,7 +23,7 @@ export function ScholarCard({ scholar }: { scholar: Scholar }) {
         </Avatar>
         <Badge variant="outline">{categorieLabel[scholar.categorie]}</Badge>
         <h3 className="font-display text-base font-semibold">{scholar.transcriptionFrancaise}</h3>
-        <ArabicText className="text-base text-gold-600 dark:text-gold-500">{scholar.nomArabe}</ArabicText>
+        <ArabicText className="text-base text-gold-700 dark:text-gold-500">{scholar.nomArabe}</ArabicText>
       </Card>
     </Link>
   );

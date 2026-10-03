@@ -74,7 +74,7 @@ export default function HomePage() {
       {/* Accès direct aux sciences islamiques */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <Reveal className="flex flex-col gap-3 text-center">
-          <span className="mx-auto inline-flex items-center gap-2 text-sm font-medium text-accent">
+          <span className="mx-auto inline-flex items-center gap-2 text-sm font-medium text-accent-text">
             <Compass className="h-4 w-4" /> Explorer le savoir
           </span>
           <h2 className="font-display text-3xl font-semibold sm:text-4xl">Douze sciences islamiques à découvrir</h2>
@@ -103,7 +103,7 @@ export default function HomePage() {
       <section className="border-y border-border bg-surface">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <Reveal className="flex flex-col gap-3 text-center">
-            <span className="mx-auto inline-flex items-center gap-2 text-sm font-medium text-accent">
+            <span className="mx-auto inline-flex items-center gap-2 text-sm font-medium text-accent-text">
               <BookOpen className="h-4 w-4" /> Commencer à apprendre
             </span>
             <h2 className="font-display text-3xl font-semibold sm:text-4xl">Des parcours pour démarrer sans attendre</h2>
@@ -166,7 +166,7 @@ export default function HomePage() {
       <section className="border-y border-border bg-surface">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <Reveal className="mb-12 flex flex-col items-center gap-3 text-center">
-            <span className="inline-flex items-center gap-2 text-sm font-medium text-accent">
+            <span className="inline-flex items-center gap-2 text-sm font-medium text-accent-text">
               <Library className="h-4 w-4" /> Bibliothèque islamique numérique
             </span>
             <h2 className="font-display text-3xl font-semibold sm:text-4xl">Des références soigneusement organisées</h2>
@@ -191,7 +191,7 @@ export default function HomePage() {
       {/* Dernières vidéos */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <Reveal className="mb-12 flex flex-col items-center gap-3 text-center">
-          <span className="inline-flex items-center gap-2 text-sm font-medium text-accent">
+          <span className="inline-flex items-center gap-2 text-sm font-medium text-accent-text">
             <YoutubeIcon className="h-4 w-4" /> Vidéothèque
           </span>
           <h2 className="font-display text-3xl font-semibold sm:text-4xl">Nos derniers enseignements en vidéo</h2>

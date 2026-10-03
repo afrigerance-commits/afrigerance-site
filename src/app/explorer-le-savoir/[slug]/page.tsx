@@ -55,7 +55,7 @@ export default async function DisciplinePage({ params }: PageProps<"/explorer-le
         <ArrowLeft className="h-3.5 w-3.5" /> Explorer le savoir
       </Link>
       <Reveal className="flex flex-col gap-4">
-        <ArabicText className="text-3xl text-gold-600 dark:text-gold-500">{discipline.nameArabic}</ArabicText>
+        <ArabicText className="text-3xl text-gold-700 dark:text-gold-500">{discipline.nameArabic}</ArabicText>
         <h1 className="font-display text-4xl font-semibold sm:text-5xl">{discipline.name}</h1>
         <p className="max-w-2xl text-lg text-muted">{discipline.description}</p>
       </Reveal>
