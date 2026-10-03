@@ -232,12 +232,44 @@ Pour gagner du temps :
 
 Ces tests ne vérifient pas la réception d’un vrai email ni le fonctionnement avec la vraie base. Pour cela, suivez « Tester avec un vrai email reçu » plus haut.
 
-## À la mise en ligne (plus tard)
+## Mise en ligne sur Netlify
 
-- Définissez chez l’hébergeur les variables `DATABASE_URL`, `RESEND_API_KEY`, `NOTIFICATION_EMAIL_FROM`, `NOTIFICATION_EMAIL_TO` et `SITE_URL`.
-- Lancez `npm run db:migrate` une fois contre la base de production. Faites-le depuis votre PC, avec `DATABASE_URL` pointant vers cette base.
-- Créez le ou les comptes avec `npm run admin:create`.
-- La limitation des envois repose sur l’adresse IP transmise par l’hébergeur (en-têtes `X-Real-IP` / `X-Forwarded-For`), fiable sur les plateformes comme Vercel.
+Netlify publie le site à partir de GitHub et le reconstruit tout seul à chaque mise à jour de la branche publiée. Next.js est reconnu automatiquement : aucun fichier de configuration Netlify n’est nécessaire. La version de Node.js (22) est fixée par le fichier `.nvmrc`.
+
+**Avant la première publication**, préparez :
+
+- la base de production Neon ;
+- la configuration Resend ;
+- les mentions légales (au minimum l’identité de l’éditeur du site) ;
+- l’accord écrit des partenaires dont le logo est affiché.
+
+1. **Choisir la branche publiée : `main`.** Le travail en cours se fait sur une autre branche, puis il est fusionné dans `main` par une demande de fusion (pull request) relue. Ainsi, rien ne part en ligne par accident.
+2. **Créer le site sur Netlify** :
+   1. sur https://app.netlify.com, connectez-vous avec votre compte GitHub ;
+   2. ajoutez un nouveau projet à partir d’un dépôt existant et choisissez GitHub, puis `afrigerance-commits/afrigerance-site` ;
+   3. choisissez la branche `main`. Laissez la commande de construction proposée (`npm run build`).
+3. **Saisir les variables d’environnement** dans les réglages du projet Netlify, rubrique « Environment variables ».
+
+   | Variable | Valeur |
+   | --- | --- |
+   | `DATABASE_URL` | adresse de la base **de production** Neon (secrète) |
+   | `RESEND_API_KEY` | clé Resend (secrète) |
+   | `NOTIFICATION_EMAIL_FROM` | expéditeur, par exemple `AFRIGERANCE <onboarding@resend.dev>` |
+   | `NOTIFICATION_EMAIL_TO` | adresse du gestionnaire |
+   | `SITE_URL` | adresse du site en ligne, par exemple `https://afrigerance.netlify.app`, puis votre domaine |
+
+   Ne renseignez pas `TEST_DATABASE_URL` sur Netlify : elle ne sert qu’aux tests. Après tout changement de variable, relancez une publication (« Trigger deploy »).
+4. **Préparer la base de production depuis votre PC** :
+   1. mettez temporairement l’adresse de la base de production dans `DATABASE_URL` de votre `.env.local` ;
+   2. lancez `npm run db:migrate`, puis `npm run admin:create` ;
+   3. remettez ensuite votre adresse habituelle.
+5. **Vérifier en ligne** :
+   1. envoyez une demande depuis `/devis` ;
+   2. connectez-vous sur `/admin` : la demande doit y figurer, avec la notification « Envoyée » ;
+   3. vérifiez que l’email est bien arrivé.
+6. **Nom de domaine** (plus tard) : ajoutez-le dans Netlify, rubrique « Domain management », puis mettez à jour `SITE_URL`. Netlify fournit automatiquement le HTTPS.
+
+**Sécurité** : la limite d’envois par visiteur et le blocage des essais de mot de passe reposent sur l’adresse IP que fournit Netlify (en-tête `x-nf-client-connection-ip`), que le visiteur ne peut pas falsifier. Sur un autre hébergeur, il faudrait adapter `src/lib/server/ip.ts`.
 
 ## Structure
 

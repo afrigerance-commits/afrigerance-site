@@ -113,6 +113,20 @@ test.describe("protections côté serveur (appels directs à l'API)", () => {
     expect(await requestCount()).toBe(before);
   });
 
+  test("Netlify : changer X-Forwarded-For ne contourne pas la limite de 5 envois par adresse", async ({ request }) => {
+    // Netlify fixe x-nf-client-connection-ip lui-même : c'est lui qui compte, pas les en-têtes du visiteur.
+    const netlifyIp = `10.250.${Math.floor(Math.random() * 250)}.${Math.floor(Math.random() * 250) + 1}`;
+    const statuses: number[] = [];
+    for (let attempt = 0; attempt < 6; attempt += 1) {
+      const response = await request.post(`${base}/api/contact`, {
+        data: { ...message, idempotencyKey: randomUUID(), elapsedMs: 5000 },
+        headers: { "x-nf-client-connection-ip": netlifyIp, "X-Forwarded-For": `10.201.0.${attempt + 1}` },
+      });
+      statuses.push(response.status());
+    }
+    expect(statuses).toEqual([200, 200, 200, 200, 200, 429]);
+  });
+
   test("même envoi rejoué avec la même clé → même référence, une seule demande", async ({ request }) => {
     const before = await requestCount();
     const data = { ...message, idempotencyKey: randomUUID(), elapsedMs: 5000 };

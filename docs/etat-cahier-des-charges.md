@@ -148,9 +148,9 @@ Légende :
 | Administration des demandes (liste, filtres, fiche, statuts, notifications) | Réalisé | `/admin` : filtres par type, statut, dates et notification ; testé sur ordinateur et téléphone |
 | Rôles distincts | À développer | Un seul rôle aujourd’hui (gestionnaire) ; chaque compte est nominatif |
 | Édition en ligne des contenus (pages, services, FAQ) | À développer | Décision attendue : quel outil, selon le budget et les compétences |
-| Hébergement, domaine, email, sauvegardes, coûts récurrents | Bloqué | Choix de l’hébergeur du site, de la base (Neon recommandé) et du nom de domaine. Les sauvegardes de la base dépendent de l’offre choisie. |
+| Hébergement, domaine, email, sauvegardes, coûts récurrents | Bloqué | Hébergeur du site choisi : **Netlify** (site adapté et procédure dans le README, « Mise en ligne sur Netlify »). Restent à fournir : base de production (Neon recommandé), configuration Resend et nom de domaine. Les sauvegardes de la base dépendent de l’offre choisie. |
 | Préproduction, mise en ligne, retour arrière | Bloqué | Pas de déploiement à ce stade, à votre demande |
-| HTTPS | Bloqué | Fourni par l’hébergeur à la mise en ligne |
+| HTTPS | Bloqué | Fourni automatiquement par Netlify à la mise en ligne |
 | Ne jamais demander de mot de passe ni de donnée sensible | Réalisé | Rappel affiché sur les formulaires |
 | Obligations applicables au Sénégal (données personnelles) | Bloqué | À vérifier avec un conseil compétent |
 

@@ -4,11 +4,17 @@ import { createHash } from "node:crypto";
 import type postgres from "postgres";
 
 /**
- * Adresse IP du visiteur, telle que transmise par l'hébergeur :
- * X-Real-IP (fixé par la plateforme) en priorité, sinon le premier élément de X-Forwarded-For.
+ * Adresse IP du visiteur, telle que transmise par l'hébergeur.
+ * 1. x-nf-client-connection-ip : fixé par Netlify, le visiteur ne peut pas le falsifier.
+ *    C'est l'en-tête utilisé en production (hébergement Netlify).
+ * 2. X-Real-IP puis X-Forwarded-For : seulement hors Netlify (développement local, tests).
+ *    Le visiteur peut les inventer : sur un autre hébergeur, revoir cet ordre.
  */
 export function clientIp(headers: Headers): string | null {
-  const ip = headers.get("x-real-ip")?.trim() || headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+  const ip =
+    headers.get("x-nf-client-connection-ip")?.trim() ||
+    headers.get("x-real-ip")?.trim() ||
+    headers.get("x-forwarded-for")?.split(",")[0]?.trim();
   return ip ? ip.slice(0, 64) : null;
 }
 
