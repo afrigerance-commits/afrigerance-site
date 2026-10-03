@@ -9,7 +9,14 @@ export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    // Modèle documenté par next-themes : resolvedTheme peut différer entre le
+    // rendu serveur et le premier rendu client, donc on retarde volontairement
+    // l'affichage dépendant du thème d'un cycle pour éviter un mismatch
+    // d'hydratation.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
 
   if (!mounted) {
     return <div className="h-10 w-10" aria-hidden="true" />;

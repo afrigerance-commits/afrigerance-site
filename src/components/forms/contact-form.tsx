@@ -25,9 +25,9 @@ export function ContactForm() {
   if (!CONTACT_EMAIL) {
     return (
       <p className="rounded-lg border border-dashed border-border p-5 text-sm text-muted">
-        L'adresse de contact n'est pas encore configurée. Définissez{" "}
+        L’adresse de contact n’est pas encore configurée. Définissez{" "}
         <code className="rounded bg-surface-muted px-1.5 py-0.5">NEXT_PUBLIC_CONTACT_EMAIL</code> dans vos variables
-        d'environnement pour activer ce formulaire.
+        d’environnement pour activer ce formulaire.
       </p>
     );
   }

@@ -24,7 +24,7 @@ import {
 import { cn } from "@/lib/utils";
 import { disciplines, siteConfig } from "@/lib/site-config";
 
-export function Header() {
+export function Header({ authSlot }: { authSlot?: React.ReactNode }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -83,6 +83,7 @@ export function Header() {
             </Link>
           </Button>
           <ThemeToggle />
+          {authSlot}
           <Button variant="accent" size="sm" asChild className="ml-1 hidden sm:inline-flex">
             <Link href="/apprendre">Commencer à apprendre</Link>
           </Button>

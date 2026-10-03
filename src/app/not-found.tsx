@@ -9,13 +9,13 @@ export default function NotFound() {
       <ArabicText className="text-4xl text-gold-600 dark:text-gold-500">404</ArabicText>
       <h1 className="font-display text-3xl font-semibold sm:text-4xl">Page introuvable</h1>
       <p className="text-muted">
-        Cette page n'existe pas ou a été déplacée. Peut-être cherchez-vous un cours, un article ou une fiche de la
+        Cette page n’existe pas ou a été déplacée. Peut-être cherchez-vous un cours, un article ou une fiche de la
         bibliothèque ?
       </p>
       <div className="flex flex-wrap items-center justify-center gap-3">
         <Button variant="accent" asChild>
           <Link href="/">
-            <ArrowLeft className="h-4 w-4" /> Retour à l'accueil
+            <ArrowLeft className="h-4 w-4" /> Retour à l’accueil
           </Link>
         </Button>
         <Button variant="outline" asChild>

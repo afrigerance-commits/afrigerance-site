@@ -25,7 +25,7 @@ export default async function LearningPathPage({ params }: PageProps<"/apprendre
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
       <Link href="/apprendre" className="mb-8 inline-flex items-center gap-1.5 text-sm text-muted hover:text-primary">
-        <ArrowLeft className="h-3.5 w-3.5" /> Parcours d'apprentissage
+        <ArrowLeft className="h-3.5 w-3.5" /> Parcours d’apprentissage
       </Link>
 
       <Reveal className="flex flex-col gap-4">

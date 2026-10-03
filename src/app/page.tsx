@@ -79,7 +79,7 @@ export default function HomePage() {
           </span>
           <h2 className="font-display text-3xl font-semibold sm:text-4xl">Douze sciences islamiques à découvrir</h2>
           <p className="mx-auto max-w-2xl text-muted">
-            Du Coran et son exégèse jusqu'à la langue arabe, chaque discipline possède sa propre collection de
+            Du Coran et son exégèse jusqu’à la langue arabe, chaque discipline possède sa propre collection de
             ressources, organisée par thème et par niveau.
           </p>
         </Reveal>
@@ -108,7 +108,7 @@ export default function HomePage() {
             </span>
             <h2 className="font-display text-3xl font-semibold sm:text-4xl">Des parcours pour démarrer sans attendre</h2>
             <p className="mx-auto max-w-2xl text-muted">
-              Aucune création de compte n'est nécessaire pour commencer. La connexion devient utile pour sauvegarder
+              Aucune création de compte n’est nécessaire pour commencer. La connexion devient utile pour sauvegarder
               votre progression et vos favoris.
             </p>
           </Reveal>

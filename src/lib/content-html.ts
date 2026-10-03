@@ -7,7 +7,7 @@ function slugify(text: string) {
     .replace(/(^-|-$)/g, "");
 }
 
-/** Ajoute un id à chaque <h2> du HTML d'article pour générer un sommaire ancré. */
+/** Ajoute un id à chaque <h2> du HTML d’article pour générer un sommaire ancré. */
 export function withHeadingIds(html: string) {
   const headings: { id: string; text: string }[] = [];
   const processed = html.replace(/<h2>(.*?)<\/h2>/g, (_match, text: string) => {

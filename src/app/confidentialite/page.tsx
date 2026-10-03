@@ -21,8 +21,8 @@ export default function ConfidentialitePage() {
           <h2 className="mb-2 font-display text-lg font-semibold text-foreground">Données collectées</h2>
           <p>
             La navigation sur le site peut générer des données techniques courantes (pages consultées, type
-            d'appareil). La création d'un compte collecte une adresse e-mail et, le cas échéant, un nom d'affichage.
-            L'inscription à la newsletter n'intervient qu'après consentement explicite et peut être retirée à tout
+            d’appareil). La création d’un compte collecte une adresse e-mail et, le cas échéant, un nom d’affichage.
+            L’inscription à la newsletter n’intervient qu’après consentement explicite et peut être retirée à tout
             moment.
           </p>
         </section>
@@ -37,14 +37,14 @@ export default function ConfidentialitePage() {
         <section>
           <h2 className="mb-2 font-display text-lg font-semibold text-foreground">Vos droits</h2>
           <p>
-            Vous pouvez demander l'accès, la rectification ou la suppression de vos données en nous contactant. Le
+            Vous pouvez demander l’accès, la rectification ou la suppression de vos données en nous contactant. Le
             détail précis des droits applicables dépend de la juridiction et sera précisé après revue juridique.
           </p>
         </section>
         <section>
           <h2 className="mb-2 font-display text-lg font-semibold text-foreground">Hébergement et sécurité</h2>
           <p>
-            Les données sont hébergées via les services d'infrastructure utilisés par la plateforme (voir la
+            Les données sont hébergées via les services d’infrastructure utilisés par la plateforme (voir la
             documentation technique pour le détail des sous-traitants actuels).
           </p>
         </section>

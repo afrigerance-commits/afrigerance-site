@@ -7,7 +7,7 @@ import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Académie de fiqh malikite",
-  description: "Un parcours structuré pour apprendre le fiqh selon l'école malikite, du niveau débutant au niveau avancé.",
+  description: "Un parcours structuré pour apprendre le fiqh selon l’école malikite, du niveau débutant au niveau avancé.",
   alternates: { canonical: "/fiqh/malikite" },
 };
 

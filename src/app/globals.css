@@ -158,11 +158,14 @@ html {
 body {
   background: var(--color-background);
   color: var(--color-foreground);
-  font-family: var(--font-body), system-ui, sans-serif;
+  /* var(--font-arabic) en repli : certains glyphes isolés (ﷺ, ﷻ…) apparaissent
+     dans des phrases françaises et ne sont pas couverts par les polices
+     latines ; le navigateur bascule alors caractère par caractère. */
+  font-family: var(--font-body), var(--font-arabic), system-ui, sans-serif;
 }
 
 .font-display {
-  font-family: var(--font-display), serif;
+  font-family: var(--font-display), var(--font-arabic), serif;
 }
 
 .font-arabic {

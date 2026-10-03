@@ -1,5 +1,5 @@
 /**
- * Configuration centrale de l'identité du site.
+ * Configuration centrale de l’identité du site.
  * Le nom de marque est provisoire ("Bayt Al-'Ilm") : tout le texte de marque
  * passe par cet objet pour permettre un renommage ultérieur en un seul endroit.
  */
@@ -18,7 +18,7 @@ export const siteConfig = {
   madhhab: {
     name: "malikite",
     nameArabic: "مالكي",
-    note: "Le fiqh est présenté selon l'école malikite. Les divergences avec les autres écoles sont signalées avec leurs sources respectives, dans un esprit de respect mutuel.",
+    note: "Le fiqh est présenté selon l’école malikite. Les divergences avec les autres écoles sont signalées avec leurs sources respectives, dans un esprit de respect mutuel.",
   },
   social: {
     youtube: "https://www.youtube.com/@bayt-al-ilm",
@@ -48,12 +48,12 @@ export const siteConfig = {
         { label: "Explorer le savoir", href: "/explorer-le-savoir" },
         { label: "Bibliothèque", href: "/bibliotheque" },
         { label: "Vidéothèque", href: "/videos" },
-        { label: "Parcours d'apprentissage", href: "/apprendre" },
+        { label: "Parcours d’apprentissage", href: "/apprendre" },
       ],
       legal: [
         { label: "Politique éditoriale et documentaire", href: "/a-propos/politique-editoriale" },
         { label: "Politique de confidentialité", href: "/confidentialite" },
-        { label: "Conditions d'utilisation", href: "/conditions-utilisation" },
+        { label: "Conditions d’utilisation", href: "/conditions-utilisation" },
       ],
     },
   },
@@ -79,7 +79,7 @@ export const disciplines = [
     name: "Fiqh malikite",
     nameArabic: "الفقه المالكي",
     description:
-      "La jurisprudence islamique selon l'école de l'imam Mâlik ibn Anas, référentiel principal de la plateforme.",
+      "La jurisprudence islamique selon l’école de l’imam Mâlik ibn Anas, référentiel principal de la plateforme.",
   },
   {
     slug: "sira",
@@ -91,7 +91,7 @@ export const disciplines = [
     slug: "histoire-islamique",
     name: "Histoire islamique",
     nameArabic: "التاريخ الإسلامي",
-    description: "Les grandes périodes de l'histoire musulmane, des califes bien-guidés à nos jours.",
+    description: "Les grandes périodes de l’histoire musulmane, des califes bien-guidés à nos jours.",
   },
   {
     slug: "compagnons",
@@ -107,7 +107,7 @@ export const disciplines = [
   },
   {
     slug: "spiritualite",
-    name: "Spiritualité et purification de l'âme",
+    name: "Spiritualité et purification de l’âme",
     nameArabic: "التزكية",
     description: "Le tazkiya : purifier le cœur et cultiver une relation sincère avec Allah.",
   },
@@ -115,7 +115,7 @@ export const disciplines = [
     slug: "akhlaq-adab",
     name: "Akhlâq et Adab",
     nameArabic: "الأخلاق والآداب",
-    description: "L'éthique du comportement et les bonnes manières enseignées par l'Islam.",
+    description: "L’éthique du comportement et les bonnes manières enseignées par l’Islam.",
   },
   {
     slug: "langue-arabe",
@@ -131,7 +131,7 @@ export const disciplines = [
   },
   {
     slug: "grandes-figures",
-    name: "Grandes figures de l'histoire islamique",
+    name: "Grandes figures de l’histoire islamique",
     nameArabic: "أعلام الإسلام",
     description: "Imams, savants et figures marquantes qui ont transmis et préservé le savoir.",
   },

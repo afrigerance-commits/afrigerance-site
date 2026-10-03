@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ArabicText } from "@/components/islamic/arabic-text";
@@ -8,7 +8,7 @@ import type { Scholar } from "@/lib/types/content";
 const categorieLabel: Record<Scholar["categorie"], string> = {
   compagnon: "Compagnon",
   compagnonne: "Compagnonne",
-  tabiun: "Tâbi'î",
+  tabiun: "Tâbi’î",
   imam: "Imam",
   savant: "Savant",
 };

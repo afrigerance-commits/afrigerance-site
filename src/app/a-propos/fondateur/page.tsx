@@ -20,9 +20,9 @@ export default function FondateurPage() {
         </Avatar>
         <Badge variant="muted">Contenu de démonstration — en attente de rédaction par le fondateur</Badge>
         <p className="max-w-xl text-muted">
-          Cette page accueillera la biographie du fondateur, son parcours d'enseignement et sa vision pour la
-          plateforme, rédigés et validés directement par lui. Aucun texte biographique n'a été inventé ici afin
-          d'éviter toute fausse attribution.
+          Cette page accueillera la biographie du fondateur, son parcours d’enseignement et sa vision pour la
+          plateforme, rédigés et validés directement par lui. Aucun texte biographique n’a été inventé ici afin
+          d’éviter toute fausse attribution.
         </p>
       </Reveal>
     </div>

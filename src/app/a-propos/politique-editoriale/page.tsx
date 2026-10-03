@@ -16,12 +16,12 @@ export default function PolitiqueEditorialePage() {
       <Reveal className="flex flex-col gap-6 text-foreground/90">
         <p>
           Cette plateforme distingue systématiquement six types de contenu : le texte coranique, le hadith avec
-          référence et évaluation documentée, l'avis juridique attribué, le récit historique sourcé, l'explication
+          référence et évaluation documentée, l’avis juridique attribué, le récit historique sourcé, l’explication
           pédagogique et le contenu éditorial personnel.
         </p>
         <p>
           Une citation, une chaîne de transmission, un numéro de hadith, une parole de savant ou un jugement
-          d'authenticité ne sont jamais inventés. Lorsqu'une information ne peut pas être vérifiée au moment de la
+          d’authenticité ne sont jamais inventés. Lorsqu’une information ne peut pas être vérifiée au moment de la
           rédaction, elle porte la mention explicite « Référence à vérifier ».
         </p>
         <h2 className="font-display text-xl font-semibold">Statuts éditoriaux</h2>
@@ -34,11 +34,11 @@ export default function PolitiqueEditorialePage() {
             </li>
           ))}
         </ol>
-        <h2 className="font-display text-xl font-semibold">Rôle de l'intelligence artificielle</h2>
+        <h2 className="font-display text-xl font-semibold">Rôle de l’intelligence artificielle</h2>
         <p>
-          L'intelligence artificielle peut aider à organiser, reformuler et préparer des textes. Elle ne s'attribue
-          jamais un rôle de mufti, ne certifie seule aucune narration et n'invente aucune preuve religieuse. La
-          publication d'un contenu religieux nécessite toujours une validation explicite par un responsable humain
+          L’intelligence artificielle peut aider à organiser, reformuler et préparer des textes. Elle ne s’attribue
+          jamais un rôle de mufti, ne certifie seule aucune narration et n’invente aucune preuve religieuse. La
+          publication d’un contenu religieux nécessite toujours une validation explicite par un responsable humain
           habilité.
         </p>
       </Reveal>

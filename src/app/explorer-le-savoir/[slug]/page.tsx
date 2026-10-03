@@ -64,7 +64,7 @@ export default async function DisciplinePage({ params }: PageProps<"/explorer-le
         <Reveal delay={0.1} className="mt-8">
           <Button variant="accent" asChild>
             <Link href={hub}>
-              Accéder à l'espace dédié <ArrowRight className="h-4 w-4" />
+              Accéder à l’espace dédié <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
         </Reveal>
@@ -75,7 +75,7 @@ export default async function DisciplinePage({ params }: PageProps<"/explorer-le
           <Badge variant="muted">Contenu en préparation</Badge>
           <p className="mt-2 text-sm text-muted">
             Les cours dédiés à cette discipline sont en cours de rédaction et de vérification documentaire. Les
-            ressources ci-dessous, lorsqu'elles existent, donnent un premier aperçu.
+            ressources ci-dessous, lorsqu’elles existent, donnent un premier aperçu.
           </p>
         </Reveal>
       )}

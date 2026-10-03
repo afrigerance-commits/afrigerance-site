@@ -14,7 +14,7 @@ import { scholars, getScholar } from "@/lib/data/scholars";
 const categorieLabel = {
   compagnon: "Compagnon",
   compagnonne: "Compagnonne",
-  tabiun: "Tâbi'î",
+  tabiun: "Tâbi’î",
   imam: "Imam",
   savant: "Savant",
 } as const;

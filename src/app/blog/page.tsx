@@ -16,7 +16,7 @@ export default function BlogPage() {
         <span className="mx-auto text-sm font-medium text-accent">Blog éditorial</span>
         <h1 className="font-display text-4xl font-semibold sm:text-5xl">Réflexions et rappels</h1>
         <p className="mx-auto max-w-2xl text-muted">
-          Des articles pensés pour la lecture longue, chacun accompagné de ses références lorsqu'il en comporte.
+          Des articles pensés pour la lecture longue, chacun accompagné de ses références lorsqu’il en comporte.
         </p>
       </Reveal>
       <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">

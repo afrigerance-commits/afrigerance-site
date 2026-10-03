@@ -4,15 +4,15 @@ import { Reveal } from "@/components/motion/reveal";
 import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = {
-  title: "Conditions d'utilisation",
-  description: "Les règles d'utilisation de la plateforme.",
+  title: "Conditions d’utilisation",
+  description: "Les règles d’utilisation de la plateforme.",
   alternates: { canonical: "/conditions-utilisation" },
 };
 
 export default function ConditionsUtilisationPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
-      <PageHeader eyebrow="Informations légales" title="Conditions d'utilisation" />
+      <PageHeader eyebrow="Informations légales" title="Conditions d’utilisation" />
       <Reveal className="mb-8 flex justify-center">
         <Badge variant="warning">Ébauche — à faire valider par un professionnel du droit avant mise en ligne</Badge>
       </Reveal>
@@ -21,7 +21,7 @@ export default function ConditionsUtilisationPage() {
           <h2 className="mb-2 font-display text-lg font-semibold text-foreground">Objet de la plateforme</h2>
           <p>
             La plateforme met à disposition des contenus éducatifs relatifs aux sciences islamiques. Elle ne délivre
-            pas de fatwas personnalisées et ne se substitue pas à une consultation directe d'un savant habilité pour
+            pas de fatwas personnalisées et ne se substitue pas à une consultation directe d’un savant habilité pour
             toute question individuelle.
           </p>
         </section>
@@ -36,9 +36,9 @@ export default function ConditionsUtilisationPage() {
         <section>
           <h2 className="mb-2 font-display text-lg font-semibold text-foreground">Comptes utilisateurs</h2>
           <p>
-            La création d'un compte est facultative et réservée aux fonctionnalités personnelles (progression,
-            favoris). Les utilisateurs s'engagent à fournir des informations exactes et à ne pas détourner le compte
-            à des fins contraires à l'objet de la plateforme.
+            La création d’un compte est facultative et réservée aux fonctionnalités personnelles (progression,
+            favoris). Les utilisateurs s’engagent à fournir des informations exactes et à ne pas détourner le compte
+            à des fins contraires à l’objet de la plateforme.
           </p>
         </section>
         <section>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { fontDisplay, fontBody, fontArabic, fontQuran } from "@/lib/fonts";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/layout/header";
+import { HeaderAuth } from "@/components/layout/header-auth";
 import { Footer } from "@/components/layout/footer";
 import { siteConfig } from "@/lib/site-config";
 import "./globals.css";
@@ -43,7 +44,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <a href="#contenu-principal" className="skip-link">
             Aller au contenu principal
           </a>
-          <Header />
+          <Header authSlot={<HeaderAuth />} />
           <main id="contenu-principal" className="flex-1">
             {children}
           </main>

@@ -5,7 +5,7 @@ import { siraEvents } from "@/lib/data/sira";
 
 export const metadata: Metadata = {
   title: "Sîra prophétique",
-  description: "Une frise chronologique de la vie du Prophète Muhammad ﷺ, de l'Arabie préislamique au pèlerinage d'adieu.",
+  description: "Une frise chronologique de la vie du Prophète Muhammad ﷺ, de l’Arabie préislamique au pèlerinage d’adieu.",
   alternates: { canonical: "/sira" },
 };
 
@@ -16,8 +16,8 @@ export default function SiraPage() {
         <span className="mx-auto text-sm font-medium text-accent">Sîra prophétique</span>
         <h1 className="font-display text-4xl font-semibold sm:text-5xl">La vie du Prophète ﷺ</h1>
         <p className="mx-auto max-w-2xl text-muted">
-          Une traversée chronologique, de l'Arabie avant l'Islam jusqu'au pèlerinage d'adieu. Les récits dont
-          l'authenticité est discutée sont signalés comme tels.
+          Une traversée chronologique, de l’Arabie avant l’Islam jusqu’au pèlerinage d’adieu. Les récits dont
+          l’authenticité est discutée sont signalés comme tels.
         </p>
       </Reveal>
 

@@ -46,7 +46,7 @@ export function VideoCard({ video }: { video: Video }) {
               Regarder sur YouTube <YoutubeIcon className="h-4 w-4" />
             </Link>
           ) : (
-            <span className="text-xs text-muted">Lien YouTube non encore configuré par l'administration.</span>
+            <span className="text-xs text-muted">Lien YouTube non encore configuré par l’administration.</span>
           )}
         </div>
       </CardContent>

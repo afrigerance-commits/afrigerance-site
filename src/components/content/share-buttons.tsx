@@ -24,6 +24,9 @@ export function ShareButtons({ title }: { title: string }) {
   const [url, setUrl] = useState("");
 
   useEffect(() => {
+    // window.location n'existe pas côté serveur : nécessite un effet plutôt
+    // qu'un calcul pendant le rendu, pour rester identique au HTML du SSR.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUrl(window.location.href);
   }, []);
 
@@ -32,7 +35,7 @@ export function ShareButtons({ title }: { title: string }) {
       try {
         await navigator.share({ title, url });
       } catch {
-        /* partage annulé par l'utilisateur */
+        /* partage annulé par l’utilisateur */
       }
     }
   };

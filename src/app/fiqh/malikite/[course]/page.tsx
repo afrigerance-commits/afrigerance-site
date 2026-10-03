@@ -63,7 +63,7 @@ export default async function FiqhCoursePage({ params }: PageProps<"/fiqh/maliki
 
       <div className="mt-10 flex items-center gap-2 rounded-lg border border-dashed border-border p-4 text-sm text-muted">
         <BookOpen className="h-4 w-4 shrink-0" />
-        Ce cours est en cours de vérification documentaire et n'a pas encore reçu l'approbation finale d'un
+        Ce cours est en cours de vérification documentaire et n’a pas encore reçu l’approbation finale d’un
         responsable scientifique.
       </div>
     </div>

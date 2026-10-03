@@ -85,8 +85,8 @@ export default async function BookPage({ params }: PageProps<"/bibliotheque/[slu
 
           {book.droits === "droits_non_verifies" && (
             <p className="inline-flex w-fit items-center gap-2 rounded-lg border border-dashed border-border px-4 py-2.5 text-sm text-muted">
-              <Lock className="h-4 w-4" /> Les droits de ce fichier n'ont pas encore été vérifiés : aucune lecture ni
-              téléchargement n'est proposé.
+              <Lock className="h-4 w-4" /> Les droits de ce fichier n’ont pas encore été vérifiés : aucune lecture ni
+              téléchargement n’est proposé.
             </p>
           )}
 

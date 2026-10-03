@@ -15,12 +15,12 @@ const principes = [
   {
     titre: "Rigueur documentaire",
     texte:
-      "Chaque contenu religieux distingue le texte coranique, le hadith référencé, l'avis juridique attribué, le récit historique sourcé et l'explication pédagogique.",
+      "Chaque contenu religieux distingue le texte coranique, le hadith référencé, l’avis juridique attribué, le récit historique sourcé et l’explication pédagogique.",
   },
   {
     titre: "Validation humaine",
     texte:
-      "Aucun contenu religieux n'est publié sans validation explicite d'un responsable humain habilité. La plateforme ne délivre pas de fatwas personnalisées.",
+      "Aucun contenu religieux n’est publié sans validation explicite d’un responsable humain habilité. La plateforme ne délivre pas de fatwas personnalisées.",
   },
   {
     titre: "Référentiel assumé",
@@ -29,7 +29,7 @@ const principes = [
   {
     titre: "Transparence",
     texte:
-      "Lorsqu'une information ne peut pas encore être vérifiée, elle est signalée explicitement comme « Référence à vérifier » plutôt que présentée comme certaine.",
+      "Lorsqu’une information ne peut pas encore être vérifiée, elle est signalée explicitement comme « Référence à vérifier » plutôt que présentée comme certaine.",
   },
 ];
 

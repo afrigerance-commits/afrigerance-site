@@ -2,7 +2,7 @@ import type { SVGProps } from "react";
 
 /**
  * Pictogramme générique "lecture vidéo" utilisé pour les liens YouTube.
- * lucide-react n'inclut plus d'icônes de marques : ce glyphe simple évite
+ * lucide-react n’inclut plus d’icônes de marques : ce glyphe simple évite
  * toute dépendance supplémentaire pour un seul usage.
  */
 export function YoutubeIcon(props: SVGProps<SVGSVGElement>) {

@@ -14,14 +14,14 @@ export default function ReferentielMalikitePage() {
       <PageHeader eyebrow="Référentiel juridique" title="Pourquoi le madhhab malikite ?" />
       <Reveal className="flex flex-col gap-6 text-foreground/90">
         <p>
-          La plateforme adopte le madhhab malikite comme référentiel principal pour l'enseignement du fiqh. Les
-          parcours de jurisprudence sont structurés autour de l'école de l'imam Mâlik ibn Anas, largement répandue en
-          Afrique du Nord et en Afrique de l'Ouest, régions auxquelles s'adresse en priorité cette plateforme.
+          La plateforme adopte le madhhab malikite comme référentiel principal pour l’enseignement du fiqh. Les
+          parcours de jurisprudence sont structurés autour de l’école de l’imam Mâlik ibn Anas, largement répandue en
+          Afrique du Nord et en Afrique de l’Ouest, régions auxquelles s’adresse en priorité cette plateforme.
         </p>
         <h2 className="font-display text-xl font-semibold">Un choix, non un jugement</h2>
         <p>
           Ce choix ne constitue en aucun cas un dénigrement des autres écoles juridiques sunnites, toutes reconnues
-          dans la tradition islamique. Lorsque des divergences existent entre l'école malikite et une autre école sur
+          dans la tradition islamique. Lorsque des divergences existent entre l’école malikite et une autre école sur
           un point précis, elles sont présentées avec les positions attribuées à chaque école et leurs sources
           respectives, dans un esprit de respect mutuel.
         </p>

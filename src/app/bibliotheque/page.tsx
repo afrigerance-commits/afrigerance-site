@@ -16,7 +16,7 @@ export default function BibliothequePage() {
         <span className="mx-auto text-sm font-medium text-accent">Bibliothèque islamique numérique</span>
         <h1 className="font-display text-4xl font-semibold sm:text-5xl">Des références documentées</h1>
         <p className="mx-auto max-w-2xl text-muted">
-          Chaque ouvrage affiche un statut de droits clair. Aucun fichier n'est mis en téléchargement sans
+          Chaque ouvrage affiche un statut de droits clair. Aucun fichier n’est mis en téléchargement sans
           vérification préalable de ses droits de diffusion.
         </p>
       </Reveal>

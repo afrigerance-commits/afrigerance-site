@@ -12,7 +12,7 @@ interface RevealProps {
 
 /**
  * Fait apparaître progressivement une section au défilement.
- * Se désactive entièrement si l'utilisateur préfère moins d'animations.
+ * Se désactive entièrement si l’utilisateur préfère moins d’animations.
  */
 export function Reveal({ children, delay = 0, className, as = "div" }: RevealProps) {
   const shouldReduceMotion = useReducedMotion();

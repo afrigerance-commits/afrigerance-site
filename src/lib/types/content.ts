@@ -26,7 +26,7 @@ export interface SourceReference {
   gradeAuthenticite?: string;
   verificateur?: string;
   dateVerification?: string;
-  /** true si la référence n'a pas encore pu être vérifiée : doit être affiché explicitement. */
+  /** true si la référence n’a pas encore pu être vérifiée : doit être affiché explicitement. */
   aVerifier?: boolean;
 }
 
