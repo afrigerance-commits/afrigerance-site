@@ -1,0 +1,210 @@
+@import "tailwindcss";
+
+/* next-themes toggles a `.dark` class on <html>; opt Tailwind's dark: variant
+   into that instead of the OS-level media query so the user's own choice wins. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Palette de marque */
+  --color-ink-950: #091c2b;
+  --color-ink-900: #0d2436;
+  --color-emerald-900: #123f38;
+  --color-emerald-700: #1a5a4f;
+  --color-gold-500: #c6a667;
+  --color-gold-600: #b08f4f;
+  --color-ivory-50: #f8f5ee;
+  --color-white: #ffffff;
+  --color-muted-500: #68747b;
+
+  --background: var(--color-ivory-50);
+  --foreground: var(--color-ink-950);
+  --surface: var(--color-white);
+  --surface-muted: #f0ece1;
+  --primary: var(--color-emerald-900);
+  --primary-foreground: var(--color-ivory-50);
+  --accent: var(--color-gold-500);
+  --accent-foreground: var(--color-ink-950);
+  --muted: var(--color-muted-500);
+  --border: #e4ddcc;
+  --ring: var(--color-gold-500);
+}
+
+:root.dark {
+  --background: var(--color-ink-950);
+  --foreground: var(--color-ivory-50);
+  --surface: var(--color-ink-900);
+  --surface-muted: #122737;
+  --primary: var(--color-gold-500);
+  --primary-foreground: var(--color-ink-950);
+  --accent: var(--color-gold-500);
+  --accent-foreground: var(--color-ink-950);
+  --muted: #9aa7ad;
+  --border: #1c3344;
+  --ring: var(--color-gold-500);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+
+  --color-ink-950: var(--color-ink-950);
+  --color-emerald-900: var(--color-emerald-900);
+  --color-gold-500: var(--color-gold-500);
+  --color-ivory-50: var(--color-ivory-50);
+
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+  --font-arabic: var(--font-arabic);
+  --font-quran: var(--font-quran);
+
+  --radius-lg: 0.75rem;
+  --radius-xl: 1.25rem;
+
+  --animate-fade-in: fade-in 200ms ease-out;
+  --animate-fade-out: fade-out 150ms ease-in;
+  --animate-dialog-in: dialog-in 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-dialog-out: dialog-out 150ms ease-in;
+  --animate-accordion-down: accordion-down 200ms ease-out;
+  --animate-accordion-up: accordion-up 200ms ease-out;
+  --animate-sheet-in: sheet-in 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-sheet-out: sheet-out 200ms ease-in;
+  --animate-spin-slow: spin 60s linear infinite;
+  --animate-spin-slow-reverse: spin-reverse 90s linear infinite;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes dialog-in {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -48%) scale(0.97);
+    }
+  }
+  @keyframes dialog-out {
+    to {
+      opacity: 0;
+      transform: translate(-50%, -48%) scale(0.97);
+    }
+  }
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+  @keyframes sheet-in {
+    from {
+      transform: translateX(100%);
+    }
+  }
+  @keyframes sheet-out {
+    to {
+      transform: translateX(100%);
+    }
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes spin-reverse {
+    to {
+      transform: rotate(-360deg);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-display), serif;
+}
+
+.font-arabic {
+  font-family: var(--font-arabic), serif;
+}
+
+.font-quran {
+  font-family: var(--font-quran), serif;
+}
+
+/* Citation coranique : bloc visuellement distinct des autres types de contenu
+   (voir la distinction documentaire exigée au cahier des charges). */
+.quran-quote {
+  font-family: var(--font-quran), serif;
+  direction: rtl;
+  line-height: 2.1;
+}
+
+::selection {
+  background: var(--color-gold-500);
+  color: var(--color-ink-950);
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  background: var(--color-gold-500);
+  color: var(--color-ink-950);
+  border-radius: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+/* Motif géométrique islamique discret, utilisé en arrière-plan décoratif. */
+.geo-pattern {
+  background-image: radial-gradient(var(--color-gold-500) 0.5px, transparent 0.5px);
+  background-size: 24px 24px;
+  opacity: 0.08;
+}
