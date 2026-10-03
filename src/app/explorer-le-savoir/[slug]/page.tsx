@@ -13,6 +13,8 @@ import { books } from "@/lib/data/books";
 import { articles } from "@/lib/data/articles";
 
 const hubRoute: Record<string, string> = {
+  "coran-tafsir": "/coran",
+  hadith: "/hadith",
   "fiqh-malikite": "/fiqh/malikite",
   sira: "/sira",
   compagnons: "/compagnons",

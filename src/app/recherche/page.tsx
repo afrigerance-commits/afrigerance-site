@@ -11,6 +11,8 @@ import { scholars } from "@/lib/data/scholars";
 import { siraEvents } from "@/lib/data/sira";
 import { fiqhCourses } from "@/lib/data/fiqh";
 import { disciplines } from "@/lib/site-config";
+import { getChapters } from "@/lib/quran/data";
+import { hadithCollections, getBooks } from "@/lib/hadith/data";
 
 export const metadata: Metadata = {
   title: "Recherche",
@@ -32,6 +34,20 @@ function buildIndex(): SearchResult[] {
     ...scholars.map((s) => ({ titre: s.transcriptionFrancaise, description: s.presentation, href: `/compagnons/${s.slug}`, type: "Figure" })),
     ...siraEvents.map((e) => ({ titre: e.titre, description: e.presentation, href: `/sira/${e.slug}`, type: "Sîra" })),
     ...fiqhCourses.map((c) => ({ titre: c.titre, description: c.description, href: `/fiqh/malikite/${c.slug}`, type: "Cours" })),
+    ...getChapters().map((c) => ({
+      titre: `Sourate ${c.nameFrench}`,
+      description: `${c.nameTransliteration} — ${c.versesCount} versets, ${c.revelation === "Mecca" ? "mecquoise" : "médinoise"}.`,
+      href: `/coran/${c.number}`,
+      type: "Coran",
+    })),
+    ...hadithCollections.flatMap((collection) =>
+      getBooks(collection.slug).map((book) => ({
+        titre: book.titreFrancais,
+        description: `${collection.nom} — ${book.count} hadith${book.count > 1 ? "s" : ""}.`,
+        href: `/hadith/${collection.slug}/${book.number}`,
+        type: "Hadith",
+      })),
+    ),
   ];
 }
 

@@ -9,6 +9,7 @@ import { SourceReferenceList } from "@/components/islamic/source-reference";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { fiqhCourses, getFiqhCourse, getFiqhLesson } from "@/lib/data/fiqh";
+import { ReadingProgress } from "@/components/content/reading-progress";
 
 const niveauLabel = { debutant: "Débutant", intermediaire: "Intermédiaire", avance: "Avancé" } as const;
 
@@ -42,6 +43,7 @@ export default async function FiqhLessonPage({ params }: PageProps<"/fiqh/maliki
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
+      <ReadingProgress />
       <Link
         href={`/fiqh/malikite/${course.slug}`}
         className="mb-8 inline-flex items-center gap-1.5 text-sm text-muted hover:text-primary"

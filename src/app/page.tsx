@@ -137,6 +137,11 @@ export default function HomePage() {
             sourate="Tâ-Hâ (20)"
             verset="114"
           />
+          <p className="mt-6 text-center">
+            <Link href="/coran/20" className="text-sm font-medium text-primary hover:underline">
+              Lire la sourate Tâ-Hâ en entier →
+            </Link>
+          </p>
         </Reveal>
       </section>
 

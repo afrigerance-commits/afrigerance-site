@@ -26,6 +26,11 @@ pour un état honnête de ce qui est réellement opérationnel et de ce qui rest
   pages légales) est entièrement navigable et fonctionne **sans base de
   données**, à partir de données de démonstration typées
   (`src/lib/data/*.ts`), clairement signalées comme telles.
+- Le **Coran complet** (`/coran`, arabe + traduction française) et **trois
+  recueils de hadith complets** (`/hadith` : Muwatta', Sahîh Al-Bukhârî,
+  Sahîh Muslim) sont du **texte religieux réel**, pas une démonstration —
+  voir [docs/CONTENT_SOURCES.md](./docs/CONTENT_SOURCES.md) pour leur
+  provenance exacte.
 - Le schéma de base de données, l'authentification, les permissions par
   rôle et un back-office (articles, vidéos, utilisateurs) sont codés et
   fonctionnels **dès que Supabase est configuré** (voir
@@ -107,6 +112,8 @@ docs/                    Documentation détaillée (voir ci-dessous)
 
 - **[docs/BILAN.md](./docs/BILAN.md)** — état honnête : fonctionnalités terminées, partielles,
   non commencées.
+- **[docs/CONTENT_SOURCES.md](./docs/CONTENT_SOURCES.md)** — provenance exacte du Coran et des
+  recueils de hadith intégrés, et ce qui n'a pas encore pu l'être.
 - **[docs/INSTALLATION.md](./docs/INSTALLATION.md)** — installation locale, configuration Supabase,
   attribution du premier compte administrateur.
 - **[docs/EDITORIAL_WORKFLOW.md](./docs/EDITORIAL_WORKFLOW.md)** — processus de vérification

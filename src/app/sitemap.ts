@@ -6,12 +6,16 @@ import { scholars } from "@/lib/data/scholars";
 import { siraEvents } from "@/lib/data/sira";
 import { fiqhCourses } from "@/lib/data/fiqh";
 import { learningPaths } from "@/lib/data/learning-paths";
+import { getChapters } from "@/lib/quran/data";
+import { hadithCollections, getBooks } from "@/lib/hadith/data";
 
 const staticRoutes = [
   "",
   "/explorer-le-savoir",
   "/fiqh",
   "/fiqh/malikite",
+  "/coran",
+  "/hadith",
   "/sira",
   "/compagnons",
   "/bibliotheque",
@@ -37,6 +41,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   disciplines.forEach((d) => entries.push({ url: url(`/explorer-le-savoir/${d.slug}`) }));
+  getChapters().forEach((c) => entries.push({ url: url(`/coran/${c.number}`), changeFrequency: "yearly" }));
+  hadithCollections.forEach((c) => {
+    entries.push({ url: url(`/hadith/${c.slug}`) });
+    getBooks(c.slug).forEach((b) => entries.push({ url: url(`/hadith/${c.slug}/${b.number}`), changeFrequency: "yearly" }));
+  });
   // Seul le contenu publié a vocation à être indexé.
   articles.filter((a) => a.statut === "publie").forEach((a) => entries.push({ url: url(`/blog/${a.slug}`) }));
   books.forEach((b) => entries.push({ url: url(`/bibliotheque/${b.slug}`) }));

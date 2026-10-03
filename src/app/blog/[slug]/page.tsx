@@ -6,6 +6,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { EditorialStatusBadge, DemoBadge } from "@/components/islamic/reliability-badge";
 import { SourceReferenceList } from "@/components/islamic/source-reference";
 import { ShareButtons } from "@/components/content/share-buttons";
+import { ReadingProgress } from "@/components/content/reading-progress";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { articles, getArticle } from "@/lib/data/articles";
@@ -38,6 +39,7 @@ export default async function ArticlePage({ params }: PageProps<"/blog/[slug]">)
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+      <ReadingProgress />
       <JsonLd
         data={{
           "@context": "https://schema.org",

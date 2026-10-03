@@ -5,6 +5,7 @@ import { Header } from "@/components/layout/header";
 import { HeaderAuth } from "@/components/layout/header-auth";
 import { Footer } from "@/components/layout/footer";
 import { JsonLd } from "@/components/seo/json-ld";
+import { PageTransition } from "@/components/motion/page-transition";
 import { siteConfig } from "@/lib/site-config";
 import "./globals.css";
 
@@ -54,6 +55,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="fr"
       suppressHydrationWarning
+      data-scroll-behavior="smooth"
       className={`${fontDisplay.variable} ${fontBody.variable} ${fontArabic.variable} ${fontQuran.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-foreground">
@@ -73,7 +75,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </a>
           <Header authSlot={<HeaderAuth />} />
           <main id="contenu-principal" className="flex-1">
-            {children}
+            <PageTransition>{children}</PageTransition>
           </main>
           <Footer />
         </ThemeProvider>

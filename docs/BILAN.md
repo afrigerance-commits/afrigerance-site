@@ -36,15 +36,39 @@ de vraie photo ni de vraie biographie — voir Module « Fondateur » ci-dessous
 chacune avec sa page de présentation. Navigation par discipline
 fonctionnelle (mega-menu desktop, menu mobile).
 
-🟡 Seules les disciplines **Fiqh malikite**, **Sîra** et **Compagnons /
-grandes figures** ont un espace de contenu dédié derrière elles. Les neuf
-autres (Coran et Tafsîr, Hadith, Histoire islamique, 'Aqîda, Spiritualité,
-Akhlâq et Adab, Langue arabe, Invocations et adhkâr) affichent une page de
-discipline honnête avec un badge « Contenu en préparation » plutôt que du
-contenu fabriqué.
+🟡 Les disciplines **Coran et Tafsîr**, **Hadith**, **Fiqh malikite**,
+**Sîra** et **Compagnons / grandes figures** ont un espace de contenu
+dédié derrière elles (voir Module 02 bis pour Coran/Hadith). Les six
+autres (Histoire islamique, 'Aqîda, Spiritualité, Akhlâq et Adab, Langue
+arabe, Invocations et adhkâr) affichent une page de discipline honnête
+avec un badge « Contenu en préparation » plutôt que du contenu fabriqué.
 
 ⬜ Navigation par niveau et par format (au-delà de la navigation par
 discipline) n'est pas implémentée.
+
+---
+
+## Module 02 bis — Coran et Hadith (texte intégral réel)
+
+✅ **Contenu religieux réel, pas de démonstration.** Le Coran complet
+(114 sourates, 6 236 versets) en arabe (uthmani, lecture de Hafs, complexe
+Roi Fahd) avec la traduction française de Muhammad Hamidullah, sourate
+par sourate sur `/coran`. Trois recueils de hadith en arabe et français,
+organisés par livre/chapitre avec pagination, sur `/hadith` :
+Al-Muwatta' de l'imam Mâlik (1 858 hadiths, avec gradation d'authenticité
+de Salim al-Hilali), Sahîh Al-Bukhârî (7 589 hadiths) et Sahîh Muslim
+(7 563 hadiths). Intégré à la recherche et au plan du site.
+
+Provenance précise, licences et ce qui manque encore (Tafsîr Ibn Kathîr,
+At-Tabarî, Al-Qurtubî, Ar-Rahîq Al-Makhtûm, Al-Bidâya wa An-Nihâya,
+Mukhtasar Khalîl, Ar-Risâla — non trouvés sous licence ouverte fiable,
+donc non inventés) : voir **`docs/CONTENT_SOURCES.md`**.
+
+🟡 Les titres de livre/chapitre des recueils de hadith en français sont une
+traduction éditoriale faite pour ce projet (la source ne fournit que
+l'anglais) — à faire relire par le responsable scientifique avant de la
+considérer définitive. Pas encore de lecture verset-par-verset avec
+tafsîr en regard (prévu, en attente d'une source de tafsîr francophone).
 
 ---
 
