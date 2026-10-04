@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
-import { Headphones, LoaderCircle, Pause, Play, SkipBack, SkipForward, Square } from "lucide-react";
+import { ExternalLink, Headphones, LoaderCircle, Pause, Play, SkipBack, SkipForward, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { reciters, defaultReciterId, loadRecitation, type VerseAudioRef } from "@/lib/quran/reciters";
 
@@ -182,7 +182,7 @@ export function useQuranAudioContext() {
   return context;
 }
 
-export function QuranAudioToolbar() {
+export function QuranAudioToolbar({ chapter }: { chapter: number }) {
   const player = useQuranAudioContext();
   const active = reciters.find((reciter) => reciter.id === player.reciterId)!;
   const verseIndex = player.verses.findIndex((verse) => verse.number === player.playingVerse);
@@ -222,6 +222,14 @@ export function QuranAudioToolbar() {
         </span>
       </div>
       {player.error && <p role="alert" className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 dark:bg-red-950/40 dark:text-red-200">{player.error}</p>}
+      <div className="mt-5 border-t border-border pt-4">
+        <p className="text-xs font-semibold uppercase tracking-[.16em] text-emerald-900 dark:text-gold-500">Autres récitations · sourate entière</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <a href="https://www.tvquran.com/en/scholar/355/profile/mohammed-hady-toure" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-border px-3 py-2 text-sm font-medium hover:border-gold-600">Muhammad Hady Touré <span className="text-xs text-muted">Hafs</span> <ExternalLink className="size-3.5" /></a>
+          <a href={chapter ? `https://www.mp3quran.net/ar/nourin_siddig/${chapter}` : "https://www.mp3quran.net/ar/nourin_siddig"} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-border px-3 py-2 text-sm font-medium hover:border-gold-600">Noreen Sidiq <span className="text-xs text-muted">ad-Dûrî</span> <ExternalLink className="size-3.5" /></a>
+        </div>
+        <p className="mt-2 text-xs leading-5 text-muted">Ces lectures s’ouvrent sur leurs sites sources. Le suivi des versets est réservé aux récitations synchronisées ci-dessus. La lecture ad-Dûrî de Noreen diffère du texte Hafs affiché ici.</p>
+      </div>
       <details className="mt-3 text-xs text-muted">
         <summary className="w-fit cursor-pointer hover:underline">Crédits des portraits</summary>
         <p className="mt-2 leading-relaxed">

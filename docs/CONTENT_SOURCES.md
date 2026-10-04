@@ -156,3 +156,8 @@ textes et les deux lots de scans (Risâla, Nectar) sont présents. Les 8
 visuels montrés en aperçu dans la conversation n'existent, à ce stade, que
 comme image de prévisualisation (un screenshot composite), pas comme
 fichiers SVG/PNG individuels utilisables.
+# Lecteur et récitations complémentaires (octobre 2026)
+
+Le lecteur verset par verset emploie le catalogue audio Al Quran Cloud et vérifie la numérotation des ayat avant lecture. Deux autres récitateurs sont accessibles depuis le lecteur sous forme de liens vers la source de leur récitation intégrale : Muhammad Hady Touré, collection Hafs sur [TVQuran](https://www.tvquran.com/en/scholar/355/profile/mohammed-hady-toure), et Noreen Muhammad Siddiq, collection ad-Dûrî ʿan Abî ʿAmr sur [MP3Quran](https://www.mp3quran.net/ar/nourin_siddig). Ces fichiers ne fournissent pas le découpage contrôlé nécessaire au défilement verset par verset. Le texte du site est Hafs : le lien Noreen avertit explicitement de la différence de lecture.
+
+Les signes de pause restent ceux du texte arabe sourcé existant. Aucun coloriage de tajwîd n’est appliqué : les textes annotés examinés (Al Quran Cloud `quran-tajweed`, Quran Foundation `text_uthmani_tajweed`, Quran.ws) n’ont pas été établis comme identiques caractère par caractère à l’édition locale. Les annotations fondées sur des décalages de caractères ne doivent jamais être transférées directement entre ces éditions.

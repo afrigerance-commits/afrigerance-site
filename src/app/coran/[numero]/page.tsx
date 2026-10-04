@@ -11,7 +11,8 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/lib/site-config";
 import { ReadingProgress } from "@/components/content/reading-progress";
 import { QuranAudioProvider, QuranAudioToolbar } from "@/components/islamic/quran-audio-player";
-import { QuranVerseRow, VersePlayButton } from "@/components/islamic/quran-verse-row";
+import { QuranVerseRow } from "@/components/islamic/quran-verse-row";
+import { QuranReadingTools, QuranVerseContent } from "@/components/islamic/quran-reading-tools";
 import { SourateSwitcher } from "@/components/islamic/sourate-switcher";
 
 export function generateStaticParams() {
@@ -81,26 +82,18 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
       )}
 
       <QuranAudioProvider chapter={number} verses={verses.map((v) => ({ number: v.number, globalNumber: v.globalNumber! }))}>
-        <QuranAudioToolbar />
-
-        <div className="mt-8 flex flex-col gap-2">
+        <QuranAudioToolbar chapter={number} />
+        <QuranReadingTools chapter={number}>
+        <div className="mt-5 flex flex-col gap-1 rounded-[1.5rem] border border-gold-600/20 bg-[#fffcf5] px-2 py-2 shadow-sm dark:bg-emerald-950/20 sm:px-4">
           {verses.map((v, i) => (
             <Reveal key={v.number} delay={Math.min(i * 0.015, 0.3)}>
               <QuranVerseRow verseNumber={v.number}>
-                <div className="flex items-start gap-3 pt-6">
-                  <span className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-semibold text-accent-foreground">
-                    {v.number}
-                  </span>
-                  <ArabicText as="p" variant="quran" className="quran-quote flex-1 text-2xl">
-                    {v.arabic}
-                  </ArabicText>
-                  <VersePlayButton verseNumber={v.number} />
-                </div>
-                <p className="pl-10 text-foreground/90">{v.french}</p>
+                <QuranVerseContent chapter={number} number={v.number} arabic={v.arabic} french={v.french} />
               </QuranVerseRow>
             </Reveal>
           ))}
         </div>
+        </QuranReadingTools>
       </QuranAudioProvider>
 
       <Separator className="my-10" />
@@ -116,6 +109,7 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
         </a>
         .
       </p>
+      <p className="mt-3 text-center text-xs leading-relaxed text-muted">Les signes de pause de l’édition arabe sont conservés. Le coloriage des règles de tajwîd sera proposé après validation d’un jeu d’annotations qui corresponde exactement à cette graphie ; une couleur mal placée pourrait induire en erreur.</p>
 
       <div className="mt-10 flex items-center justify-between gap-4 border-t border-border pt-6 text-sm">
         {prev ? (
