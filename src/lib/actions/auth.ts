@@ -17,9 +17,24 @@ export async function signIn(_prevState: AuthFormState, formData: FormData): Pro
   const redirectTo = String(formData.get("redirect") ?? "/compte");
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
     return { error: "Identifiants incorrects. Vérifiez votre e-mail et votre mot de passe." };
+  }
+  // L'inscription peut précéder la confirmation par e-mail : à ce moment,
+  // l'insertion du profil est refusée par RLS faute de session. Le créer
+  // maintenant, une fois la session authentifiée, évite de bloquer le rôle admin.
+  if (data.user) {
+    const { data: profile, error: readError } = await supabase
+      .from("profiles").select("id").eq("id", data.user.id).maybeSingle();
+    if (readError) return { error: "Connexion établie, mais le profil est inaccessible. Vérifiez les politiques RLS Supabase." };
+    if (!profile) {
+      const { error: profileError } = await supabase.from("profiles").insert({
+        id: data.user.id,
+        display_name: String(data.user.user_metadata?.display_name ?? email),
+      });
+      if (profileError) return { error: "Connexion établie, mais le profil n'a pas pu être créé. Vérifiez les politiques RLS Supabase." };
+    }
   }
   redirect(redirectTo);
 }
