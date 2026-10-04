@@ -13,13 +13,13 @@ import { ArticleCard } from "@/components/content/article-card";
 import { BookCard } from "@/components/content/book-card";
 import { VideoCard } from "@/components/content/video-card";
 import { disciplines, siteConfig } from "@/lib/site-config";
-import { articles } from "@/lib/data/articles";
+import { getPublishedArticles } from "@/lib/data/published-articles";
 import { books } from "@/lib/data/books";
 import { videos } from "@/lib/data/videos";
 import { learningPaths } from "@/lib/data/learning-paths";
 
-export default function HomePage() {
-  const publishedArticles = articles.filter((article) => article.statut === "publie");
+export default async function HomePage() {
+  const publishedArticles = await getPublishedArticles();
   return (
     <>
       {/* Hero */}

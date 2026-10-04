@@ -9,18 +9,14 @@ import { ShareButtons } from "@/components/content/share-buttons";
 import { ReadingProgress } from "@/components/content/reading-progress";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { articles, getArticle } from "@/lib/data/articles";
+import { getPublishedArticle } from "@/lib/data/published-articles";
 import { withHeadingIds } from "@/lib/content-html";
 import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/lib/site-config";
 
-export function generateStaticParams() {
-  return articles.filter((a) => a.statut === "publie").map((a) => ({ slug: a.slug }));
-}
-
 export async function generateMetadata({ params }: PageProps<"/blog/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const article = getArticle(slug);
+  const article = await getPublishedArticle(slug);
   if (!article) return {};
   return {
     title: article.titre,
@@ -32,7 +28,7 @@ export async function generateMetadata({ params }: PageProps<"/blog/[slug]">): P
 
 export default async function ArticlePage({ params }: PageProps<"/blog/[slug]">) {
   const { slug } = await params;
-  const article = getArticle(slug);
+  const article = await getPublishedArticle(slug);
   if (!article) notFound();
 
   const { html, headings } = withHeadingIds(article.contenuHtml);

@@ -10,7 +10,7 @@ import { BookCard } from "@/components/content/book-card";
 import { ArticleCard } from "@/components/content/article-card";
 import { disciplines } from "@/lib/site-config";
 import { books } from "@/lib/data/books";
-import { articles } from "@/lib/data/articles";
+import { getPublishedArticles } from "@/lib/data/published-articles";
 
 const hubRoute: Record<string, string> = {
   "coran-tafsir": "/coran",
@@ -46,7 +46,7 @@ export default async function DisciplinePage({ params }: PageProps<"/explorer-le
   const relatedBooks = books.filter((b) =>
     b.discipline.toLowerCase().includes(discipline.name.split(" ")[0].toLowerCase()),
   );
-  const relatedArticles = articles.filter((a) =>
+  const relatedArticles = (await getPublishedArticles()).filter((a) =>
     a.categorie.toLowerCase().includes(discipline.name.split(" ")[0].toLowerCase()),
   );
   const hub = hubRoute[discipline.slug];

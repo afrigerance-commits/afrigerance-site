@@ -49,6 +49,11 @@ export function ArticleEditForm({ article }: { article: ArticleRow }) {
           Passer à « Approuvé » ou « Publié » nécessite un compte administrateur ou responsable scientifique.
         </p>
       </div>
+      <label className="flex items-start gap-3 text-sm text-foreground">
+        <input type="checkbox" name="review_confirmed" value="yes" className="mt-1" />
+        Je confirme avoir relu le contenu religieux, les masâ’il et chaque référence citée. Cette confirmation est exigée pour « Approuvé » et « Publié ».
+      </label>
+      <p className="text-xs text-muted">« Approuvé » conserve l’article hors du site public. « Publié » le rend visible sur le blog, l’accueil, la recherche, le sitemap et le flux RSS.</p>
       {state.error && <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>}
       <div className="flex items-center gap-3">
         <Button type="submit" variant="accent" disabled={pending}>

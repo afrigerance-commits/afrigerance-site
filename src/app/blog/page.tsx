@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Reveal } from "@/components/motion/reveal";
 import { ArticleCard } from "@/components/content/article-card";
-import { articles } from "@/lib/data/articles";
+import { getPublishedArticles } from "@/lib/data/published-articles";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -10,8 +10,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/blog", types: { "application/rss+xml": "/blog/rss.xml" } },
 };
 
-export default function BlogPage() {
-  const publicArticles = articles.filter((article) => article.statut === "publie");
+export default async function BlogPage() {
+  const publicArticles = await getPublishedArticles();
   return (
     <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
       <Reveal className="flex flex-col gap-4 text-center">

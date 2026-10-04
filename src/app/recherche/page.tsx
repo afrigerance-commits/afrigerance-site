@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { articles } from "@/lib/data/articles";
+import { getPublishedArticles } from "@/lib/data/published-articles";
 import { books } from "@/lib/data/books";
 import { scholars } from "@/lib/data/scholars";
 import { siraEvents } from "@/lib/data/sira";
@@ -26,7 +26,8 @@ interface SearchResult {
   type: string;
 }
 
-function buildIndex(): SearchResult[] {
+async function buildIndex(): Promise<SearchResult[]> {
+  const articles = await getPublishedArticles();
   return [
     ...disciplines.map((d) => ({ titre: d.name, description: d.description, href: `/explorer-le-savoir/${d.slug}`, type: "Discipline" })),
     ...articles.filter((a) => a.statut === "publie").map((a) => ({ titre: a.titre, description: a.resume, href: `/blog/${a.slug}`, type: "Article" })),
@@ -59,7 +60,7 @@ export default async function RecherchePage({
   const normalized = query.toLowerCase();
 
   const results = query
-    ? buildIndex().filter(
+    ? (await buildIndex()).filter(
         (r) => r.titre.toLowerCase().includes(normalized) || r.description.toLowerCase().includes(normalized),
       )
     : [];

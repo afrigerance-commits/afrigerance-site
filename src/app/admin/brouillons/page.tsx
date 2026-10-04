@@ -13,6 +13,10 @@ export default function EditorialDraftsPage() {
           Articles fondés sur les ouvrages du corpus privé. Leur présence ici ne vaut ni approbation religieuse
           ni autorisation de publication. Les pages PDF originales ne sont pas distribuées par le site.
         </p>
+        <p className="mt-3 max-w-2xl text-sm text-muted">
+          Pour confirmer un article : ouvrez-le, préparez sa validation dans l’éditeur, relisez et corrigez le texte et ses sources,
+          puis choisissez « Approuvé » ou « Publié ». La publication exige un compte administrateur ou responsable scientifique.
+        </p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         {editorialDrafts.map((draft) => (

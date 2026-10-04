@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { siteConfig, disciplines } from "@/lib/site-config";
-import { articles } from "@/lib/data/articles";
+import { getPublishedArticles } from "@/lib/data/published-articles";
 import { books } from "@/lib/data/books";
 import { scholars } from "@/lib/data/scholars";
 import { siraEvents } from "@/lib/data/sira";
@@ -31,7 +31,7 @@ const staticRoutes = [
   "/conditions-utilisation",
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const url = (path: string) => `${siteConfig.url}${path}`;
 
   const entries: MetadataRoute.Sitemap = staticRoutes.map((path) => ({
@@ -47,7 +47,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     getBooks(c.slug).forEach((b) => entries.push({ url: url(`/hadith/${c.slug}/${b.number}`), changeFrequency: "yearly" }));
   });
   // Seul le contenu publié a vocation à être indexé.
-  articles.filter((a) => a.statut === "publie").forEach((a) => entries.push({ url: url(`/blog/${a.slug}`) }));
+  (await getPublishedArticles()).forEach((a) => entries.push({ url: url(`/blog/${a.slug}`) }));
   books.forEach((b) => entries.push({ url: url(`/bibliotheque/${b.slug}`) }));
   scholars.filter((s) => s.statut === "publie").forEach((s) => entries.push({ url: url(`/compagnons/${s.slug}`) }));
   siraEvents.filter((e) => e.statut === "publie").forEach((e) => entries.push({ url: url(`/sira/${e.slug}`) }));

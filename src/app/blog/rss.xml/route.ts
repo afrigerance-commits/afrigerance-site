@@ -1,7 +1,7 @@
-import { articles } from "@/lib/data/articles";
+import { getPublishedArticles } from "@/lib/data/published-articles";
 import { siteConfig } from "@/lib/site-config";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
 function escapeXml(value: string) {
   return value
@@ -12,9 +12,8 @@ function escapeXml(value: string) {
     .replace(/'/g, "&apos;");
 }
 
-export function GET() {
-  const items = articles
-    .filter((a) => a.statut === "publie")
+export async function GET() {
+  const items = (await getPublishedArticles())
     .map(
       (a) => `
     <item>
