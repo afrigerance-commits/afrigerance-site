@@ -1,0 +1,14 @@
+# Déploiement Netlify du site AFRIGÉRANCE (Next.js 16).
+# Netlify reconnaît Next.js et installe automatiquement son adaptateur officiel (OpenNext) :
+# pages, routes /api, actions serveur de l'administration et optimisation des images
+# deviennent des fonctions Netlify, sans autre configuration.
+# Les variables d'environnement (secrets compris) se renseignent dans l'interface Netlify,
+# jamais dans ce fichier : voir docs/deploiement-netlify.md.
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NEXT_TELEMETRY_DISABLED = "1"
