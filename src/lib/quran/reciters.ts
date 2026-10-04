@@ -3,6 +3,7 @@ export interface Reciter {
   id: string;
   nom: string;
   portrait: string;
+  mode?: "surah";
 }
 
 export const reciters: Reciter[] = [
@@ -12,6 +13,7 @@ export const reciters: Reciter[] = [
   { id: "ar.abdurrahmaansudais", nom: "Abdurrahman As-Sudais", portrait: "/images/reciters/sudais.png" },
   { id: "ar.husary", nom: "Mahmoud Al-Husary", portrait: "/images/reciters/husary.jpg" },
   { id: "ar.minshawi", nom: "Mohamed Al-Minshawi", portrait: "/images/reciters/minshawi.jpg" },
+  { id: "tvquran.hady-toure", nom: "Muhammad Hady Touré", portrait: "", mode: "surah" },
 ];
 
 export const defaultReciterId = reciters[0].id;
@@ -25,7 +27,7 @@ export interface VerseAudioRef { number: number; globalNumber: number }
  * Un catalogue incomplet ou dont la numérotation diverge est refusé entier.
  */
 export async function loadRecitation(chapter: number, reciterId: string, verses: VerseAudioRef[]): Promise<Map<number, string[]>> {
-  if (!reciters.some((reciter) => reciter.id === reciterId) || !Number.isInteger(chapter) || chapter < 1 || chapter > 114) {
+  if (!reciters.some((reciter) => reciter.id === reciterId && reciter.mode !== "surah") || !Number.isInteger(chapter) || chapter < 1 || chapter > 114) {
     throw new Error("Récitateur ou sourate invalide.");
   }
   const response = await fetch(`https://api.alquran.cloud/v1/surah/${chapter}/${reciterId}`);

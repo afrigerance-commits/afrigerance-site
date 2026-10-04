@@ -10,6 +10,7 @@ interface QuranAudioState {
   reciterId: string;
   chooseReciter: (id: string) => void;
   playingVerse: number | null;
+  playingSurah: boolean;
   paused: boolean;
   loading: boolean;
   error: string | null;
@@ -17,6 +18,7 @@ interface QuranAudioState {
   pause: () => void;
   resume: () => void;
   playVerse: (verseNumber: number, continueSequence?: boolean) => void;
+  playSurah: () => void;
 }
 
 const QuranAudioContext = createContext<QuranAudioState | null>(null);
@@ -24,6 +26,7 @@ const QuranAudioContext = createContext<QuranAudioState | null>(null);
 export function QuranAudioProvider({ chapter, verses, children }: { chapter: number; verses: VerseAudioRef[]; children: ReactNode }) {
   const [reciterId, setReciterId] = useState(defaultReciterId);
   const [playingVerse, setPlayingVerse] = useState<number | null>(null);
+  const [playingSurah, setPlayingSurah] = useState(false);
   const [paused, setPaused] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +38,7 @@ export function QuranAudioProvider({ chapter, verses, children }: { chapter: num
   const currentVerseRef = useRef<number | null>(null);
   const urlIndexRef = useRef(0);
   const sequenceRef = useRef(false);
+  const surahRef = useRef(false);
   const watchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const startRef = useRef<(verse: number, urlIndex?: number) => void>(() => {});
   const failureRef = useRef<() => void>(() => {});
@@ -50,8 +54,10 @@ export function QuranAudioProvider({ chapter, verses, children }: { chapter: num
     const audio = audioRef.current;
     if (audio) { audio.pause(); audio.removeAttribute("src"); audio.load(); }
     currentVerseRef.current = null;
+    surahRef.current = false;
     sequenceRef.current = false;
     setPlayingVerse(null);
+    setPlayingSurah(false);
     setPaused(false);
     setLoading(false);
   }, [clearWatchdog]);
@@ -103,11 +109,15 @@ export function QuranAudioProvider({ chapter, verses, children }: { chapter: num
     const onPlaying = () => { clearWatchdog(); setLoading(false); };
     const onEnded = () => {
       clearWatchdog();
+      if (surahRef.current) { stop(); return; }
       const index = verses.findIndex((verse) => verse.number === currentVerseRef.current);
       if (sequenceRef.current && verses[index + 1]) startRef.current(verses[index + 1].number);
       else stop();
     };
-    const onError = () => failureRef.current();
+    const onError = () => {
+      if (surahRef.current) { stop(); setError("La récitation intégrale est momentanément indisponible."); }
+      else failureRef.current();
+    };
     audio.addEventListener("playing", onPlaying);
     audio.addEventListener("ended", onEnded);
     audio.addEventListener("error", onError);
@@ -131,7 +141,7 @@ export function QuranAudioProvider({ chapter, verses, children }: { chapter: num
   }, [stop]);
 
   const playVerse = useCallback(async (verseNumber: number, continueSequence = false) => {
-    if (!verses.some((verse) => verse.number === verseNumber)) return;
+    if (reciterRef.current === "tvquran.hady-toure" || !verses.some((verse) => verse.number === verseNumber)) return;
     stop();
     setError(null);
     setLoading(true);
@@ -157,6 +167,21 @@ export function QuranAudioProvider({ chapter, verses, children }: { chapter: num
     }
   }, [chapter, stop, verses]);
 
+  const playSurah = useCallback(() => {
+    if (reciterRef.current !== "tvquran.hady-toure" || !Number.isInteger(chapter) || chapter < 1 || chapter > 114) return;
+    stop();
+    const audio = audioRef.current;
+    if (!audio) return;
+    setError(null);
+    surahRef.current = true;
+    setPlayingSurah(true);
+    setLoading(true);
+    audio.src = `https://download.tvquran.com/download/recitations/355/280/${String(chapter).padStart(3, "0")}.mp3`;
+    audio.play().catch(() => {
+      if (surahRef.current) { stop(); setError("Impossible de démarrer cette récitation. Réessayez."); }
+    });
+  }, [chapter, stop]);
+
   const pause = useCallback(() => {
     audioRef.current?.pause();
     clearWatchdog();
@@ -165,13 +190,13 @@ export function QuranAudioProvider({ chapter, verses, children }: { chapter: num
   }, [clearWatchdog]);
   const resume = useCallback(() => {
     const audio = audioRef.current;
-    if (!audio || currentVerseRef.current === null) return;
+    if (!audio || (currentVerseRef.current === null && !surahRef.current)) return;
     setPaused(false);
     setLoading(true);
     audio.play().catch(() => failureRef.current());
   }, []);
 
-  return <QuranAudioContext.Provider value={{ verses, reciterId, chooseReciter, playingVerse, paused, loading, error, stop, pause, resume, playVerse }}>
+  return <QuranAudioContext.Provider value={{ verses, reciterId, chooseReciter, playingVerse, playingSurah, paused, loading, error, stop, pause, resume, playVerse, playSurah }}>
     {children}
   </QuranAudioContext.Provider>;
 }
@@ -193,7 +218,7 @@ export function QuranAudioToolbar({ chapter }: { chapter: number }) {
     <div className="border-b border-[#dfd3b9] bg-emerald-900 px-5 py-4 text-ivory-50 dark:border-gold-500/20 sm:px-6">
       <div className="flex items-center gap-3">
         <span className="flex size-9 items-center justify-center rounded-full bg-gold-500/20 text-gold-500"><Headphones className="size-5" /></span>
-        <div><p className="font-display text-lg font-semibold">Écouter la sourate</p><p className="text-xs text-ivory-50/70">Choisissez une voix, puis lancez la lecture verset par verset.</p></div>
+        <div><p className="font-display text-lg font-semibold">Écouter la sourate</p><p className="text-xs text-ivory-50/70">Choisissez une voix et lancez la récitation.</p></div>
       </div>
     </div>
     <div className="px-4 py-4 sm:px-6">
@@ -202,12 +227,13 @@ export function QuranAudioToolbar({ chapter }: { chapter: number }) {
         {reciters.map((reciter) => <button key={reciter.id} type="button" onClick={() => player.chooseReciter(reciter.id)} aria-pressed={player.reciterId === reciter.id}
           className={`flex min-w-32 max-w-32 flex-col items-center gap-2 rounded-xl border p-3 text-center text-xs font-medium transition-colors hover:border-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 ${player.reciterId === reciter.id ? "border-emerald-800 bg-emerald-900/10 text-emerald-950 dark:border-gold-500 dark:bg-gold-500/15 dark:text-ivory-50" : "border-border bg-white/65 text-muted dark:bg-white/5"}`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={reciter.portrait} alt="" loading="lazy" className={`size-14 rounded-full object-cover ring-2 ${player.reciterId === reciter.id ? "ring-gold-500" : "ring-[#d8ccb2]"}`} />
+          {reciter.portrait ? <img src={reciter.portrait} alt="" loading="lazy" className={`size-14 rounded-full object-cover ring-2 ${player.reciterId === reciter.id ? "ring-gold-500" : "ring-[#d8ccb2]"}`} /> : <span aria-hidden="true" className="flex size-14 items-center justify-center rounded-full bg-emerald-900 font-display text-lg text-gold-500 ring-2 ring-[#d8ccb2]">HT</span>}
           <span>{reciter.nom}</span>
+          {reciter.mode === "surah" && <span className="text-[10px] text-muted">Sourate entière</span>}
         </button>)}
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-4">
-        {player.playingVerse === null ? <Button onClick={() => player.playVerse(player.verses[0].number, true)} disabled={player.loading} className="bg-emerald-900 text-ivory-50 hover:bg-emerald-700">
+        {active.mode === "surah" ? (!player.playingSurah ? <Button onClick={player.playSurah} disabled={player.loading} className="bg-emerald-900 text-ivory-50 hover:bg-emerald-700"><Play className="size-4" /> Écouter Muhammad Hady Touré</Button> : <><Button variant="outline" onClick={player.paused ? player.resume : player.pause}>{player.paused ? <Play className="size-4" /> : <Pause className="size-4" />}{player.paused ? "Reprendre" : "Pause"}</Button><Button variant="ghost" onClick={player.stop}><Square className="size-4" /> Arrêter</Button></>) : player.playingVerse === null ? <Button onClick={() => player.playVerse(player.verses[0].number, true)} disabled={player.loading} className="bg-emerald-900 text-ivory-50 hover:bg-emerald-700">
           {player.loading ? <LoaderCircle className="size-4 animate-spin" /> : <Play className="size-4" />} {player.loading ? "Chargement…" : "Écouter la sourate"}
         </Button> : <>
           <Button variant="outline" size="icon" aria-label="Verset précédent" disabled={!previous} onClick={() => player.playVerse(previous.number, true)}><SkipBack className="size-4" /></Button>
@@ -222,13 +248,13 @@ export function QuranAudioToolbar({ chapter }: { chapter: number }) {
         </span>
       </div>
       {player.error && <p role="alert" className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 dark:bg-red-950/40 dark:text-red-200">{player.error}</p>}
+      {active.mode === "surah" && <p className="mt-3 text-xs leading-5 text-muted">Récitation Hafs de la sourate entière, diffusée par TVQuran. La lecture n’est pas synchronisée avec les versets affichés. <a href="https://www.tvquran.com/en/scholar/355/profile/mohammed-hady-toure" target="_blank" rel="noopener noreferrer" className="underline">Source et collection</a>.</p>}
       <div className="mt-5 border-t border-border pt-4">
-        <p className="text-xs font-semibold uppercase tracking-[.16em] text-emerald-900 dark:text-gold-500">Autres récitations · sourate entière</p>
+        <p className="text-xs font-semibold uppercase tracking-[.16em] text-emerald-900 dark:text-gold-500">Autre lecture · sourate entière</p>
         <div className="mt-3 flex flex-wrap gap-2">
-          <a href="https://www.tvquran.com/en/scholar/355/profile/mohammed-hady-toure" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-border px-3 py-2 text-sm font-medium hover:border-gold-600">Muhammad Hady Touré <span className="text-xs text-muted">Hafs</span> <ExternalLink className="size-3.5" /></a>
           <a href={chapter ? `https://www.mp3quran.net/ar/nourin_siddig/${chapter}` : "https://www.mp3quran.net/ar/nourin_siddig"} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-border px-3 py-2 text-sm font-medium hover:border-gold-600">Noreen Sidiq <span className="text-xs text-muted">ad-Dûrî</span> <ExternalLink className="size-3.5" /></a>
         </div>
-        <p className="mt-2 text-xs leading-5 text-muted">Ces lectures s’ouvrent sur leurs sites sources. Le suivi des versets est réservé aux récitations synchronisées ci-dessus. La lecture ad-Dûrî de Noreen diffère du texte Hafs affiché ici.</p>
+        <p className="mt-2 text-xs leading-5 text-muted">La lecture ad-Dûrî de Noreen s’ouvre sur sa source et diffère du texte Hafs affiché ici.</p>
       </div>
       <details className="mt-3 text-xs text-muted">
         <summary className="w-fit cursor-pointer hover:underline">Crédits des portraits</summary>
@@ -247,6 +273,7 @@ export function QuranAudioToolbar({ chapter }: { chapter: number }) {
 
 export function VersePlayButton({ verseNumber }: { verseNumber: number }) {
   const player = useQuranAudioContext();
+  if (player.reciterId === "tvquran.hady-toure") return null;
   const selected = player.playingVerse === verseNumber;
   return <button type="button" onClick={() => selected ? (player.paused ? player.resume() : player.pause()) : player.playVerse(verseNumber)}
     aria-label={selected ? (player.paused ? `Reprendre le verset ${verseNumber}` : `Mettre en pause le verset ${verseNumber}`) : `Écouter le verset ${verseNumber}`}
