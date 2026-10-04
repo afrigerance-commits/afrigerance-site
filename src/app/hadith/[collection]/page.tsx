@@ -39,10 +39,10 @@ export default async function HadithCollectionPage({ params }: PageProps<"/hadit
           <Reveal key={book.number} delay={Math.min(i * 0.02, 0.4)}>
             <Link
               href={`/hadith/${slug}/${book.number}`}
-              className="flex items-center justify-between gap-4 rounded-lg border border-border bg-surface p-4 text-sm transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-sm"
+              className="group flex items-center justify-between gap-4 rounded-xl border border-gold-500/30 bg-surface p-5 text-sm shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:shadow-lg"
             >
               <span className="flex items-center gap-3">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-muted font-display text-xs">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-gold-500/40 bg-surface-muted font-display text-xs text-accent-text transition-colors group-hover:bg-emerald-900 group-hover:text-ivory-50">
                   {book.number}
                 </span>
                 <span className="font-medium">{book.titreFrancais}</span>

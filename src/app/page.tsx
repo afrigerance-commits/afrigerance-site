@@ -12,6 +12,7 @@ import { DisciplineCard } from "@/components/content/discipline-card";
 import { ArticleCard } from "@/components/content/article-card";
 import { BookCard } from "@/components/content/book-card";
 import { VideoCard } from "@/components/content/video-card";
+import { FeaturedGateways } from "@/components/content/featured-gateways";
 import { disciplines } from "@/lib/site-config";
 import { getPublishedArticles } from "@/lib/data/published-articles";
 import { books } from "@/lib/data/books";
@@ -76,6 +77,8 @@ export default async function HomePage() {
           </Reveal>
         </div>
       </section>
+
+      <FeaturedGateways />
 
       {/* Accès direct aux sciences islamiques */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { PageHeader } from "@/components/layout/page-header";
 import { Reveal } from "@/components/motion/reveal";
@@ -24,6 +25,9 @@ export default function CoranPage() {
         description="Texte uthmani (lecture de Hafs) et traduction française de Muhammad Hamidullah, les deux diffusés par le projet Tanzil."
         divider
       />
+      <Reveal className="relative mx-auto mb-12 max-w-4xl overflow-hidden rounded-[1.75rem] border border-gold-500/50 bg-emerald-900 shadow-xl">
+        <Image src="/images/mirath/quran_reading.svg" alt="Livre ouvert sous une arche décorative" width={1200} height={800} className="aspect-[2.5] w-full object-cover object-center sm:aspect-[3.5]" priority />
+      </Reveal>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {chapters.map((c, i) => (
           <Reveal key={c.number} delay={Math.min(i * 0.015, 0.4)}>

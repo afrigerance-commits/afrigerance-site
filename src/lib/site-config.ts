@@ -28,11 +28,15 @@ export const siteConfig = {
   nav: {
     primary: [
       { label: "Accueil", href: "/" },
+      { label: "Coran", href: "/coran" },
+      { label: "Hadiths", href: "/hadith" },
+      { label: "Vidéos", href: "/videos" },
+    ],
+    secondary: [
       { label: "Explorer le savoir", href: "/explorer-le-savoir" },
       { label: "Fiqh malikite", href: "/fiqh/malikite" },
       { label: "Sîra", href: "/sira" },
       { label: "Bibliothèque", href: "/bibliotheque" },
-      { label: "Vidéos", href: "/videos" },
       { label: "Blog", href: "/blog" },
       { label: "Apprendre", href: "/apprendre" },
     ],

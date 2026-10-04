@@ -22,18 +22,22 @@ export default function HadithPage() {
         description="Texte arabe et traduction française, organisés par livre, avec le degré d'authenticité lorsqu'il est fourni par l'édition source."
         divider
       />
-      <Image
-        src="/images/mirath/hadith_transmission.svg"
-        alt="Livre ouvert et chaîne de transmission matérialisée par des nœuds dorés."
-        width={1600}
-        height={900}
-        className="mx-auto mt-8 max-h-72 w-full max-w-3xl rounded-2xl object-cover"
-      />
+      <Reveal className="mx-auto mb-12 max-w-4xl overflow-hidden rounded-[1.75rem] border border-gold-500/40 bg-emerald-900 shadow-xl">
+        <Image
+          src="/images/mirath/hadith_transmission.svg"
+          alt="Livre ouvert et chaîne de transmission matérialisée par des nœuds dorés."
+          width={1600}
+          height={900}
+          className="aspect-[2.7] w-full object-cover sm:aspect-[3.6]"
+          priority
+        />
+      </Reveal>
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
         {hadithCollections.map((c, i) => (
           <Reveal key={c.slug} delay={i * 0.06}>
             <Link href={`/hadith/${c.slug}`} className="group block h-full">
-              <Card className="flex h-full flex-col transition-all group-hover:-translate-y-1 group-hover:border-accent group-hover:shadow-md">
+              <Card className="relative flex h-full flex-col overflow-hidden border-gold-500/35 transition-all duration-300 group-hover:-translate-y-1 group-hover:border-accent group-hover:shadow-xl">
+                <div className="h-1 w-full bg-gradient-to-r from-emerald-900 via-gold-500 to-emerald-900" aria-hidden="true" />
                 <CardHeader>
                   <ArabicText className="text-xl text-gold-700 dark:text-gold-500">{c.nomArabe}</ArabicText>
                   <CardTitle>{c.nom}</CardTitle>
