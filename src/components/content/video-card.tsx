@@ -8,7 +8,7 @@ import type { Video } from "@/lib/types/content";
 export function VideoCard({ video }: { video: Video }) {
   const hasLink = Boolean(video.youtubeId);
   const thumbnail = hasLink
-    ? `https://i.ytimg.com/vi/${video.youtubeId}/hqdefault.jpg`
+    ? `https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg`
     : null;
 
   return (
@@ -34,7 +34,7 @@ export function VideoCard({ video }: { video: Video }) {
           {video.categorie}
         </Badge>
         <h3 className="font-display text-base font-semibold leading-snug">{video.titre}</h3>
-        <p className="text-sm text-muted">{video.description}</p>
+        <p className="line-clamp-3 text-sm text-muted">{video.description}</p>
         <div className="mt-auto pt-2">
           {hasLink ? (
             <Link
