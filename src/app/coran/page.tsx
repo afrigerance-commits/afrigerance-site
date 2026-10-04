@@ -26,7 +26,7 @@ export default function CoranPage() {
         divider
       />
       <Reveal className="relative mx-auto mb-12 max-w-4xl overflow-hidden rounded-[1.75rem] border border-gold-500/50 bg-emerald-900 shadow-xl">
-        <Image src="/images/mirath/quran_reading.svg" alt="Livre ouvert sous une arche décorative" width={1200} height={800} className="aspect-[2.5] w-full object-cover object-center sm:aspect-[3.5]" priority />
+        <Image src="/images/mirath/coran_etude.webp" alt="Illustration d’un livre ouvert aux pages vierges dans une bibliothèque" width={1536} height={1024} className="aspect-[2.5] w-full object-cover object-center sm:aspect-[3.5]" priority />
       </Reveal>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {chapters.map((c, i) => (

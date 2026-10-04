@@ -38,7 +38,7 @@ export default async function VideosPage() {
         )}
       </Reveal>
       <Reveal className="relative mx-auto mt-10 max-w-5xl overflow-hidden rounded-[1.75rem] border border-gold-500/40 bg-emerald-900 shadow-xl">
-        <Image src="/images/mirath/video_lessons.svg" alt="Vidéothèque illustrée par un écran et un bouton de lecture" width={1200} height={800} className="aspect-[2.7] w-full object-cover sm:aspect-[3.6]" priority />
+        <Image src="/images/mirath/video_studio.webp" alt="Illustration d’un studio de vidéo éducative" width={1536} height={1024} className="aspect-[2.7] w-full object-cover sm:aspect-[3.6]" priority />
       </Reveal>
       <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {videos.map((video, i) => (

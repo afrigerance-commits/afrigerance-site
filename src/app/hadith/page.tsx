@@ -24,10 +24,10 @@ export default function HadithPage() {
       />
       <Reveal className="mx-auto mb-12 max-w-4xl overflow-hidden rounded-[1.75rem] border border-gold-500/40 bg-emerald-900 shadow-xl">
         <Image
-          src="/images/mirath/hadith_transmission.svg"
-          alt="Livre ouvert et chaîne de transmission matérialisée par des nœuds dorés."
-          width={1600}
-          height={900}
+          src="/images/mirath/hadith_etude.webp"
+          alt="Illustration de livres sans titres sur une table d’étude."
+          width={1536}
+          height={1024}
           className="aspect-[2.7] w-full object-cover sm:aspect-[3.6]"
           priority
         />

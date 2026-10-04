@@ -4,9 +4,9 @@ import { ArrowUpRight, BookOpen, ScrollText, CirclePlay } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 
 const gateways = [
-  { href: "/coran", title: "Le Coran", detail: "Lire, écouter et suivre les versets", image: "/images/mirath/quran_reading.svg", alt: "Illustration d’un livre ouvert sous une arche émeraude", Icon: BookOpen },
-  { href: "/hadith", title: "Les hadiths", detail: "Explorer les recueils et leurs sources", image: "/images/mirath/hadith_transmission.svg", alt: "Livre ouvert et représentation de la transmission", Icon: ScrollText },
-  { href: "/videos", title: "Les vidéos", detail: "Retrouver les enseignements en image", image: "/images/mirath/video_lessons.svg", alt: "Illustration d’une vidéothèque et d’un bouton de lecture", Icon: CirclePlay },
+  { href: "/coran", title: "Le Coran", detail: "Lire, écouter et suivre les versets", image: "/images/mirath/coran_etude.webp", alt: "Illustration d’un livre ouvert aux pages vierges dans une bibliothèque", Icon: BookOpen },
+  { href: "/hadith", title: "Les hadiths", detail: "Explorer les recueils et leurs sources", image: "/images/mirath/hadith_etude.webp", alt: "Illustration de livres sans titres sur une table d’étude", Icon: ScrollText },
+  { href: "/videos", title: "Les vidéos", detail: "Retrouver les enseignements en image", image: "/images/mirath/video_studio.webp", alt: "Illustration d’un studio de vidéo éducative", Icon: CirclePlay },
 ] as const;
 
 export function FeaturedGateways() {
