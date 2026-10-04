@@ -10,7 +10,9 @@ import { getChapters, getChapterMeta, getChapterVerses } from "@/lib/quran/data"
 import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/lib/site-config";
 import { ReadingProgress } from "@/components/content/reading-progress";
-import { QuranAudioProvider, QuranAudioToolbar, VersePlayButton } from "@/components/islamic/quran-audio-player";
+import { QuranAudioProvider, QuranAudioToolbar } from "@/components/islamic/quran-audio-player";
+import { QuranVerseRow, VersePlayButton } from "@/components/islamic/quran-verse-row";
+import { SourateSwitcher } from "@/components/islamic/sourate-switcher";
 
 export function generateStaticParams() {
   return getChapters().map((c) => ({ numero: String(c.number) }));
@@ -34,6 +36,7 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
   if (!chapter) notFound();
 
   const verses = getChapterVerses(number);
+  const chapters = getChapters();
   const prev = number > 1 ? getChapterMeta(number - 1) : undefined;
   const next = number < 114 ? getChapterMeta(number + 1) : undefined;
 
@@ -65,6 +68,7 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
         <ArabicText as="p" variant="quran" className="text-2xl text-gold-700 dark:text-gold-500">
           {chapter.nameArabic}
         </ArabicText>
+        <SourateSwitcher chapters={chapters} current={chapter.number} />
       </Reveal>
 
       {isBismillahImplicit && (
@@ -78,11 +82,11 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
       <QuranAudioProvider verses={verses.map((v) => ({ number: v.number, globalNumber: v.globalNumber! }))}>
         <QuranAudioToolbar />
 
-        <div className="mt-10 flex flex-col gap-8">
+        <div className="mt-10 flex flex-col gap-2">
           {verses.map((v, i) => (
             <Reveal key={v.number} delay={Math.min(i * 0.015, 0.3)}>
-              <div className="flex flex-col gap-3 border-b border-border pb-8 last:border-0">
-                <div className="flex items-start gap-3">
+              <QuranVerseRow verseNumber={v.number}>
+                <div className="flex items-start gap-3 pt-6">
                   <span className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-semibold text-accent-foreground">
                     {v.number}
                   </span>
@@ -92,7 +96,7 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
                   <VersePlayButton verseNumber={v.number} />
                 </div>
                 <p className="pl-10 text-foreground/90">{v.french}</p>
-              </div>
+              </QuranVerseRow>
             </Reveal>
           ))}
         </div>

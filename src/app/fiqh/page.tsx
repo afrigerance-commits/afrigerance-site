@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
+import { LightDivider } from "@/components/motion/light-divider";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/lib/site-config";
 
@@ -18,6 +19,7 @@ export default function FiqhPage() {
         <span className="text-sm font-medium text-accent-text">Fiqh</span>
         <h1 className="font-display text-4xl font-semibold sm:text-5xl">La jurisprudence islamique</h1>
         <p className="text-lg text-muted">{siteConfig.madhhab.note}</p>
+        <LightDivider className="my-2" />
         <Button variant="accent" size="lg" asChild>
           <Link href="/fiqh/malikite">
             Académie de fiqh malikite <ArrowRight className="h-4 w-4" />

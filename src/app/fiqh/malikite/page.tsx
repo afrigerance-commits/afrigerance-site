@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Reveal } from "@/components/motion/reveal";
+import { LightDivider } from "@/components/motion/light-divider";
 import { CourseCard } from "@/components/content/course-card";
 import { Badge } from "@/components/ui/badge";
 import { fiqhCourses } from "@/lib/data/fiqh";
@@ -37,6 +38,7 @@ export default function AcademieFiqhMalikitePage() {
         <h1 className="font-display text-4xl font-semibold sm:text-5xl">Apprendre le fiqh, étape par étape</h1>
         <p className="mx-auto max-w-2xl text-muted">{siteConfig.madhhab.note}</p>
       </Reveal>
+      <LightDivider className="mt-8" />
 
       <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-3">
         {niveaux.map((niveau, i) => (

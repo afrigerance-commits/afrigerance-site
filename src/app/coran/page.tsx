@@ -22,6 +22,7 @@ export default function CoranPage() {
         eyebrow="Coran et Tafsîr"
         title="Le Coran"
         description="Texte uthmani (lecture de Hafs) et traduction française de Muhammad Hamidullah, les deux diffusés par le projet Tanzil."
+        divider
       />
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {chapters.map((c, i) => (

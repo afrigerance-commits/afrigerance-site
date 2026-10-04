@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Reveal } from "@/components/motion/reveal";
+import { LightDivider } from "@/components/motion/light-divider";
 import { BookCard } from "@/components/content/book-card";
 import { books } from "@/lib/data/books";
 
@@ -20,6 +21,7 @@ export default function BibliothequePage() {
           vérification préalable de ses droits de diffusion.
         </p>
       </Reveal>
+      <LightDivider className="mt-8" />
       <div className="mt-14 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
         {books.map((book, i) => (
           <Reveal key={book.slug} delay={i * 0.04}>

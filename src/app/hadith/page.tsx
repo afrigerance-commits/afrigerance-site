@@ -19,6 +19,7 @@ export default function HadithPage() {
         eyebrow="Hadith"
         title="Les recueils de hadith"
         description="Texte arabe et traduction française, organisés par livre, avec le degré d'authenticité lorsqu'il est fourni par l'édition source."
+        divider
       />
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
         {hadithCollections.map((c, i) => (

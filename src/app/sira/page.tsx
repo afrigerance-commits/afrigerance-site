@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Reveal } from "@/components/motion/reveal";
+import { LightDivider } from "@/components/motion/light-divider";
 import { Timeline } from "@/components/content/timeline-event";
 import { siraEvents } from "@/lib/data/sira";
 
@@ -20,6 +21,7 @@ export default function SiraPage() {
           l’authenticité est discutée sont signalés comme tels.
         </p>
       </Reveal>
+      <LightDivider className="mt-8" />
 
       <div className="mt-16">
         <Timeline events={siraEvents} />
