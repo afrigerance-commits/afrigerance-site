@@ -10,7 +10,7 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/lib/site-config";
 
 export function generateStaticParams() {
-  return fiqhCourses.map((c) => ({ course: c.slug }));
+  return fiqhCourses.filter((c) => c.statut === "publie").map((c) => ({ course: c.slug }));
 }
 
 export async function generateMetadata({
@@ -58,7 +58,7 @@ export default async function FiqhCoursePage({ params }: PageProps<"/fiqh/maliki
       </Reveal>
 
       <ol className="mt-12 flex flex-col gap-4">
-        {course.lessons.map((lesson, i) => (
+        {course.lessons.filter((lesson) => lesson.statut === "publie").map((lesson, i) => (
           <Reveal key={lesson.slug} delay={i * 0.05}>
             <Link href={`/fiqh/malikite/${course.slug}/${lesson.slug}`}>
               <Card className="flex items-center justify-between gap-4 p-5 transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-md">

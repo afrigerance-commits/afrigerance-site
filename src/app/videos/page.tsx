@@ -34,12 +34,17 @@ export default function VideosPage() {
         )}
       </Reveal>
       <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {videos.map((video, i) => (
+        {videos.filter((video) => video.youtubeId).map((video, i) => (
           <Reveal key={video.slug} delay={i * 0.05}>
             <VideoCard video={video} />
           </Reveal>
         ))}
       </div>
+      {!videos.some((video) => video.youtubeId) && (
+        <p className="mt-8 rounded-xl border border-border bg-surface p-6 text-center text-sm text-muted">
+          Les vidéos seront ajoutées lorsque leurs liens authentiques auront été fournis.
+        </p>
+      )}
     </div>
   );
 }

@@ -198,8 +198,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Dernières vidéos */}
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      {/* Vidéos réelles uniquement */}
+      <section className={videos.some((video) => video.youtubeId) ? "mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" : "hidden"}>
         <Reveal className="mb-12 flex flex-col items-center gap-3 text-center">
           <span className="inline-flex items-center gap-2 text-sm font-medium text-accent-text">
             <YoutubeIcon className="h-4 w-4" /> Vidéothèque
@@ -207,7 +207,7 @@ export default function HomePage() {
           <h2 className="font-display text-3xl font-semibold sm:text-4xl">Nos derniers enseignements en vidéo</h2>
         </Reveal>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-          {videos.map((video, i) => (
+          {videos.filter((video) => video.youtubeId).map((video, i) => (
             <Reveal key={video.slug} delay={i * 0.05}>
               <VideoCard video={video} />
             </Reveal>

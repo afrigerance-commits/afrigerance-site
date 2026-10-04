@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { siraEvents, getSiraEvent } from "@/lib/data/sira";
 
 export function generateStaticParams() {
-  return siraEvents.map((e) => ({ slug: e.slug }));
+  return siraEvents.filter((e) => e.statut === "publie").map((e) => ({ slug: e.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps<"/sira/[slug]">): Promise<Metadata> {

@@ -1,15 +1,14 @@
 /**
  * Configuration centrale de l’identité du site.
- * Le nom de marque est provisoire ("Bayt Al-'Ilm") : tout le texte de marque
- * passe par cet objet pour permettre un renommage ultérieur en un seul endroit.
+ * Identité MIRÂTH : tout le texte de marque passe par cet objet.
  */
 export const siteConfig = {
-  name: "Bayt Al-'Ilm",
-  nameArabic: "بيت العلم",
-  tagline: "La maison du savoir",
+  name: "MIRÂTH",
+  nameArabic: "ميراث",
+  tagline: "Un héritage de savoir, une lumière à transmettre",
   description:
     "Un espace francophone pour apprendre les sciences islamiques avec rigueur : Coran et tafsîr, hadith, fiqh malikite, sîra prophétique et bibliothèque islamique documentée.",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://bayt-al-ilm.example.org",
+  url: process.env.NEXT_PUBLIC_SITE_URL || process.env.URL || "http://localhost:3000",
   locale: "fr-FR",
   founder: {
     name: "Le fondateur",
@@ -21,7 +20,7 @@ export const siteConfig = {
     note: "Le fiqh est présenté selon l’école malikite. Les divergences avec les autres écoles sont signalées avec leurs sources respectives, dans un esprit de respect mutuel.",
   },
   social: {
-    youtube: "https://www.youtube.com/@bayt-al-ilm",
+    youtube: "",
     whatsapp: "",
     facebook: "",
     instagram: "",

@@ -176,5 +176,5 @@ export const siraEvents: SiraEvent[] = [
 ];
 
 export function getSiraEvent(slug: string) {
-  return siraEvents.find((event) => event.slug === slug);
+  return siraEvents.find((event) => event.slug === slug && event.statut === "publie");
 }

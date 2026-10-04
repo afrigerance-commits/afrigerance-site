@@ -14,7 +14,9 @@ import { ReadingProgress } from "@/components/content/reading-progress";
 const niveauLabel = { debutant: "Débutant", intermediaire: "Intermédiaire", avance: "Avancé" } as const;
 
 export function generateStaticParams() {
-  return fiqhCourses.flatMap((c) => c.lessons.map((l) => ({ course: c.slug, lesson: l.slug })));
+  return fiqhCourses.filter((c) => c.statut === "publie").flatMap((c) =>
+    c.lessons.filter((l) => l.statut === "publie").map((l) => ({ course: c.slug, lesson: l.slug })),
+  );
 }
 
 export async function generateMetadata({

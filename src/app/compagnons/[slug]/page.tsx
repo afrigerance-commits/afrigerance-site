@@ -20,7 +20,7 @@ const categorieLabel = {
 } as const;
 
 export function generateStaticParams() {
-  return scholars.map((s) => ({ slug: s.slug }));
+  return scholars.filter((s) => s.statut === "publie").map((s) => ({ slug: s.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps<"/compagnons/[slug]">): Promise<Metadata> {

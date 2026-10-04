@@ -71,12 +71,18 @@ export default function AcademieFiqhMalikitePage() {
       <section className="mt-20">
         <h2 className="mb-6 font-display text-2xl font-semibold">Cours disponibles</h2>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          {fiqhCourses.map((course, i) => (
+          {fiqhCourses.filter((course) => course.statut === "publie").map((course, i) => (
             <Reveal key={course.slug} delay={i * 0.05}>
               <CourseCard course={course} href={`/fiqh/malikite/${course.slug}`} />
             </Reveal>
           ))}
         </div>
+        {!fiqhCourses.some((course) => course.statut === "publie") && (
+          <p className="mt-6 rounded-xl border border-border bg-surface p-6 text-sm text-muted">
+            Les leçons sont en cours de vérification et seront accessibles après validation. Les ouvrages utilisés
+            sont déjà présentés dans la bibliothèque.
+          </p>
+        )}
       </section>
     </div>
   );

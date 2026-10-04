@@ -19,6 +19,7 @@
 
 - Vérifier `/`, `/coran`, une sourate, `/hadith`, un chapitre, `/fiqh/malikite`, `/bibliotheque`, `/blog`, `/sitemap.xml` et `/blog/rss.xml` sur l'URL Netlify réelle.
 - Les quatre articles du lot 01 sont sous `/admin/brouillons` et exclus de `/blog`, des URLs publiques, du sitemap et du RSS tant qu'ils sont `en_cours_de_verification`. L'accès admin exige une session Supabase et un rôle éditorial. Sans Supabase, utiliser le dossier de lecture remis au fondateur.
+- Les anciennes leçons de fiqh, chronologies de Sîra et biographies encore non approuvées ne sont plus routées publiquement ; leurs index expliquent le travail de vérification. Les parcours publics renvoient désormais au Coran, aux recueils de hadith et aux notices de bibliothèque. Les vidéos sans URL authentique sont masquées.
 - La revue humaine doit contrôler le fond religieux et les références ; elle précède tout changement de statut vers `approuve` ou `publie`. La validation du déploiement technique ne vaut pas approbation religieuse des articles.
 - Tester le lecteur audio sur deux versets de sourates différentes avec Alafasy. Les autres récitants ne sont pas tous confirmés. Ne pas annoncer une synchronisation correcte sans écoute effective.
 - Contrôler à 360 px et sur ordinateur les menus, les cartes, le contraste et le respect de `prefers-reduced-motion`.

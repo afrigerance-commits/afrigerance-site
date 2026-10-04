@@ -73,5 +73,5 @@ export const scholars: Scholar[] = [
 ];
 
 export function getScholar(slug: string) {
-  return scholars.find((s) => s.slug === slug);
+  return scholars.find((s) => s.slug === slug && s.statut === "publie");
 }

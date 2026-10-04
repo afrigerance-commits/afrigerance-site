@@ -20,12 +20,17 @@ export default function CompagnonsPage() {
         </p>
       </Reveal>
       <div className="mt-14 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
-        {scholars.map((s, i) => (
+        {scholars.filter((s) => s.statut === "publie").map((s, i) => (
           <Reveal key={s.slug} delay={i * 0.05}>
             <ScholarCard scholar={s} />
           </Reveal>
         ))}
       </div>
+      {!scholars.some((s) => s.statut === "publie") && (
+        <p className="mt-8 rounded-xl border border-border bg-surface p-6 text-center text-sm text-muted">
+          Les biographies sont en cours de vérification documentaire avant leur publication.
+        </p>
+      )}
     </div>
   );
 }

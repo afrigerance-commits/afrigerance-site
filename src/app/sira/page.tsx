@@ -32,7 +32,14 @@ export default function SiraPage() {
       />
 
       <div className="mt-16">
-        <Timeline events={siraEvents} />
+        {siraEvents.some((event) => event.statut === "publie") ? (
+          <Timeline events={siraEvents.filter((event) => event.statut === "publie")} />
+        ) : (
+          <p className="rounded-xl border border-border bg-surface p-6 text-center text-sm text-muted">
+            La chronologie est en cours de vérification sur les ouvrages sources. La notice du Nectar cacheté est
+            disponible dans la bibliothèque.
+          </p>
+        )}
       </div>
     </div>
   );

@@ -200,10 +200,10 @@ export const fiqhCourses: FiqhCourse[] = [
 ];
 
 export function getFiqhCourse(slug: string) {
-  return fiqhCourses.find((course) => course.slug === slug);
+  return fiqhCourses.find((course) => course.slug === slug && course.statut === "publie");
 }
 
 export function getFiqhLesson(courseSlug: string, lessonSlug: string) {
   const course = getFiqhCourse(courseSlug);
-  return course?.lessons.find((lesson) => lesson.slug === lessonSlug);
+  return course?.lessons.find((lesson) => lesson.slug === lessonSlug && lesson.statut === "publie");
 }
