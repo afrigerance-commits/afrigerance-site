@@ -22,11 +22,19 @@ Le lecteur audio verset par verset (et lecture continue d'une sourate) charge
 les fichiers mp3 directement depuis l'API ouverte
 [Al Quran Cloud](https://alquran.cloud) (`cdn.islamic.network`), au moment de
 la lecture, dans le navigateur de chaque visiteur — aucun fichier audio n'est
-hébergé ni stocké par ce site. Récitateurs proposés : Mishary Rashid Alafasy,
-Abdul Basit (Murattal), Saoud Ash-Shuraim, Mahmoud Khalil Al-Husary, Mohamed
-Siddiq Al-Minshawi. Si un verset est absent au débit 128 kbps pour un
-récitateur donné, le lecteur retente automatiquement en 64 kbps avant
-d'abandonner ce verset.
+hébergé ni stocké par ce site. Récitateurs proposés : Mishary Rashid Alafasy
+(confirmé correct en production), Mahmoud Khalil Al-Husary et Mohamed Siddiq
+Al-Minshawi (pas encore testés en production). Si un verset est absent au
+débit 128 kbps pour un récitateur donné, le lecteur retente automatiquement
+en 64 kbps avant de passer au suivant ; un minuteur de secours force aussi le
+passage au verset suivant si aucun son ne démarre sous 5 secondes.
+
+**Récitateurs retirés après test** : Abdul Basit (Murattal) et Saoud
+Ash-Shuraim ont été testés en production et jouaient un verset différent de
+celui affiché — ce CDN semble indexer certains récitateurs autrement qu'avec
+un numéro d'ayah global 1-6236. Diffuser le mauvais verset sous une
+étiquette donnée serait pire que l'absence de son, ils ont donc été retirés
+jusqu'à vérification du bon schéma d'indexation pour ces deux récitateurs.
 
 ## Hadith (`/hadith`)
 
