@@ -19,6 +19,12 @@ export function ReadingProgress() {
       style={{ scaleX }}
       role="progressbar"
       aria-label="Progression de lecture"
-    />
+    >
+      {/* Pointe lumineuse en tête de la barre : la connaissance qui avance avec la lecture. */}
+      <span
+        aria-hidden="true"
+        className="absolute right-0 top-1/2 h-3 w-3 -translate-y-1/2 translate-x-1/2 rounded-full bg-gold-500 shadow-[0_0_10px_3px_rgba(198,166,103,0.65)]"
+      />
+    </motion.div>
   );
 }

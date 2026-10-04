@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Reveal } from "@/components/motion/reveal";
+import { LightDivider } from "@/components/motion/light-divider";
 import { HeroGeometry } from "@/components/islamic/hero-geometry";
 import { QuranQuote } from "@/components/islamic/quran-quote";
 import { DisciplineCard } from "@/components/content/discipline-card";
@@ -128,6 +129,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      <LightDivider className="mt-4" />
+
       {/* Citation coranique */}
       <section className="mx-auto max-w-5xl px-4 py-20 sm:px-6 lg:px-8">
         <Reveal>
@@ -211,7 +214,8 @@ export default function HomePage() {
       </section>
 
       {/* Fondateur */}
-      <section className="border-t border-border bg-emerald-900 text-ivory-50">
+      <section className="relative border-t border-border bg-emerald-900 text-ivory-50">
+        <LightDivider tone="inverse" className="absolute left-1/2 top-0 max-w-xs -translate-x-1/2 -translate-y-1/2" />
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-4 py-20 text-center sm:px-6 lg:px-8">
           <Reveal>
             <Avatar className="h-20 w-20">

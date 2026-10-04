@@ -23,7 +23,10 @@ les fichiers mp3 directement depuis l'API ouverte
 [Al Quran Cloud](https://alquran.cloud) (`cdn.islamic.network`), au moment de
 la lecture, dans le navigateur de chaque visiteur — aucun fichier audio n'est
 hébergé ni stocké par ce site. Récitateurs proposés : Mishary Rashid Alafasy,
-Abdul Basit (Murattal), Mahmoud Khalil Al-Husary, Mohamed Siddiq Al-Minshawi.
+Abdul Basit (Murattal), Saoud Ash-Shuraim, Mahmoud Khalil Al-Husary, Mohamed
+Siddiq Al-Minshawi. Si un verset est absent au débit 128 kbps pour un
+récitateur donné, le lecteur retente automatiquement en 64 kbps avant
+d'abandonner ce verset.
 
 ## Hadith (`/hadith`)
 

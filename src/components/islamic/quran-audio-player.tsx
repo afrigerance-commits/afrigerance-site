@@ -33,6 +33,7 @@ export function QuranAudioProvider({ verses, children }: { verses: VerseAudioRef
   const [reciterId, setReciterId] = useState(defaultReciterId);
   const [playingVerse, setPlayingVerse] = useState<number | null>(null);
   const sequentialRef = useRef(false);
+  const triedFallbackRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -56,7 +57,8 @@ export function QuranAudioProvider({ verses, children }: { verses: VerseAudioRef
       const verse = verses.find((v) => v.number === verseNumber);
       if (!audio || !verse) return;
       sequentialRef.current = continueSequence;
-      audio.src = getAyahAudioUrl(verse.globalNumber, reciterId);
+      triedFallbackRef.current = false;
+      audio.src = getAyahAudioUrl(verse.globalNumber, reciterId, 128);
       audio.play().catch(() => setPlayingVerse(null));
       setPlayingVerse(verseNumber);
     },
@@ -66,7 +68,8 @@ export function QuranAudioProvider({ verses, children }: { verses: VerseAudioRef
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    const handleEnded = () => {
+
+    const goToNextOrStop = () => {
       if (!sequentialRef.current || playingVerse === null) {
         setPlayingVerse(null);
         return;
@@ -80,9 +83,32 @@ export function QuranAudioProvider({ verses, children }: { verses: VerseAudioRef
         setPlayingVerse(null);
       }
     };
-    audio.addEventListener("ended", handleEnded);
-    return () => audio.removeEventListener("ended", handleEnded);
-  }, [playingVerse, verses, playVerse]);
+
+    // Certains récitateurs n'ont pas tous les versets disponibles au débit
+    // 128 kbps sur cdn.islamic.network : on retente une fois en 64 kbps
+    // avant d'abandonner le verset (voir note dans lib/quran/reciters.ts).
+    const handleError = () => {
+      if (triedFallbackRef.current || playingVerse === null) {
+        goToNextOrStop();
+        return;
+      }
+      const verse = verses.find((v) => v.number === playingVerse);
+      if (!verse) {
+        goToNextOrStop();
+        return;
+      }
+      triedFallbackRef.current = true;
+      audio.src = getAyahAudioUrl(verse.globalNumber, reciterId, 64);
+      audio.play().catch(goToNextOrStop);
+    };
+
+    audio.addEventListener("ended", goToNextOrStop);
+    audio.addEventListener("error", handleError);
+    return () => {
+      audio.removeEventListener("ended", goToNextOrStop);
+      audio.removeEventListener("error", handleError);
+    };
+  }, [playingVerse, reciterId, verses, playVerse]);
 
   return (
     <QuranAudioContext.Provider value={{ verses, reciterId, setReciterId, playingVerse, stop, playVerse }}>
