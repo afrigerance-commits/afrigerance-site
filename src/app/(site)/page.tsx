@@ -10,7 +10,8 @@ import { TextLink } from "@/components/ui/button";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { faqItems, homeFaqIds } from "@/content/faq";
 import { homeFaq } from "@/content/home";
-import { site } from "@/content/site";
+import { contactDetails, site } from "@/content/site";
+import { dialable } from "@/lib/contact";
 import { siteUrl } from "@/lib/site-url";
 
 export const metadata: Metadata = {
@@ -22,9 +23,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-/** Données structurées de l'organisation : nom, description et signature, sans adresse ni avis non confirmés. */
+/** Données structurées de l'organisation : nom, description, signature et coordonnées confirmées (contactDetails), sans avis. */
 function organizationData() {
   const base = siteUrl();
+  const { phone, email, address } = contactDetails;
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -32,6 +34,9 @@ function organizationData() {
     description: site.description,
     slogan: site.tagline,
     ...(base ? { url: base.origin, logo: new URL("/icon.png", base).toString() } : {}),
+    ...(phone ? { telephone: dialable(phone) } : {}),
+    ...(email ? { email } : {}),
+    ...(address?.length ? { address: address.join(", ") } : {}),
   };
 }
 

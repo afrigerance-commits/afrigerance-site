@@ -1,6 +1,6 @@
 # État du cahier des charges — site AFRIGÉRANCE
 
-Mise à jour : 4 octobre 2026 · Branche `claude/afrigerance-homepage-7974ch` · Site **non déployé**, prêt pour Netlify.
+Mise à jour : 4 octobre 2026 · Branche `claude/afrigerance-homepage-7974ch` · Site **en ligne** sur https://afrigerance.netlify.app (branche `main`, Netlify).
 
 Référence : « TDR AFRIGERANCE — Cahier des charges » v1.0, avec les précisions données ensuite. Ces précisions priment sur le document :
 
@@ -20,7 +20,7 @@ Légende :
 | Exigence | Statut | Commentaire |
 | --- | --- | --- |
 | Présenter AFRIGÉRANCE, son approche et ses domaines | Réalisé | Accueil, Services, À propos |
-| Modalités de contact | Bloqué | Page Contact et formulaire prêts. Aucune coordonnée n’est confirmée (téléphone, email, WhatsApp, adresse, horaires). |
+| Modalités de contact | Réalisé en partie | Formulaire, page Contact et pied de page. Téléphone, email et adresse confirmés et publiés (octobre 2026). WhatsApp et horaires non fournis, donc non publiés. |
 | S’adresser au lecteur avec « vous », termes simples | Réalisé | |
 | N’inventer aucun chiffre, client, certification, engagement | Réalisé | Vérifié sur toutes les pages. Aucune disponibilité ni aucun délai n’est promis. |
 | Aider à identifier le service adapté | Réalisé | Page Services + formulaire guidé |
@@ -45,9 +45,9 @@ Légende :
 | Secteurs (PME, éducation, administrations, commerce, BTP, résidentiel) | Réalisé en partie | Publics présentés sur l’accueil (TDR § 2.2 et § 6). Pages dédiées par secteur non créées : contenu à fournir. |
 | Réalisations | Bloqué | Cas vérifiés et autorisations nécessaires. Aucun cas fictif ne sera publié. |
 | Ressources / FAQ | Réalisé | Page `/faq` : 8 questions aux réponses confirmées, données structurées FAQPage. Les questions bloquées (§ 7) ne sont pas publiées. |
-| Demander un devis | Réalisé | Formulaire complet, demandes enregistrées. **Base réelle à connecter** (§ 8). |
+| Demander un devis | Réalisé | Formulaire complet, demandes enregistrées dans la base de production (Neon). |
 | Prendre rendez-vous | Réalisé | Page `/rendez-vous` (voir § 9) |
-| Contact | Réalisé | Formulaire court, messages enregistrés. **Base réelle à connecter.** Coordonnées : bloquées. |
+| Contact | Réalisé | Formulaire court, messages enregistrés. Téléphone, email et adresse affichés. |
 | Mentions légales | Bloqué | Page d’attente non indexée. Informations légales à fournir. |
 | Politique de confidentialité | Bloqué | Page `/confidentialite` rédigée d’après le fonctionnement réel du site, non indexée. À compléter : responsable du traitement, durée de conservation. |
 | Bannière cookies | Réalisé | Non nécessaire à ce jour : le site public ne dépose aucun cookie ni traceur. Seul l’espace administrateur utilise un cookie de session, strictement nécessaire. À revoir si un outil d’audience est ajouté. |
@@ -91,7 +91,7 @@ Légende :
 | Anti-spam | Réalisé | Champ piège invisible, délai minimal de 2 s, taille limitée, au plus 5 demandes en 10 minutes et 20 par jour par connexion (empreinte IP, jamais l’adresse elle-même) |
 | Doubles soumissions | Réalisé | Clé unique par formulaire : un double clic ou un nouvel essai n’enregistre qu’une demande |
 | Captcha | À développer | Seulement si du spam passe malgré les protections |
-| Notification par email au gestionnaire | Bloqué | Réalisé pour les devis, les demandes de rendez-vous et les messages de contact. L’email contient référence, date, pôles, prestations, description, ville, coordonnées et, si `SITE_URL` est renseignée, un lien vers la fiche `/admin`. Testé avec un service d’email simulé. **Réception d’un vrai email : en attente** de la clé Resend et de l’adresse du gestionnaire. Procédure dans le README (« Tester avec un vrai email reçu », commande `npm run email:test`). |
+| Notification par email au gestionnaire | Bloqué | Réalisé pour les devis, les demandes de rendez-vous et les messages de contact. L’email contient référence, date, pôles, prestations, description, ville, coordonnées et, si `SITE_URL` est renseignée, un lien vers la fiche `/admin`. Testé avec un service d’email simulé. Resend configuré (expéditeur de test `onboarding@resend.dev`, destinataire afrigerance@gmail.com) : `npm run email:test` accepté par Resend. **Réception des notifications du site en ligne : à confirmer.** Accusé de réception au visiteur : nécessite un domaine vérifié chez Resend. |
 | Demande conservée si l’email échoue | Réalisé | Échec visible dans l’administration (bandeau, filtre, badge, erreur Resend). Le bouton « Renvoyer la notification » renvoie seulement l’email, jamais une seconde demande ; deux clics simultanés ne produisent qu’un email. « Envoyée » n’est affiché qu’après acceptation par Resend. |
 | Accusé de réception à l’écran | Réalisé | Texte du TDR § 8.3 + référence |
 | Email de confirmation au visiteur | À développer | Nécessite un domaine d’envoi vérifié |
@@ -108,9 +108,9 @@ Légende :
 | Exigence | Statut | Commentaire |
 | --- | --- | --- |
 | Formulaire de rendez-vous (créneaux demandés, confirmation) | Réalisé | Motif, pôle, mode de rencontre, deux créneaux (date et moment), ville, précisions, coordonnées. Les créneaux restent des demandes, confirmées par AFRIGÉRANCE. Même enregistrement, notification et administration que les devis. |
-| Contact : nom, moyen de contact, objet, message, information de confidentialité | Réalisé | Messages enregistrés et visibles dans l’administration. **Base réelle à connecter.** |
-| Liens téléphone, email, WhatsApp | Réalisé | Affichés automatiquement dès qu’une coordonnée est renseignée dans `src/content/site.ts`. Aucune n’est confirmée à ce jour. |
-| Adresse et horaires | Bloqué | Non fournis, donc non publiés |
+| Contact : nom, moyen de contact, objet, message, information de confidentialité | Réalisé | Messages enregistrés et visibles dans l’administration. |
+| Liens téléphone, email, WhatsApp | Réalisé | Téléphone et email cliquables sur la page Contact et dans le pied de page de chaque page. WhatsApp affiché dès qu’un numéro est confirmé dans `src/content/site.ts`. |
+| Adresse et horaires | Réalisé en partie | Adresse publiée (Scat Urbam, Grand Yoff, Dakar). Horaires non fournis, donc non publiés. |
 | Appel « Demander un devis » dans l’en-tête et sur chaque pôle | Réalisé | |
 | Appel « Prendre rendez-vous » | Réalisé | En-tête, accueil, fiches des pôles, pied de page |
 | « Parlons de votre projet » en fin de page | Réalisé | Page À propos |
@@ -149,9 +149,9 @@ Légende :
 | Administration des demandes (liste, filtres, fiche, statuts, notifications) | Réalisé | `/admin` : filtres par type, statut, dates et notification ; testé sur ordinateur et téléphone |
 | Rôles distincts | À développer | Un seul rôle aujourd’hui (gestionnaire) ; chaque compte est nominatif |
 | Édition en ligne des contenus (pages, services, FAQ) | À développer | Décision attendue : quel outil, selon le budget et les compétences |
-| Hébergement, domaine, email, sauvegardes, coûts récurrents | Bloqué | Hébergeur choisi : **Netlify**. `netlify.toml` et guide `docs/deploiement-netlify.md` prêts. Restent à fournir : base de production (Neon recommandé), configuration Resend et nom de domaine. Les sauvegardes de la base dépendent de l’offre choisie. |
-| Préproduction, mise en ligne, retour arrière | Bloqué | Pas de déploiement à ce stade, à votre demande |
-| HTTPS | Bloqué | Fourni automatiquement par Netlify à la mise en ligne |
+| Hébergement, domaine, email, sauvegardes, coûts récurrents | Réalisé en partie | Site sur **Netlify**, base PostgreSQL **Neon**, emails **Resend** (expéditeur de test). Restent : nom de domaine, domaine vérifié chez Resend, politique de sauvegarde selon l’offre Neon. |
+| Préproduction, mise en ligne, retour arrière | Réalisé | Chaque fusion dans `main` publie le site. Retour arrière : dans Netlify, **Deploys**, choisir une publication précédente puis **Publish deploy**. |
+| HTTPS | Réalisé | Fourni par Netlify |
 | Ne jamais demander de mot de passe ni de donnée sensible | Réalisé | Rappel affiché sur les formulaires |
 | Obligations applicables au Sénégal (données personnelles) | Bloqué | À vérifier avec un conseil compétent |
 
@@ -163,8 +163,8 @@ Légende :
 | Titres H1, H2, H3 structurés, liens internes | Réalisé | Un seul H1 par page |
 | Page 404 | Réalisé | |
 | Pages en attente non indexées | Réalisé | Mentions légales |
-| Sitemap XML, robots.txt, URL canoniques, aperçus de partage | Réalisé | Générés à partir de `SITE_URL`. À renseigner avec le domaine définitif. |
-| Données structurées (entreprise locale) | Réalisé en partie | Organisation (nom, description, signature) et FAQ. Entreprise locale (adresse, horaires) bloquée tant que les coordonnées ne sont pas confirmées. |
+| Sitemap XML, robots.txt, URL canoniques, aperçus de partage | Réalisé | Générés à partir de `SITE_URL` (aujourd’hui https://afrigerance.netlify.app). À changer avec le domaine définitif. |
+| Données structurées (entreprise locale) | Réalisé en partie | Organisation (nom, description, signature, téléphone, email, adresse) et FAQ. Horaires non fournis. |
 | Expressions liées aux zones desservies | Bloqué | Zones d’intervention à préciser |
 | Outil d’audience respectueux de la vie privée | Bloqué | Décision attendue sur l’outil ; il pourrait nécessiter une bannière cookies |
 
@@ -175,8 +175,8 @@ Légende :
 | Pages Accueil, Services, Devis, À propos, Contact | Réalisé |
 | Recette responsive, clavier, liens, formulaires, erreurs | Réalisé pour les pages existantes |
 | Parcours complet testé sur une base de test : soumission → administration → statut → échec et renvoi de notification → accès refusé sans connexion | Réalisé |
-| Tests automatiques rejouables (`npm run test:e2e`, 49 tests : pages, formulaires, administration, email) | Réalisé (README : « Tests automatiques ») |
-| Test avec une vraie base (Neon) et un vrai compte d’envoi (Resend) | Bloqué : paramètres à fournir |
+| Tests automatiques rejouables (`npm run test:e2e`, 81 tests : pages, coordonnées, mouvement, formulaires, rendez-vous, administration, email) | Réalisé (README : « Tests automatiques ») |
+| Test avec une vraie base (Neon) et un vrai compte d’envoi (Resend) | En cours : base reliée, compte administrateur créé, email de test accepté. Réception des notifications du site en ligne à confirmer |
 | Guide d’administration | Réalisé (README : « Consulter et traiter les demandes ») |
 | Transfert des accès, formation | À faire à la mise en ligne |
 
@@ -184,11 +184,8 @@ Légende :
 
 | Élément | Débloque |
 | --- | --- |
-| Adresse de connexion de la base PostgreSQL (`DATABASE_URL`, ex. Neon) | L’enregistrement réel des demandes et l’espace administrateur |
-| Clé API Resend et adresse email du gestionnaire | Les emails de notification |
-| Adresse publique du site (`SITE_URL`), à la mise en ligne | Le lien direct vers la demande dans l’email, le plan du site, les URL canoniques et les aperçus de partage |
 | Nom de domaine | Envoi depuis votre domaine, sitemap, référencement, mise en ligne |
-| Coordonnées : téléphone, email, WhatsApp, adresse, horaires | Page Contact, pied de page, données structurées |
+| Coordonnées restantes : WhatsApp, horaires | Page Contact, données structurées |
 | Dénomination légale exacte (AFRIGÉRANCE ou AFRIGERANCE), forme, immatriculation, siège, responsable de publication, hébergeur | Mentions légales |
 | Politique de données : responsable, finalités, durées, contact pour les droits | Politique de confidentialité, conservation des demandes |
 | Zones d’intervention, gratuité du devis, délais, horaires de support | FAQ, référencement local |

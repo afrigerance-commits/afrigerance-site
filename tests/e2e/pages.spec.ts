@@ -1,7 +1,8 @@
 /** Pages publiques : affichage aux trois largeurs, liens, menu mobile, présélection du pôle. */
 import { expect, test } from "@playwright/test";
 import { partners, partnersSection } from "@/content/partners";
-import { hero } from "@/content/site";
+import { contactDetails, hero } from "@/content/site";
+import { dialable } from "@/lib/contact";
 import { hasHorizontalScroll } from "./support/helpers";
 import { servers } from "./support/settings";
 
@@ -141,4 +142,24 @@ test("page inexistante → erreur 404 avec l'en-tête et le pied de page du site
   await expect(page.locator("h1")).toHaveCount(1);
   await expect(page.locator("header")).toBeVisible();
   await expect(page.locator("footer")).toBeVisible();
+});
+
+test("coordonnées confirmées : page Contact, pied de page de chaque page et données structurées de l'accueil", async ({ page }) => {
+  const { phone, email, address } = contactDetails;
+  expect(phone && email && address?.length, "coordonnées renseignées dans src/content/site.ts").toBeTruthy();
+  const links = [`a[href="tel:${dialable(phone!)}"]`, `a[href="mailto:${email}"]`];
+  expect(links[0]).toBe('a[href="tel:+221786665151"]');
+
+  await page.goto(base + "/contact");
+  for (const zone of ["#contenu", "footer"]) {
+    for (const link of links) await expect(page.locator(`${zone} ${link}`)).toBeVisible();
+    for (const line of address!) await expect(page.locator(zone).getByText(line, { exact: true })).toBeVisible();
+  }
+
+  await page.goto(base + "/services");
+  for (const link of links) await expect(page.locator(`footer ${link}`)).toBeVisible();
+
+  await page.goto(base + "/");
+  const data = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent()) ?? "{}");
+  expect(data).toMatchObject({ "@type": "Organization", telephone: "+221786665151", email, address: address!.join(", ") });
 });

@@ -61,6 +61,8 @@ export const footer = {
   tertiaryCta: { label: "Nous écrire", href: routes.contact },
   about:
     "Entreprise sénégalaise d’infogérance et d’intégration de solutions technologiques.",
+  /** Titre du bloc de coordonnées (affiché seulement si contactDetails en contient). */
+  contactTitle: "Coordonnées",
   columns: [
     {
       title: "Services",
@@ -163,11 +165,12 @@ export type ContactDetails = {
   hours: string[] | null;
 };
 
+// Coordonnées confirmées par AFRIGÉRANCE (octobre 2026).
 export const contactDetails: ContactDetails = {
-  phone: null,
-  email: null,
+  phone: "+221 78 666 51 51",
+  email: "afrigerance@gmail.com",
   whatsapp: null,
-  address: null,
+  address: ["Scat Urbam, en face de La Brioche Dorée", "Grand Yoff, Dakar"],
   hours: null,
 };
 

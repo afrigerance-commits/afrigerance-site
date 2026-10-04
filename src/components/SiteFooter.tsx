@@ -1,8 +1,56 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { footer, uiText } from "@/content/site";
+import { contactDetails, footer, uiText } from "@/content/site";
+import { dialable } from "@/lib/contact";
+import { MailIcon, MapPinIcon, PhoneIcon } from "./icons";
 import { Logo } from "./Logo";
 import { ButtonLink, TextLink } from "./ui/button";
+
+const contactLinkClass =
+  "text-ink hover:text-brand inline-flex min-h-11 items-center gap-3 rounded-sm py-1 font-medium break-words transition-colors";
+
+/** Téléphone, email et adresse confirmés (src/content/site.ts) ; rien n'est affiché tant qu'aucun n'est renseigné. */
+function FooterContact() {
+  const { phone, email, address } = contactDetails;
+  if (!phone && !email && !address?.length) return null;
+  return (
+    <div className="mt-8">
+      <h2 className="eyebrow text-muted">{footer.contactTitle}</h2>
+      <address className="mt-4 not-italic">
+        <ul className="space-y-1">
+          {phone ? (
+            <li>
+              <a href={`tel:${dialable(phone)}`} className={contactLinkClass}>
+                <PhoneIcon className="text-brand size-[1.125rem] shrink-0" />
+                {phone}
+              </a>
+            </li>
+          ) : null}
+          {email ? (
+            <li>
+              <a href={`mailto:${email}`} className={contactLinkClass}>
+                <MailIcon className="text-brand size-[1.125rem] shrink-0" />
+                {email}
+              </a>
+            </li>
+          ) : null}
+          {address?.length ? (
+            <li className="text-muted flex gap-3 py-2.5 leading-relaxed">
+              <MapPinIcon className="text-brand mt-[0.2rem] size-[1.125rem] shrink-0" />
+              <span>
+                {address.map((line) => (
+                  <span key={line} className="block">
+                    {line}
+                  </span>
+                ))}
+              </span>
+            </li>
+          ) : null}
+        </ul>
+      </address>
+    </div>
+  );
+}
 
 /**
  * Pied de page en deux temps : un appel final sur fond sombre (« Parlons de votre projet »),
@@ -54,6 +102,7 @@ export function SiteFooter() {
           <div>
             <Logo width={210} className="h-14 sm:h-16" />
             <p className="text-muted mt-5 max-w-[22em] leading-relaxed">{footer.about}</p>
+            <FooterContact />
           </div>
           <nav aria-label={uiText.footerNavLabel} className="grid gap-10 sm:grid-cols-3">
             {footer.columns.map((column) => (

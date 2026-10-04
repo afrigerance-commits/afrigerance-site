@@ -1,15 +1,10 @@
 import type { ReactNode } from "react";
 import { contactPage } from "@/content/pages";
 import { contactDetails } from "@/content/site";
+import { dialable } from "@/lib/contact";
 import { ChatIcon, ClockIcon, MailIcon, MapPinIcon, PhoneIcon } from "./icons";
 
 const labels = contactPage.details;
-
-/** Garde le + initial et les chiffres : format attendu par les liens tel: et WhatsApp. */
-function dialable(value: string) {
-  const digits = value.replace(/\D/g, "");
-  return value.trim().startsWith("+") ? `+${digits}` : digits;
-}
 
 function Row({ icon, label, children }: { icon: ReactNode; label: string; children: ReactNode }) {
   return (
