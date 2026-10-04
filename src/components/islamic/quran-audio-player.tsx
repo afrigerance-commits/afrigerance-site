@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
-import { ExternalLink, Headphones, LoaderCircle, Pause, Play, SkipBack, SkipForward, Square } from "lucide-react";
+import { ExternalLink, Headphones, LoaderCircle, Pause, Play, Repeat, Repeat1, SkipBack, SkipForward, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { reciters, defaultReciterId, loadRecitation, type VerseAudioRef } from "@/lib/quran/reciters";
 
@@ -14,6 +14,8 @@ interface QuranAudioState {
   paused: boolean;
   loading: boolean;
   error: string | null;
+  repeatMode: "off" | "verse" | "surah";
+  chooseRepeatMode: (mode: "off" | "verse" | "surah") => void;
   stop: () => void;
   pause: () => void;
   resume: () => void;
@@ -30,6 +32,8 @@ export function QuranAudioProvider({ chapter, verses, children }: { chapter: num
   const [paused, setPaused] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [repeatMode, setRepeatMode] = useState<"off" | "verse" | "surah">("off");
+  const repeatModeRef = useRef<"off" | "verse" | "surah">("off");
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const catalogRef = useRef<Map<number, string[]> | null>(null);
   const catalogCacheRef = useRef(new Map<string, Promise<Map<number, string[]>>>());
@@ -109,9 +113,17 @@ export function QuranAudioProvider({ chapter, verses, children }: { chapter: num
     const onPlaying = () => { clearWatchdog(); setLoading(false); };
     const onEnded = () => {
       clearWatchdog();
-      if (surahRef.current) { stop(); return; }
+      if (surahRef.current) {
+        if (repeatModeRef.current === "surah") {
+          audio.currentTime = 0;
+          audio.play().catch(() => { stop(); setError("La reprise de la sourate a échoué."); });
+        } else stop();
+        return;
+      }
       const index = verses.findIndex((verse) => verse.number === currentVerseRef.current);
-      if (sequenceRef.current && verses[index + 1]) startRef.current(verses[index + 1].number);
+      if (repeatModeRef.current === "verse" && currentVerseRef.current !== null) startRef.current(currentVerseRef.current);
+      else if ((sequenceRef.current || repeatModeRef.current === "surah") && verses[index + 1]) startRef.current(verses[index + 1].number);
+      else if (repeatModeRef.current === "surah") startRef.current(verses[0].number);
       else stop();
     };
     const onError = () => {
@@ -138,7 +150,18 @@ export function QuranAudioProvider({ chapter, verses, children }: { chapter: num
     catalogRef.current = null;
     setReciterId(id);
     setError(null);
+    if (id === "tvquran.hady-toure" && repeatModeRef.current === "verse") {
+      repeatModeRef.current = "off";
+      setRepeatMode("off");
+    }
   }, [stop]);
+
+  const chooseRepeatMode = useCallback((mode: "off" | "verse" | "surah") => {
+    if (mode === "verse" && reciterRef.current === "tvquran.hady-toure") return;
+    const next = repeatModeRef.current === mode ? "off" : mode;
+    repeatModeRef.current = next;
+    setRepeatMode(next);
+  }, []);
 
   const playVerse = useCallback(async (verseNumber: number, continueSequence = false) => {
     if (reciterRef.current === "tvquran.hady-toure" || !verses.some((verse) => verse.number === verseNumber)) return;
@@ -193,10 +216,13 @@ export function QuranAudioProvider({ chapter, verses, children }: { chapter: num
     if (!audio || (currentVerseRef.current === null && !surahRef.current)) return;
     setPaused(false);
     setLoading(true);
-    audio.play().catch(() => failureRef.current());
-  }, []);
+    audio.play().catch(() => {
+      if (surahRef.current) { stop(); setError("Impossible de reprendre la sourate."); }
+      else failureRef.current();
+    });
+  }, [stop]);
 
-  return <QuranAudioContext.Provider value={{ verses, reciterId, chooseReciter, playingVerse, playingSurah, paused, loading, error, stop, pause, resume, playVerse, playSurah }}>
+  return <QuranAudioContext.Provider value={{ verses, reciterId, chooseReciter, playingVerse, playingSurah, paused, loading, error, repeatMode, chooseRepeatMode, stop, pause, resume, playVerse, playSurah }}>
     {children}
   </QuranAudioContext.Provider>;
 }
@@ -247,6 +273,17 @@ export function QuranAudioToolbar({ chapter }: { chapter: number }) {
           {player.playingVerse !== null ? `${active.nom} · verset ${player.playingVerse}/${player.verses.length}${player.paused ? " · en pause" : ""}` : active.nom}
         </span>
       </div>
+      <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-4" role="group" aria-label="Répétition audio">
+        <span className="mr-1 text-xs font-semibold text-muted">Répétition</span>
+        {active.mode !== "surah" && <button type="button" onClick={() => player.chooseRepeatMode("verse")} aria-pressed={player.repeatMode === "verse"}
+          className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-gold-500 ${player.repeatMode === "verse" ? "border-emerald-800 bg-emerald-900 text-white" : "border-border hover:border-emerald-800"}`}>
+          <Repeat1 className="size-4" /> Répéter le verset
+        </button>}
+        <button type="button" onClick={() => player.chooseRepeatMode("surah")} aria-pressed={player.repeatMode === "surah"}
+          className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-gold-500 ${player.repeatMode === "surah" ? "border-emerald-800 bg-emerald-900 text-white" : "border-border hover:border-emerald-800"}`}>
+          <Repeat className="size-4" /> Boucler la sourate
+        </button>
+      </div>
       {player.error && <p role="alert" className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 dark:bg-red-950/40 dark:text-red-200">{player.error}</p>}
       {active.mode === "surah" && <p className="mt-3 text-xs leading-5 text-muted">Récitation Hafs de la sourate entière, diffusée par TVQuran. La lecture n’est pas synchronisée avec les versets affichés. <a href="https://www.tvquran.com/en/scholar/355/profile/mohammed-hady-toure" target="_blank" rel="noopener noreferrer" className="underline">Source et collection</a>.</p>}
       <div className="mt-5 border-t border-border pt-4">
@@ -269,6 +306,26 @@ export function QuranAudioToolbar({ chapter }: { chapter: number }) {
       </details>
     </div>
   </section>;
+}
+
+/** Commandes compactes toujours accessibles pendant la lecture, sans masquer la page. */
+export function QuranMiniPlayer() {
+  const player = useQuranAudioContext();
+  const active = reciters.find((reciter) => reciter.id === player.reciterId)!;
+  if (player.playingVerse === null && !player.playingSurah && !player.loading) return null;
+
+  return <aside aria-label="Mini-lecteur du Coran" className="fixed bottom-[calc(env(safe-area-inset-bottom)+0.75rem)] left-3 right-3 z-40 flex max-w-sm items-center gap-2 rounded-2xl border border-gold-500/35 bg-emerald-950 px-3 py-2.5 text-ivory-50 shadow-[0_16px_42px_rgba(4,38,32,.3)] sm:bottom-5 sm:left-5 sm:right-auto sm:min-w-72">
+    {active.portrait ? <img src={active.portrait} alt="" className="size-10 shrink-0 rounded-full object-cover ring-1 ring-gold-500/60" />
+      : <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full border border-gold-500/60 font-display text-sm text-gold-500">HT</span>}
+    <div className="min-w-0 flex-1 leading-tight">
+      <p className="truncate text-xs font-semibold">{active.nom}</p>
+      <p aria-live="polite" className="mt-0.5 truncate text-[11px] text-ivory-50/70">{player.loading ? "Chargement…" : player.playingSurah ? "Sourate entière" : `Verset ${player.playingVerse}/${player.verses.length}`}{player.repeatMode === "surah" ? " · en boucle" : player.repeatMode === "verse" ? " · répété" : ""}</p>
+    </div>
+    <button type="button" onClick={player.paused ? player.resume : player.pause} disabled={player.loading} aria-label={player.paused ? "Reprendre la récitation" : "Mettre la récitation en pause"} className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gold-500 text-emerald-950 transition-colors hover:bg-gold-400 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-white">
+      {player.loading ? <LoaderCircle className="size-4 animate-spin" /> : player.paused ? <Play className="size-4 fill-current" /> : <Pause className="size-4 fill-current" />}
+    </button>
+    <button type="button" onClick={player.stop} aria-label="Arrêter la récitation" className="flex size-8 shrink-0 items-center justify-center rounded-full text-ivory-50/70 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-white"><Square className="size-3.5" /></button>
+  </aside>;
 }
 
 export function VersePlayButton({ verseNumber }: { verseNumber: number }) {

@@ -10,7 +10,7 @@ import { getChapters, getChapterMeta, getChapterVerses } from "@/lib/quran/data"
 import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/lib/site-config";
 import { ReadingProgress } from "@/components/content/reading-progress";
-import { QuranAudioProvider, QuranAudioToolbar } from "@/components/islamic/quran-audio-player";
+import { QuranAudioProvider, QuranAudioToolbar, QuranMiniPlayer } from "@/components/islamic/quran-audio-player";
 import { QuranVerseRow } from "@/components/islamic/quran-verse-row";
 import { QuranReadingTools, QuranVerseContent } from "@/components/islamic/quran-reading-tools";
 import { SourateSwitcher } from "@/components/islamic/sourate-switcher";
@@ -94,6 +94,7 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
           ))}
         </div>
         </QuranReadingTools>
+        <QuranMiniPlayer />
       </QuranAudioProvider>
 
       <Separator className="my-10" />
