@@ -6,13 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Reveal } from "@/components/motion/reveal";
 import { LightDivider } from "@/components/motion/light-divider";
-import { HeroGeometry } from "@/components/islamic/hero-geometry";
+import { ArabicText } from "@/components/islamic/arabic-text";
 import { QuranQuote } from "@/components/islamic/quran-quote";
 import { DisciplineCard } from "@/components/content/discipline-card";
 import { ArticleCard } from "@/components/content/article-card";
 import { BookCard } from "@/components/content/book-card";
 import { VideoCard } from "@/components/content/video-card";
-import { disciplines, siteConfig } from "@/lib/site-config";
+import { disciplines } from "@/lib/site-config";
 import { getPublishedArticles } from "@/lib/data/published-articles";
 import { books } from "@/lib/data/books";
 import { videos } from "@/lib/data/videos";
@@ -23,53 +23,56 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-border bg-ink-950 text-ivory-50">
-        <div className="pointer-events-none absolute inset-0 bg-[url('/images/mirath/mirath_hero.svg')] bg-cover bg-center opacity-40" aria-hidden="true" />
-        <HeroGeometry />
-        <div className="relative mx-auto flex max-w-5xl flex-col items-center gap-8 px-4 py-28 text-center sm:px-6 sm:py-36 lg:px-8">
-          <Reveal>
-            <span className="inline-flex items-center gap-2 rounded-full border border-gold-500/40 px-4 py-1.5 text-xs font-medium tracking-wide text-gold-500">
-              Fiqh malikite · Coran et Sunna · Sîra prophétique
-            </span>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <h1 className="font-display text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
-              Un espace où la connaissance se transmet avec rigueur
-            </h1>
-          </Reveal>
-          <Reveal delay={0.2}>
-            <p className="max-w-2xl text-balance text-base text-ivory-50/80 sm:text-lg">
-              {siteConfig.description} Chaque enseignement est accompagné de ses références, et le savoir devient
-              accessible à tous.
-            </p>
-          </Reveal>
-          <Reveal delay={0.3} className="flex w-full max-w-xl flex-col gap-3 sm:flex-row">
-            <form action="/recherche" className="flex w-full items-center gap-2 rounded-xl bg-white/10 p-1.5 backdrop-blur">
-              <Search className="ml-2 h-4 w-4 shrink-0 text-ivory-50/60" />
-              <Input
-                name="q"
-                placeholder="Rechercher un cours, un livre, un article…"
-                className="border-0 bg-transparent text-ivory-50 placeholder:text-ivory-50/50 focus-visible:ring-0"
-              />
-              <Button type="submit" variant="accent" size="sm">
-                Rechercher
+      <section className="relative isolate overflow-hidden border-b border-[#ded4be] bg-[#f5f0e6] text-ink-950 dark:border-border dark:bg-ink-950 dark:text-ivory-50">
+        <div className="pointer-events-none absolute -left-48 top-8 h-[480px] w-[480px] rounded-full bg-[#e7d9b8]/35 blur-3xl dark:bg-emerald-900/20" aria-hidden="true" />
+        <div className="pointer-events-none absolute inset-0 opacity-[.18] dark:opacity-[.08]" style={{ backgroundImage: "radial-gradient(#977b4a 0.7px, transparent 0.7px)", backgroundSize: "24px 24px" }} aria-hidden="true" />
+        <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-14 sm:px-6 sm:py-20 lg:min-h-[680px] lg:grid-cols-[1.05fr_.95fr] lg:gap-16 lg:px-8 lg:py-16">
+          <div className="max-w-2xl">
+            <Reveal>
+              <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[.22em] text-emerald-900 dark:text-gold-500">
+                <span className="h-px w-9 bg-gold-600" aria-hidden="true" />
+                MIRÂTH <span className="text-gold-700 dark:text-gold-500">✦</span> Une bibliothèque vivante
+              </div>
+            </Reveal>
+            <Reveal delay={0.08}>
+              <h1 className="mt-7 font-display text-[clamp(2.85rem,5vw,5.25rem)] font-semibold leading-[1.08] tracking-[-.045em]">
+                Un héritage de savoir.
+                <span className="mt-1 block text-emerald-900 dark:text-gold-500">Une lumière à transmettre.</span>
+              </h1>
+            </Reveal>
+            <Reveal delay={0.16}>
+              <p className="mt-7 max-w-xl text-base leading-8 text-[#4a5857] dark:text-ivory-50/80 sm:text-lg">
+                Coran, recueils de hadith, fiqh malikite et bibliothèque : avancez à votre rythme, avec des références identifiées et des parcours accessibles.
+              </p>
+            </Reveal>
+            <Reveal delay={0.24} className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Button size="lg" asChild className="bg-emerald-900 text-ivory-50 hover:bg-emerald-700 dark:bg-gold-500 dark:text-ink-950 dark:hover:bg-gold-600">
+                <Link href="/apprendre">Commencer à apprendre <ArrowRight className="h-4 w-4" /></Link>
               </Button>
-            </form>
-          </Reveal>
-          <Reveal delay={0.4} className="flex flex-wrap items-center justify-center gap-3">
-            <Button variant="accent" size="lg" asChild>
-              <Link href="/apprendre">
-                Commencer à apprendre <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              asChild
-              className="border-ivory-50/30 text-ivory-50 hover:bg-white/10"
-            >
-              <Link href="/explorer-le-savoir">Explorer le savoir</Link>
-            </Button>
+              <Button size="lg" variant="outline" asChild className="border-[#bfb298] bg-transparent text-emerald-900 hover:bg-white/70 dark:border-ivory-50/30 dark:text-ivory-50 dark:hover:bg-white/10">
+                <Link href="/coran">Lire le Coran</Link>
+              </Button>
+            </Reveal>
+            <Reveal delay={0.32} className="mt-9 max-w-xl">
+              <form action="/recherche" className="flex items-center gap-2 rounded-xl border border-[#d8ccb5] bg-white/85 p-1.5 shadow-sm dark:border-white/15 dark:bg-white/10">
+                <Search className="ml-3 h-4 w-4 shrink-0 text-emerald-900 dark:text-gold-500" aria-hidden="true" />
+                <Input name="q" aria-label="Rechercher sur MIRÂTH" placeholder="Un thème, un livre, une sourate…" className="min-w-0 border-0 bg-transparent text-ink-950 placeholder:text-[#69716e] focus-visible:ring-0 dark:text-ivory-50 dark:placeholder:text-ivory-50/60" />
+                <Button type="submit" variant="accent" size="sm">Rechercher</Button>
+              </form>
+            </Reveal>
+            <Reveal delay={0.4} className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-xs font-medium text-[#5d6966] dark:text-ivory-50/65">
+              <span>114 sourates</span><span aria-hidden="true">✦</span><span>Trois recueils de hadith</span><span aria-hidden="true">✦</span><span>Ouvrages référencés</span>
+            </Reveal>
+          </div>
+          <Reveal delay={0.2} className="relative mx-auto w-full max-w-[530px]">
+            <div className="absolute -inset-3 rounded-t-[46%] rounded-b-[2rem] border border-gold-600/35 dark:border-gold-500/30" aria-hidden="true" />
+            <div className="relative aspect-[.94] overflow-hidden rounded-t-[46%] rounded-b-[1.5rem] bg-emerald-900 shadow-[0_28px_70px_-28px_rgba(13,48,41,.52)] lg:aspect-[.84]">
+              <div className="absolute inset-0 bg-[url('/images/mirath/hero_arch.svg')] bg-cover bg-center" role="img" aria-label="Arc ornemental et livre ouvert, illustration de la transmission du savoir" />
+              <div className="absolute inset-x-6 bottom-5 flex items-center justify-between border-t border-[#dec38a]/35 pt-4 text-[#f5e8c9] sm:inset-x-9 sm:bottom-8">
+                <span className="text-[10px] font-semibold uppercase tracking-[.24em] sm:text-xs">Savoir · Sources · Transmission</span>
+                <ArabicText className="text-2xl leading-none sm:text-3xl">ميراث</ArabicText>
+              </div>
+            </div>
           </Reveal>
         </div>
       </section>

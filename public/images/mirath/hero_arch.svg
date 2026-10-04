@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 760" role="img" aria-labelledby="title desc">
+  <title id="title">MIRÂTH — niche de lecture</title>
+  <desc id="desc">Arc d'inspiration architecturale islamique, motif étoilé et livre ouvert stylisé, sans texte religieux.</desc>
+  <defs>
+    <linearGradient id="ground" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#123f38"/><stop offset=".56" stop-color="#0b302f"/><stop offset="1" stop-color="#092629"/></linearGradient>
+    <linearGradient id="niche" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#245e52"/><stop offset=".65" stop-color="#123f38"/><stop offset="1" stop-color="#0a2c2b"/></linearGradient>
+    <radialGradient id="light"><stop stop-color="#e5c985" stop-opacity=".28"/><stop offset="1" stop-color="#e5c985" stop-opacity="0"/></radialGradient>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff9eb"/><stop offset="1" stop-color="#dccba8"/></linearGradient>
+    <pattern id="tiles" width="74" height="74" patternUnits="userSpaceOnUse"><path d="M37 3 71 37 37 71 3 37Z M37 18 56 37 37 56 18 37Z" fill="none" stroke="#d5b979" stroke-opacity=".14" stroke-width="1"/><circle cx="37" cy="37" r="3" fill="#d5b979" fill-opacity=".12"/></pattern>
+    <clipPath id="inside"><path d="M140 714V295c0-91 95-151 220-236 125 85 220 145 220 236v419Z"/></clipPath>
+  </defs>
+  <rect width="720" height="760" fill="url(#ground)"/>
+  <rect width="720" height="760" fill="url(#tiles)"/>
+  <path d="M94 760V280C94 168 217 99 360 0c143 99 266 168 266 280v480" fill="none" stroke="#d8bc7e" stroke-opacity=".28" stroke-width="2"/>
+  <path d="M114 760V287c0-102 112-171 246-263 134 92 246 161 246 263v473" fill="none" stroke="#d8bc7e" stroke-opacity=".55" stroke-width="2"/>
+  <path d="M140 760V295c0-91 95-151 220-236 125 85 220 145 220 236v465Z" fill="url(#niche)" stroke="#d8bc7e" stroke-opacity=".85" stroke-width="3"/>
+  <g clip-path="url(#inside)">
+    <circle cx="360" cy="323" r="250" fill="url(#light)"/>
+    <path d="M176 693V312c0-70 83-129 184-200 101 71 184 130 184 200v381" fill="none" stroke="#d8bc7e" stroke-opacity=".26" stroke-width="2"/>
+    <path d="M203 693V330c0-55 71-109 157-170 86 61 157 115 157 170v363" fill="none" stroke="#d8bc7e" stroke-opacity=".18" stroke-width="1.5"/>
+    <path d="M140 667h440 M140 675h440" stroke="#d8bc7e" stroke-opacity=".42"/>
+    <g transform="translate(360 308)" fill="none" stroke="#e5c985">
+      <circle r="102" stroke-opacity=".22"/>
+      <circle r="71" stroke-opacity=".35"/>
+      <path d="M0-78 23-55 55-55 55-23 78 0 55 23 55 55 23 55 0 78-23 55-55 55-55 23-78 0-55-23-55-55-23-55Z" stroke-width="2" stroke-opacity=".72"/>
+      <path d="M0-55 55 0 0 55-55 0Z" stroke-opacity=".62"/>
+      <circle r="12" fill="#e5c985" fill-opacity=".65" stroke="none"/>
+    </g>
+    <g transform="translate(360 566)">
+      <ellipse cy="87" rx="210" ry="20" fill="#061c1d" opacity=".45"/>
+      <path d="M-174 66c58-21 124-21 174 7 50-28 116-28 174-7l-2 24c-73-14-123-10-172 15-49-25-99-29-172-15Z" fill="#b9965b"/>
+      <path d="M-171 56c65-32 126-28 171 5 45-33 106-37 171-5l-5 23c-63-23-124-18-166 9-42-27-103-32-166-9Z" fill="url(#paper)" stroke="#d8bc7e" stroke-width="2"/>
+      <path d="M0 61v27 M-143 64c56-17 98-12 127 10 M143 64c-56-17-98-12-127 10" fill="none" stroke="#b29460" stroke-width="2" stroke-opacity=".6"/>
+      <path d="M-118 51c48-11 78-5 104 14 M118 51C70 40 40 46 14 65" fill="none" stroke="#b29460" stroke-opacity=".45"/>
+    </g>
+  </g>
+  <g fill="#e5c985" opacity=".65"><circle cx="360" cy="35" r="4"/><circle cx="114" cy="287" r="3"/><circle cx="606" cy="287" r="3"/></g>
+</svg>

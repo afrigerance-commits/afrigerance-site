@@ -101,7 +101,7 @@ export async function updateArticle(id: string, _prevState: ArticleFormState, fo
   const contenu = String(formData.get("contenu_html") ?? "").trim();
   if (!titre || !contenu) return { error: "Titre et contenu requis." };
 
-  const { error } = await supabase
+  const { data: saved, error } = await supabase
     .from("articles")
     .update({
       titre,
@@ -110,7 +110,9 @@ export async function updateArticle(id: string, _prevState: ArticleFormState, fo
       statut,
       published_at: statut === "publie" ? existing.published_at ?? new Date().toISOString() : null,
     })
-    .eq("id", id);
+    .eq("id", id)
+    .select("id, statut")
+    .maybeSingle();
 
   if (error) {
     return {
@@ -119,6 +121,7 @@ export async function updateArticle(id: string, _prevState: ArticleFormState, fo
         : `Impossible d’enregistrer : ${error.message}`,
     };
   }
+  if (!saved || saved.statut !== statut) return { error: "Le statut n’a pas été enregistré. Vérifiez vos droits et réessayez." };
 
   revalidatePath("/admin/articles");
   revalidatePath(`/admin/articles/${id}`);
@@ -126,7 +129,7 @@ export async function updateArticle(id: string, _prevState: ArticleFormState, fo
   revalidatePath("/");
   revalidatePath("/sitemap.xml");
   revalidatePath("/blog/rss.xml");
-  return {};
+  redirect(`/admin/articles/${id}`);
 }
 
 export async function deleteArticle(id: string) {
