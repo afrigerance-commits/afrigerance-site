@@ -119,8 +119,10 @@ docs/                    Documentation détaillée (voir ci-dessous)
 - **[docs/EDITORIAL_WORKFLOW.md](./docs/EDITORIAL_WORKFLOW.md)** — processus de vérification
   religieuse et guide de publication d'un article ou d'un cours.
 - **[docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)** — déploiement en production.
-- **[docs/MOBILE_ROADMAP.md](./docs/MOBILE_ROADMAP.md)** — comment construire l'application
-  mobile Expo/React Native sur le même backend.
+- **[docs/MOBILE.md](./docs/MOBILE.md)** — application Android/iOS (Capacitor), ce qui est fait
+  et ce qui reste à compiler/publier sur les stores.
+- **[docs/MOBILE_ROADMAP.md](./docs/MOBILE_ROADMAP.md)** — alternative (non retenue) : réécriture
+  native complète en Expo/React Native.
 
 ## Principes du projet
 

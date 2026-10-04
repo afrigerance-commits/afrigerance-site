@@ -10,6 +10,7 @@ import { getChapters, getChapterMeta, getChapterVerses } from "@/lib/quran/data"
 import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/lib/site-config";
 import { ReadingProgress } from "@/components/content/reading-progress";
+import { QuranAudioProvider, QuranAudioToolbar, VersePlayButton } from "@/components/islamic/quran-audio-player";
 
 export function generateStaticParams() {
   return getChapters().map((c) => ({ numero: String(c.number) }));
@@ -74,23 +75,28 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
         </Reveal>
       )}
 
-      <div className="mt-10 flex flex-col gap-8">
-        {verses.map((v, i) => (
-          <Reveal key={v.number} delay={Math.min(i * 0.015, 0.3)}>
-            <div className="flex flex-col gap-3 border-b border-border pb-8 last:border-0">
-              <div className="flex items-start gap-3">
-                <span className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-semibold text-accent-foreground">
-                  {v.number}
-                </span>
-                <ArabicText as="p" variant="quran" className="quran-quote flex-1 text-2xl">
-                  {v.arabic}
-                </ArabicText>
+      <QuranAudioProvider verses={verses.map((v) => ({ number: v.number, globalNumber: v.globalNumber! }))}>
+        <QuranAudioToolbar />
+
+        <div className="mt-10 flex flex-col gap-8">
+          {verses.map((v, i) => (
+            <Reveal key={v.number} delay={Math.min(i * 0.015, 0.3)}>
+              <div className="flex flex-col gap-3 border-b border-border pb-8 last:border-0">
+                <div className="flex items-start gap-3">
+                  <span className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-semibold text-accent-foreground">
+                    {v.number}
+                  </span>
+                  <ArabicText as="p" variant="quran" className="quran-quote flex-1 text-2xl">
+                    {v.arabic}
+                  </ArabicText>
+                  <VersePlayButton verseNumber={v.number} />
+                </div>
+                <p className="pl-10 text-foreground/90">{v.french}</p>
               </div>
-              <p className="pl-10 text-foreground/90">{v.french}</p>
-            </div>
-          </Reveal>
-        ))}
-      </div>
+            </Reveal>
+          ))}
+        </div>
+      </QuranAudioProvider>
 
       <Separator className="my-10" />
       <p className="text-center text-xs text-muted">
@@ -98,6 +104,10 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
         Les deux diffusés par le{" "}
         <a href="http://tanzil.net" target="_blank" rel="noopener noreferrer nofollow" className="underline">
           projet Tanzil
+        </a>
+        . Récitation audio fournie par l&apos;API ouverte{" "}
+        <a href="https://alquran.cloud" target="_blank" rel="noopener noreferrer nofollow" className="underline">
+          Al Quran Cloud
         </a>
         .
       </p>

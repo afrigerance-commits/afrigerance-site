@@ -1,9 +1,16 @@
-# Feuille de route : application mobile (Expo / React Native)
+# Alternative future : réécriture native complète (Expo / React Native)
 
-L'application mobile **n'est pas développée** dans cette itération, par
-instruction explicite du cahier des charges. Ce document explique comment
-l'architecture actuelle a été préparée pour la rendre possible sans
-réécrire le backend, et quelles étapes restent à faire.
+> **Ce n'est pas l'approche retenue.** L'application Android/iOS a été
+> construite avec Capacitor (voir [docs/MOBILE.md](./MOBILE.md)) : une
+> coquille native qui charge le site existant, sans dupliquer le code
+> d'interface. Ce document décrit une alternative plus lourde — réécrire
+> l'interface en React Native — à envisager seulement si un jour les
+> limites de la coquille Capacitor (ex. besoin d'une UI 100% native,
+> fonctionnement hors-ligne complet) deviennent bloquantes.
+
+Ce document explique comment l'architecture actuelle a été préparée pour
+rendre cette réécriture possible sans toucher au backend, si elle devient
+nécessaire un jour.
 
 ## Pourquoi c'est déjà possible
 

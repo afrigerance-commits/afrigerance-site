@@ -16,6 +16,15 @@ conformément à la politique éditoriale du projet (voir
 
 Les 6 236 versets des 114 sourates sont complets — ce n'est pas un extrait.
 
+### Récitation audio
+
+Le lecteur audio verset par verset (et lecture continue d'une sourate) charge
+les fichiers mp3 directement depuis l'API ouverte
+[Al Quran Cloud](https://alquran.cloud) (`cdn.islamic.network`), au moment de
+la lecture, dans le navigateur de chaque visiteur — aucun fichier audio n'est
+hébergé ni stocké par ce site. Récitateurs proposés : Mishary Rashid Alafasy,
+Abdul Basit (Murattal), Mahmoud Khalil Al-Husary, Mohamed Siddiq Al-Minshawi.
+
 ## Hadith (`/hadith`)
 
 | Recueil | Arabe | Français | Degrés d'authenticité |
