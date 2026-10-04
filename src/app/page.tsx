@@ -226,8 +226,8 @@ export default async function HomePage() {
         <LightDivider tone="inverse" className="absolute left-1/2 top-0 max-w-xs -translate-x-1/2 -translate-y-1/2" />
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-4 py-20 text-center sm:px-6 lg:px-8">
           <Reveal>
-            <Avatar className="h-20 w-20">
-              <AvatarFallback className="bg-gold-500 text-2xl text-ink-950">F</AvatarFallback>
+              <Avatar className="h-20 w-20 border border-gold-500/50">
+                <AvatarFallback className="bg-gold-500 text-ink-950"><BookOpen className="h-9 w-9" strokeWidth={1.4} aria-hidden="true" /></AvatarFallback>
             </Avatar>
           </Reveal>
           <Reveal delay={0.1}>

@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Reveal } from "@/components/motion/reveal";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { BookOpen } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Le fondateur",
@@ -16,7 +17,7 @@ export default function FondateurPage() {
       <PageHeader eyebrow="Le fondateur" title="Une page à compléter" />
       <Reveal className="flex flex-col items-center gap-5 text-center">
         <Avatar className="h-24 w-24">
-          <AvatarFallback className="text-3xl">F</AvatarFallback>
+          <AvatarFallback className="bg-emerald-900 text-gold-500"><BookOpen className="h-11 w-11" strokeWidth={1.4} aria-hidden="true" /></AvatarFallback>
         </Avatar>
         <Badge variant="muted">Contenu de démonstration — en attente de rédaction par le fondateur</Badge>
         <p className="max-w-xl text-muted">

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, BookMarked, ExternalLink, Lock } from "lucide-react";
+import { ArrowLeft, ExternalLink, Lock } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
+import { BookCover } from "@/components/content/book-cover";
 import { DemoBadge } from "@/components/islamic/reliability-badge";
 import { Badge } from "@/components/ui/badge";
 import { books, getBook, rightsStatusLabels } from "@/lib/data/books";
@@ -38,8 +39,9 @@ export default async function BookPage({ params }: PageProps<"/bibliotheque/[slu
       </Link>
 
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-[220px_1fr]">
-        <Reveal className="flex aspect-[3/4] items-center justify-center rounded-xl bg-surface-muted">
-          <BookMarked className="h-12 w-12 text-muted" />
+        <Reveal className="flex flex-col gap-3">
+          <BookCover book={book} />
+          <p className="text-center text-xs text-muted">Visuel éditorial MIRÂTH · ne représente pas la couverture de cette édition</p>
         </Reveal>
 
         <Reveal delay={0.1} className="flex flex-col gap-4">
