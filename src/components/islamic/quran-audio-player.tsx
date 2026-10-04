@@ -1,244 +1,248 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
-import { Pause, Play, Square } from "lucide-react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { Headphones, LoaderCircle, Pause, Play, SkipBack, SkipForward, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { reciters, defaultReciterId, getAyahAudioUrl } from "@/lib/quran/reciters";
-
-interface VerseAudioRef {
-  number: number;
-  globalNumber: number;
-}
+import { reciters, defaultReciterId, loadRecitation, type VerseAudioRef } from "@/lib/quran/reciters";
 
 interface QuranAudioState {
   verses: VerseAudioRef[];
   reciterId: string;
-  setReciterId: (id: string) => void;
+  chooseReciter: (id: string) => void;
   playingVerse: number | null;
+  paused: boolean;
+  loading: boolean;
+  error: string | null;
   stop: () => void;
+  pause: () => void;
+  resume: () => void;
   playVerse: (verseNumber: number, continueSequence?: boolean) => void;
 }
 
 const QuranAudioContext = createContext<QuranAudioState | null>(null);
 
-/**
- * Lecture audio verset par verset. Les fichiers mp3 sont chargés directement
- * par le navigateur du visiteur depuis cdn.islamic.network (API Al Quran
- * Cloud) — aucun fichier n'est stocké ni proxé par ce site, voir
- * docs/CONTENT_SOURCES.md. Un seul élément <audio> est partagé par toute la
- * page via ce contexte, pour permettre la lecture continue d'une sourate.
- *
- * L'état "quel verset/débit est en cours" vit dans des refs (currentVerseRef,
- * currentBitrateRef), pas dans le state React : les évènements natifs
- * `ended`/`error` de l'élément <audio> et le rejet de la promesse `play()`
- * peuvent se déclencher dans un ordre non déterministe, et lire l'état React
- * depuis leur gestionnaire (fermeture figée au moment du dernier rendu)
- * provoquait une course — la lecture s'arrêtait silencieusement au premier
- * verset manquant chez certains récitateurs au lieu de passer au suivant.
- */
-export function QuranAudioProvider({ verses, children }: { verses: VerseAudioRef[]; children: ReactNode }) {
+export function QuranAudioProvider({ chapter, verses, children }: { chapter: number; verses: VerseAudioRef[]; children: ReactNode }) {
   const [reciterId, setReciterId] = useState(defaultReciterId);
   const [playingVerse, setPlayingVerse] = useState<number | null>(null);
-
+  const [paused, setPaused] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const reciterIdRef = useRef(reciterId);
-  const versesRef = useRef(verses);
-  const sequentialRef = useRef(false);
+  const catalogRef = useRef<Map<number, string[]> | null>(null);
+  const catalogCacheRef = useRef(new Map<string, Promise<Map<number, string[]>>>());
+  const requestRef = useRef(0);
+  const reciterRef = useRef(reciterId);
   const currentVerseRef = useRef<number | null>(null);
-  const currentBitrateRef = useRef<64 | 128>(128);
-  const failureHandledRef = useRef(false);
+  const urlIndexRef = useRef(0);
+  const sequenceRef = useRef(false);
   const watchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    reciterIdRef.current = reciterId;
-  }, [reciterId]);
-
-  useEffect(() => {
-    versesRef.current = verses;
-  }, [verses]);
-
-  const attemptPlayRef = useRef<(verseNumber: number, bitrate: 64 | 128, continueSequence: boolean) => void>(
-    () => {},
-  );
-
-  const advance = useCallback((fromVerse: number) => {
-    if (!sequentialRef.current) {
-      setPlayingVerse(null);
-      return;
-    }
-    const list = versesRef.current;
-    const idx = list.findIndex((v) => v.number === fromVerse);
-    const next = list[idx + 1];
-    if (next) {
-      attemptPlayRef.current(next.number, 128, true);
-    } else {
-      sequentialRef.current = false;
-      setPlayingVerse(null);
-    }
-  }, []);
+  const startRef = useRef<(verse: number, urlIndex?: number) => void>(() => {});
+  const failureRef = useRef<() => void>(() => {});
 
   const clearWatchdog = useCallback(() => {
-    if (watchdogRef.current !== null) {
-      clearTimeout(watchdogRef.current);
-      watchdogRef.current = null;
-    }
+    if (watchdogRef.current) clearTimeout(watchdogRef.current);
+    watchdogRef.current = null;
   }, []);
 
-  const handleFailure = useCallback(() => {
+  const stop = useCallback(() => {
+    requestRef.current++;
     clearWatchdog();
-    if (failureHandledRef.current) return;
-    failureHandledRef.current = true;
-    const verseNumber = currentVerseRef.current;
-    if (verseNumber == null) {
-      setPlayingVerse(null);
+    const audio = audioRef.current;
+    if (audio) { audio.pause(); audio.removeAttribute("src"); audio.load(); }
+    currentVerseRef.current = null;
+    sequenceRef.current = false;
+    setPlayingVerse(null);
+    setPaused(false);
+    setLoading(false);
+  }, [clearWatchdog]);
+
+  const start = useCallback((verseNumber: number, urlIndex = 0) => {
+    const urls = catalogRef.current?.get(verseNumber);
+    const audio = audioRef.current;
+    if (!urls?.[urlIndex] || !audio) {
+      stop();
+      setError("Ce verset n’est pas disponible pour ce récitateur.");
       return;
     }
-    if (currentBitrateRef.current === 128) {
-      attemptPlayRef.current(verseNumber, 64, sequentialRef.current);
-    } else {
-      advance(verseNumber);
+    clearWatchdog();
+    currentVerseRef.current = verseNumber;
+    urlIndexRef.current = urlIndex;
+    setPlayingVerse(verseNumber);
+    setPaused(false);
+    setLoading(true);
+    const url = urls[urlIndex];
+    audio.src = url;
+    audio.play().catch(() => {
+      if (audio.src === url && currentVerseRef.current === verseNumber) failureRef.current();
+    });
+    watchdogRef.current = setTimeout(() => {
+      if (audio.src === url && audio.paused) failureRef.current();
+    }, 12000);
+  }, [clearWatchdog, stop]);
+
+  const handleFailure = useCallback(() => {
+    const verse = currentVerseRef.current;
+    if (verse === null) return;
+    clearWatchdog();
+    const nextIndex = urlIndexRef.current + 1;
+    if (catalogRef.current?.get(verse)?.[nextIndex]) startRef.current(verse, nextIndex);
+    else {
+      stop();
+      setError(`La récitation du verset ${verse} n’a pas pu être chargée. Réessayez ou choisissez un autre récitateur.`);
     }
-  }, [advance, clearWatchdog]);
-
-  const attemptPlay = useCallback(
-    (verseNumber: number, bitrate: 64 | 128, continueSequence: boolean) => {
-      const audio = audioRef.current;
-      const verse = versesRef.current.find((v) => v.number === verseNumber);
-      if (!audio || !verse) {
-        setPlayingVerse(null);
-        return;
-      }
-      sequentialRef.current = continueSequence;
-      currentVerseRef.current = verseNumber;
-      currentBitrateRef.current = bitrate;
-      failureHandledRef.current = false;
-      setPlayingVerse(verseNumber);
-      clearWatchdog();
-      audio.src = getAyahAudioUrl(verse.globalNumber, reciterIdRef.current, bitrate);
-      audio.play().catch(() => {
-        // Le gestionnaire natif `error` traite déjà la plupart des échecs ;
-        // ce filet de sécurité couvre les navigateurs qui rejettent la
-        // promesse sans émettre l'évènement `error` (ex. flux interrompu).
-        handleFailure();
-      });
-      // Filet de sécurité supplémentaire : certains échecs (mauvais
-      // identifiant de récitateur, redirection, CORS) ne déclenchent ni
-      // `error` ni le rejet de `play()` — le flux reste silencieusement en
-      // chargement. Si la lecture n'a pas réellement démarré sous 5 s, on
-      // considère l'essai en échec et on passe à la suite.
-      watchdogRef.current = setTimeout(() => handleFailure(), 5000);
-    },
-    [handleFailure, clearWatchdog],
-  );
-
+  }, [clearWatchdog, stop]);
   useEffect(() => {
-    attemptPlayRef.current = attemptPlay;
-  }, [attemptPlay]);
+    startRef.current = start;
+    failureRef.current = handleFailure;
+  }, [start, handleFailure]);
 
   useEffect(() => {
     const audio = new Audio();
+    audio.preload = "none";
     audioRef.current = audio;
-
-    const handleEnded = () => {
+    const onPlaying = () => { clearWatchdog(); setLoading(false); };
+    const onEnded = () => {
       clearWatchdog();
-      const verseNumber = currentVerseRef.current;
-      if (verseNumber != null) advance(verseNumber);
+      const index = verses.findIndex((verse) => verse.number === currentVerseRef.current);
+      if (sequenceRef.current && verses[index + 1]) startRef.current(verses[index + 1].number);
+      else stop();
     };
-    const handleError = () => handleFailure();
-    // Confirme qu'un flux a réellement commencé à jouer : annule le
-    // minuteur de secours, évite de le déclencher à tort sur un verset qui
-    // met simplement plus de temps que les autres à démarrer.
-    const handlePlaying = () => clearWatchdog();
-
-    audio.addEventListener("ended", handleEnded);
-    audio.addEventListener("error", handleError);
-    audio.addEventListener("playing", handlePlaying);
+    const onError = () => failureRef.current();
+    audio.addEventListener("playing", onPlaying);
+    audio.addEventListener("ended", onEnded);
+    audio.addEventListener("error", onError);
     return () => {
       clearWatchdog();
       audio.pause();
-      audio.src = "";
-      audio.removeEventListener("ended", handleEnded);
-      audio.removeEventListener("error", handleError);
-      audio.removeEventListener("playing", handlePlaying);
+      audio.removeEventListener("playing", onPlaying);
+      audio.removeEventListener("ended", onEnded);
+      audio.removeEventListener("error", onError);
+      audioRef.current = null;
     };
-  }, [advance, handleFailure, clearWatchdog]);
+  }, [clearWatchdog, stop, verses]);
 
-  const stop = useCallback(() => {
-    clearWatchdog();
+  const chooseReciter = useCallback((id: string) => {
+    if (!reciters.some((reciter) => reciter.id === id)) return;
+    stop();
+    reciterRef.current = id;
+    catalogRef.current = null;
+    setReciterId(id);
+    setError(null);
+  }, [stop]);
+
+  const playVerse = useCallback(async (verseNumber: number, continueSequence = false) => {
+    if (!verses.some((verse) => verse.number === verseNumber)) return;
+    stop();
+    setError(null);
+    setLoading(true);
+    const request = requestRef.current;
+    const id = reciterRef.current;
+    const key = `${chapter}/${id}`;
+    let pending = catalogCacheRef.current.get(key);
+    if (!pending) {
+      pending = loadRecitation(chapter, id, verses);
+      catalogCacheRef.current.set(key, pending);
+    }
+    try {
+      const catalog = await pending;
+      if (request !== requestRef.current) return;
+      catalogRef.current = catalog;
+      sequenceRef.current = continueSequence;
+      startRef.current(verseNumber);
+    } catch (cause) {
+      catalogCacheRef.current.delete(key);
+      if (request !== requestRef.current) return;
+      setLoading(false);
+      setError(cause instanceof Error ? cause.message : "La source audio est indisponible.");
+    }
+  }, [chapter, stop, verses]);
+
+  const pause = useCallback(() => {
     audioRef.current?.pause();
-    sequentialRef.current = false;
-    currentVerseRef.current = null;
-    setPlayingVerse(null);
+    clearWatchdog();
+    setPaused(true);
+    setLoading(false);
   }, [clearWatchdog]);
+  const resume = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio || currentVerseRef.current === null) return;
+    setPaused(false);
+    setLoading(true);
+    audio.play().catch(() => failureRef.current());
+  }, []);
 
-  const playVerse = useCallback(
-    (verseNumber: number, continueSequence = false) => attemptPlay(verseNumber, 128, continueSequence),
-    [attemptPlay],
-  );
-
-  return (
-    <QuranAudioContext.Provider value={{ verses, reciterId, setReciterId, playingVerse, stop, playVerse }}>
-      {children}
-    </QuranAudioContext.Provider>
-  );
+  return <QuranAudioContext.Provider value={{ verses, reciterId, chooseReciter, playingVerse, paused, loading, error, stop, pause, resume, playVerse }}>
+    {children}
+  </QuranAudioContext.Provider>;
 }
 
 export function useQuranAudioContext() {
-  const ctx = useContext(QuranAudioContext);
-  if (!ctx) throw new Error("useQuranAudioContext doit être utilisé à l'intérieur de <QuranAudioProvider>.");
-  return ctx;
+  const context = useContext(QuranAudioContext);
+  if (!context) throw new Error("Le lecteur doit être placé dans QuranAudioProvider.");
+  return context;
 }
 
 export function QuranAudioToolbar() {
   const player = useQuranAudioContext();
+  const active = reciters.find((reciter) => reciter.id === player.reciterId)!;
+  const verseIndex = player.verses.findIndex((verse) => verse.number === player.playingVerse);
+  const previous = player.verses[verseIndex - 1];
+  const next = player.verses[verseIndex + 1];
 
-  return (
-    <div className="mb-8 flex flex-wrap items-center justify-center gap-3 rounded-lg border border-border bg-surface px-4 py-3">
-      <Select value={player.reciterId} onValueChange={player.setReciterId}>
-        <SelectTrigger className="w-auto min-w-[14rem]">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {reciters.map((r) => (
-            <SelectItem key={r.id} value={r.id}>
-              {r.nom}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      {player.playingVerse === null ? (
-        <Button size="sm" onClick={() => player.playVerse(player.verses[0]?.number ?? 1, true)}>
-          <Play className="h-4 w-4" /> Écouter la sourate
-        </Button>
-      ) : (
-        <Button size="sm" variant="outline" onClick={player.stop}>
-          <Square className="h-4 w-4" /> Arrêter (verset {player.playingVerse})
-        </Button>
-      )}
+  return <section aria-label="Lecteur audio du Coran" className="sticky top-16 z-20 mt-10 overflow-hidden rounded-2xl border border-[#cabf9f] bg-[#f8f4e9]/95 shadow-[0_16px_45px_-25px_rgba(16,58,49,.35)] backdrop-blur-xl dark:border-gold-500/25 dark:bg-ink-950/95">
+    <div className="border-b border-[#dfd3b9] bg-emerald-900 px-5 py-4 text-ivory-50 dark:border-gold-500/20 sm:px-6">
+      <div className="flex items-center gap-3">
+        <span className="flex size-9 items-center justify-center rounded-full bg-gold-500/20 text-gold-500"><Headphones className="size-5" /></span>
+        <div><p className="font-display text-lg font-semibold">Écouter la sourate</p><p className="text-xs text-ivory-50/70">Choisissez une voix, puis lancez la lecture verset par verset.</p></div>
+      </div>
     </div>
-  );
+    <div className="px-4 py-4 sm:px-6">
+      <p className="mb-3 text-xs font-semibold uppercase tracking-[.16em] text-emerald-900 dark:text-gold-500">Récitateur</p>
+      <div className="flex gap-3 overflow-x-auto pb-3" role="group" aria-label="Choisir un récitateur">
+        {reciters.map((reciter) => <button key={reciter.id} type="button" onClick={() => player.chooseReciter(reciter.id)} aria-pressed={player.reciterId === reciter.id}
+          className={`flex min-w-32 max-w-32 flex-col items-center gap-2 rounded-xl border p-3 text-center text-xs font-medium transition-colors hover:border-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 ${player.reciterId === reciter.id ? "border-emerald-800 bg-emerald-900/10 text-emerald-950 dark:border-gold-500 dark:bg-gold-500/15 dark:text-ivory-50" : "border-border bg-white/65 text-muted dark:bg-white/5"}`}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={reciter.portrait} alt="" loading="lazy" className={`size-14 rounded-full object-cover ring-2 ${player.reciterId === reciter.id ? "ring-gold-500" : "ring-[#d8ccb2]"}`} />
+          <span>{reciter.nom}</span>
+        </button>)}
+      </div>
+      <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-4">
+        {player.playingVerse === null ? <Button onClick={() => player.playVerse(player.verses[0].number, true)} disabled={player.loading} className="bg-emerald-900 text-ivory-50 hover:bg-emerald-700">
+          {player.loading ? <LoaderCircle className="size-4 animate-spin" /> : <Play className="size-4" />} {player.loading ? "Chargement…" : "Écouter la sourate"}
+        </Button> : <>
+          <Button variant="outline" size="icon" aria-label="Verset précédent" disabled={!previous} onClick={() => player.playVerse(previous.number, true)}><SkipBack className="size-4" /></Button>
+          <Button variant="outline" size="icon" aria-label={player.paused ? "Reprendre" : "Mettre en pause"} onClick={player.paused ? player.resume : player.pause}>
+            {player.paused ? <Play className="size-4" /> : <Pause className="size-4" />}
+          </Button>
+          <Button variant="outline" size="icon" aria-label="Verset suivant" disabled={!next} onClick={() => player.playVerse(next.number, true)}><SkipForward className="size-4" /></Button>
+          <Button variant="ghost" size="sm" onClick={player.stop}><Square className="size-4" /> Arrêter</Button>
+        </>}
+        <span aria-live="polite" className="ml-auto text-xs font-medium text-emerald-900 dark:text-gold-500">
+          {player.playingVerse !== null ? `${active.nom} · verset ${player.playingVerse}/${player.verses.length}${player.paused ? " · en pause" : ""}` : active.nom}
+        </span>
+      </div>
+      {player.error && <p role="alert" className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 dark:bg-red-950/40 dark:text-red-200">{player.error}</p>}
+      <details className="mt-3 text-xs text-muted">
+        <summary className="w-fit cursor-pointer hover:underline">Crédits des portraits</summary>
+        <p className="mt-2 leading-relaxed">
+          Photos : <a className="underline" target="_blank" rel="noopener noreferrer" href="https://commons.wikimedia.org/wiki/File:%D0%9C%D0%B8%D1%88%D0%B0%D1%80%D0%B8_%D0%A0%D0%B0%D1%88%D0%B8%D0%B4.jpg">Alafasy</a> (quranic.ru, libre utilisation déclarée),{" "}
+          <a className="underline" target="_blank" rel="noopener noreferrer" href="https://commons.wikimedia.org/wiki/File:Saud_Shuraim.png">Shuraim</a> et{" "}
+          <a className="underline" target="_blank" rel="noopener noreferrer" href="https://commons.wikimedia.org/wiki/File:Sheikh_Sudais.png">Sudais</a> (Sazwanmisuari, CC0),{" "}
+          <a className="underline" target="_blank" rel="noopener noreferrer" href="https://commons.wikimedia.org/wiki/File:Abdul_Basit_Abdul_Samad_at_Centenary_Celebration_Of_Darul_Uloom_Deoband_1980.jpg">Abdul Basit</a> (Prasar Bharati, GODL-India),{" "}
+          <a className="underline" target="_blank" rel="noopener noreferrer" href="https://commons.wikimedia.org/wiki/File:Hussary.jpg">Husary</a> et{" "}
+          <a className="underline" target="_blank" rel="noopener noreferrer" href="https://commons.wikimedia.org/wiki/File:Elminshwey.jpg">Minshawi</a> (domaine public selon Wikimedia Commons).
+        </p>
+      </details>
+    </div>
+  </section>;
 }
 
 export function VersePlayButton({ verseNumber }: { verseNumber: number }) {
   const player = useQuranAudioContext();
-  const isPlaying = player.playingVerse === verseNumber;
-  return (
-    <button
-      type="button"
-      onClick={() => (isPlaying ? player.stop() : player.playVerse(verseNumber))}
-      aria-label={isPlaying ? `Mettre en pause le verset ${verseNumber}` : `Écouter le verset ${verseNumber}`}
-      className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-border text-muted transition-colors hover:border-accent hover:text-accent"
-    >
-      {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5 translate-x-px" />}
-    </button>
-  );
+  const selected = player.playingVerse === verseNumber;
+  return <button type="button" onClick={() => selected ? (player.paused ? player.resume() : player.pause()) : player.playVerse(verseNumber)}
+    aria-label={selected ? (player.paused ? `Reprendre le verset ${verseNumber}` : `Mettre en pause le verset ${verseNumber}`) : `Écouter le verset ${verseNumber}`}
+    className={`mt-1 flex size-9 shrink-0 items-center justify-center rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 ${selected ? "border-emerald-900 bg-emerald-900 text-white" : "border-border text-emerald-900 hover:border-emerald-900 hover:bg-emerald-900/10 dark:text-gold-500"}`}>
+    {selected && !player.paused ? <Pause className="size-4" /> : <Play className="size-4" />}
+  </button>;
 }

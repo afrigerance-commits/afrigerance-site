@@ -4,10 +4,12 @@ import { createClient } from "@/lib/supabase/server";
 import { VideoAddForm } from "@/components/admin/video-add-form";
 import { deleteVideo } from "@/lib/actions/videos";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export const metadata: Metadata = { title: "Vidéos", robots: { index: false } };
 
-export default async function AdminVideosPage() {
+export default async function AdminVideosPage({ searchParams }: PageProps<"/admin/videos">) {
+  const { added } = await searchParams;
   const supabase = await createClient();
   const { data: videos } = await supabase.from("videos").select("id, titre, youtube_id").order("created_at", { ascending: false });
 
@@ -15,10 +17,11 @@ export default async function AdminVideosPage() {
     <div className="flex flex-col gap-8">
       <h1 className="font-display text-2xl font-semibold">Vidéos</h1>
       <p className="text-sm text-muted">
-        Les vidéos restent hébergées sur YouTube. Collez le lien complet ou l’identifiant ; l’intégration directe via
-        l’API YouTube pourra être ajoutée plus tard.
+        Collez le lien d’une vidéo YouTube ou d’un Short. Après l’ajout, elle apparaît sur la{" "}
+        <Link href="/videos" className="font-medium text-primary underline">vidéothèque publique</Link>.
       </p>
       <VideoAddForm />
+      {added === "1" && <p role="status" className="rounded-lg border border-emerald-600/30 bg-emerald-600/10 p-3 text-sm text-emerald-800 dark:text-emerald-200">Vidéo ajoutée et visible dans la vidéothèque publique.</p>}
 
       {videos && videos.length > 0 && (
         <ul className="flex flex-col gap-2">

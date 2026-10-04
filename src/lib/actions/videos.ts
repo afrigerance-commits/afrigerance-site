@@ -1,7 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { extractYoutubeId } from "@/lib/youtube";
 
 export interface VideoFormState {
   error?: string;
@@ -16,36 +18,35 @@ function slugify(value: string) {
     .replace(/(^-|-$)/g, "");
 }
 
-function extractYoutubeId(input: string) {
-  const trimmed = input.trim();
-  const match = trimmed.match(/(?:youtu\.be\/|v=|embed\/)([a-zA-Z0-9_-]{6,})/);
-  return match ? match[1] : trimmed;
-}
-
 export async function addVideo(_prevState: VideoFormState, formData: FormData): Promise<VideoFormState> {
   const titre = String(formData.get("titre") ?? "").trim();
   const lien = String(formData.get("lien") ?? "").trim();
   if (!titre || !lien) return { error: "Le titre et le lien YouTube sont requis." };
+  const youtubeId = extractYoutubeId(lien);
+  if (!youtubeId) return { error: "Lien YouTube invalide. Utilisez une URL de vidéo, Shorts ou un identifiant de 11 caractères." };
 
   const supabase = await createClient();
-  const { error } = await supabase.from("videos").insert({
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Reconnectez-vous pour ajouter une vidéo." };
+  const { data, error } = await supabase.from("videos").insert({
     titre,
     slug: `${slugify(titre)}-${Date.now().toString(36)}`,
     description: String(formData.get("description") ?? ""),
-    youtube_id: extractYoutubeId(lien),
+    youtube_id: youtubeId,
     published_at: new Date().toISOString(),
-  });
+  }).select("id").single();
 
-  if (error) return { error: `Impossible d’ajouter la vidéo : ${error.message}` };
+  if (error || !data) return { error: `Impossible d’ajouter la vidéo : ${error?.message ?? "enregistrement non confirmé"}` };
 
   revalidatePath("/admin/videos");
   revalidatePath("/videos");
-  return {};
+  redirect("/admin/videos?added=1");
 }
 
 export async function deleteVideo(id: string) {
   const supabase = await createClient();
-  await supabase.from("videos").delete().eq("id", id);
+  const { error } = await supabase.from("videos").delete().eq("id", id);
+  if (error) throw new Error(`Suppression impossible : ${error.message}`);
   revalidatePath("/admin/videos");
   revalidatePath("/videos");
 }

@@ -43,7 +43,7 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
   const isBismillahImplicit = number !== 1 && number !== 9;
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
       <ReadingProgress />
       <JsonLd
         data={{
@@ -59,13 +59,14 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
         <ArrowLeft className="h-3.5 w-3.5" /> Le Coran
       </Link>
 
-      <Reveal className="flex flex-col items-center gap-3 text-center">
+      <Reveal className="relative isolate flex flex-col items-center gap-4 overflow-hidden rounded-[2rem] border border-gold-600/25 bg-[#f5f0e6] px-5 py-12 text-center shadow-sm dark:bg-emerald-900/15 sm:py-16">
+        <span aria-hidden="true" className="pointer-events-none absolute -top-32 left-1/2 -z-10 size-80 -translate-x-1/2 rounded-full bg-gold-500/15 blur-3xl" />
         <Badge variant="outline">
           Sourate {chapter.number} · {chapter.revelation === "Mecca" ? "Mecquoise" : "Médinoise"} ·{" "}
           {chapter.versesCount} versets
         </Badge>
-        <h1 className="font-display text-3xl font-semibold sm:text-4xl">{chapter.nameFrench}</h1>
-        <ArabicText as="p" variant="quran" className="text-2xl text-gold-700 dark:text-gold-500">
+        <h1 className="font-display text-4xl font-semibold tracking-tight text-emerald-950 dark:text-ivory-50 sm:text-5xl">{chapter.nameFrench}</h1>
+        <ArabicText as="p" variant="quran" className="text-3xl text-gold-700 dark:text-gold-500">
           {chapter.nameArabic}
         </ArabicText>
         <SourateSwitcher chapters={chapters} current={chapter.number} />
@@ -79,10 +80,10 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
         </Reveal>
       )}
 
-      <QuranAudioProvider verses={verses.map((v) => ({ number: v.number, globalNumber: v.globalNumber! }))}>
+      <QuranAudioProvider chapter={number} verses={verses.map((v) => ({ number: v.number, globalNumber: v.globalNumber! }))}>
         <QuranAudioToolbar />
 
-        <div className="mt-10 flex flex-col gap-2">
+        <div className="mt-8 flex flex-col gap-2">
           {verses.map((v, i) => (
             <Reveal key={v.number} delay={Math.min(i * 0.015, 0.3)}>
               <QuranVerseRow verseNumber={v.number}>

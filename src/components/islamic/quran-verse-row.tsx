@@ -24,8 +24,8 @@ export function QuranVerseRow({ verseNumber, children }: { verseNumber: number; 
     <div
       ref={ref}
       className={cn(
-        "flex flex-col gap-3 rounded-lg border-b border-border px-3 pb-8 transition-colors duration-300 last:border-0",
-        isPlaying && "border-transparent bg-accent/10 ring-1 ring-accent/40",
+        "scroll-mt-56 flex flex-col gap-3 rounded-2xl border border-transparent border-b-border px-3 pb-8 transition-colors duration-300 sm:px-6",
+        isPlaying && "border-gold-600/50 bg-[#f5f0e6] shadow-sm ring-1 ring-gold-600/25 dark:bg-emerald-900/20",
       )}
     >
       {children}

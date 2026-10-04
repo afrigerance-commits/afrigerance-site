@@ -82,6 +82,32 @@ attendant.
 
 ## Pourquoi ces sources et pas d'autres
 
+### Audio et portraits du lecteur coranique
+
+Le lecteur interroge `https://api.alquran.cloud/v1/surah/{numéro}/{édition}`
+au moment de la lecture. Il contrôle le numéro de sourate, l'édition, le nombre
+de versets, le numéro dans la sourate et le numéro global avant de jouer les URL
+`audio` / `audioSecondary` fournies par l'API. Les fichiers restent hébergés par
+Al Quran Cloud. Le 4 octobre 2026, les éditions Shuraim (64 kb/s), Abdul Basit
+murattal (192 kb/s) et Sudais (192 kb/s) ont été vérifiées sur Al-Baqara 2:2 ;
+les fichiers d'Abdul Basit et Sudais décodés coïncident avec ceux de l'archive
+indexée par sourate/verset de `verse.mp3quran.net`. Cela ne remplace pas une
+écoute humaine de l'ensemble des 6 236 enregistrements.
+
+Miniatures locales provenant des pages Wikimedia Commons suivantes, consultées
+le 4 octobre 2026. Cliquer sur « Crédits des portraits » dans le lecteur pour
+retrouver cette liste :
+
+| Récitateur | Fichier source | Licence indiquée par Commons |
+|---|---|---|
+| Alafasy | [Мишари Рашид.jpg](https://commons.wikimedia.org/wiki/File:%D0%9C%D0%B8%D1%88%D0%B0%D1%80%D0%B8_%D0%A0%D0%B0%D1%88%D0%B8%D0%B4.jpg) | Copyrighted free use (quranic.ru ; permission déclarée par le téléverseur) |
+| Shuraim | [Saud Shuraim.png](https://commons.wikimedia.org/wiki/File:Saud_Shuraim.png) | CC0, Sazwanmisuari |
+| Abdul Basit | [Abdul Basit à Deoband, 1980](https://commons.wikimedia.org/wiki/File:Abdul_Basit_Abdul_Samad_at_Centenary_Celebration_Of_Darul_Uloom_Deoband_1980.jpg) | GODL-India, Prasar Bharati ; statut non revu par Commons |
+| Sudais | [Sheikh Sudais.png](https://commons.wikimedia.org/wiki/File:Sheikh_Sudais.png) | CC0, Sazwanmisuari |
+| Husary | [Hussary.jpg](https://commons.wikimedia.org/wiki/File:Hussary.jpg) | Domaine public indiqué par Commons |
+| Minshawi | [Elminshwey.jpg](https://commons.wikimedia.org/wiki/File:Elminshwey.jpg) | Domaine public indiqué par Commons |
+
+
 Les deux jeux de données retenus (`fawazahmed0/quran-api` et
 `fawazahmed0/hadith-api`) ont été choisis parce que :
 

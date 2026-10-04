@@ -4,7 +4,8 @@ import type { Video } from "@/lib/types/content";
  * Aucune vraie vidéo YouTube du fondateur n’existe encore sur cette instance
  * de démonstration : plutôt que de fabriquer un faux lien, chaque fiche a un
  * youtubeId vide et s’affiche comme emplacement "à configurer" (voir
- * VideoCard). Un administrateur ajoute le vrai lien depuis /admin/videos.
+ * VideoCard). Les vidéos ajoutées dans /admin/videos sont lues depuis Supabase
+ * par getPublishedVideos ; ces exemples ne sont jamais rendus publiquement.
  */
 export const videos: Video[] = [
   {

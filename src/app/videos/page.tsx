@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Reveal } from "@/components/motion/reveal";
 import { VideoCard } from "@/components/content/video-card";
 import { YoutubeIcon } from "@/components/icons/youtube-icon";
-import { videos } from "@/lib/data/videos";
+import { getPublishedVideos } from "@/lib/data/published-videos";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -12,7 +12,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/videos" },
 };
 
-export default function VideosPage() {
+export const dynamic = "force-dynamic";
+
+export default async function VideosPage() {
+  const videos = await getPublishedVideos();
   return (
     <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
       <Reveal className="flex flex-col gap-4 text-center">
@@ -34,13 +37,13 @@ export default function VideosPage() {
         )}
       </Reveal>
       <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {videos.filter((video) => video.youtubeId).map((video, i) => (
+        {videos.map((video, i) => (
           <Reveal key={video.slug} delay={i * 0.05}>
             <VideoCard video={video} />
           </Reveal>
         ))}
       </div>
-      {!videos.some((video) => video.youtubeId) && (
+      {videos.length === 0 && (
         <p className="mt-8 rounded-xl border border-border bg-surface p-6 text-center text-sm text-muted">
           Les vidéos seront ajoutées lorsque leurs liens authentiques auront été fournis.
         </p>
