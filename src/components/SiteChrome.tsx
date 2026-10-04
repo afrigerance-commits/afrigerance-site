@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { uiText } from "@/content/site";
+import { MotionRoot } from "./motion/MotionRoot";
 import { SiteFooter } from "./SiteFooter";
 import { SiteHeader } from "./SiteHeader";
 
@@ -9,7 +10,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
     <>
       <a
         href="#contenu"
-        className="bg-brand sr-only z-50 rounded-md px-4 py-3 font-semibold text-white focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:px-4 focus:py-3"
+        className="bg-brand sr-only z-50 rounded-full px-5 py-3 font-semibold text-white focus:not-sr-only focus:fixed focus:top-4 focus:left-4"
       >
         {uiText.skipLink}
       </a>
@@ -18,6 +19,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
         {children}
       </main>
       <SiteFooter />
+      <MotionRoot />
     </>
   );
 }

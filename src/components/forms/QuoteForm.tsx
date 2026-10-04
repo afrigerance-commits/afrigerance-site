@@ -17,7 +17,7 @@ import {
 } from "@/lib/forms/quote";
 import { postForm } from "@/lib/forms/submission";
 import { useSubmissionMeta } from "@/lib/forms/useSubmissionMeta";
-import { ArrowLeftIcon, CheckCircleIcon } from "../icons";
+import { ArrowLeftIcon } from "../icons";
 import { ButtonLink, buttonClasses } from "../ui/button";
 import {
   ChoiceGroup,
@@ -25,6 +25,7 @@ import {
   Honeypot,
   SubmitAlert,
   SubmitLabel,
+  SuccessPanel,
   TextArea,
   TextField,
   type ErrorItem,
@@ -181,22 +182,18 @@ export function QuoteForm({ initialPoles }: { initialPoles: PoleId[] }) {
 
   if (status === "success") {
     return (
-      <div ref={formTopRef} className="border-success/30 bg-success-bg scroll-mt-6 rounded-lg border p-6 sm:p-8">
-        <CheckCircleIcon className="text-success size-10" />
-        <h2
-          ref={successRef}
-          tabIndex={-1}
-          className="text-ink mt-4 text-2xl font-bold tracking-[-0.02em] sm:text-3xl"
+      <div ref={formTopRef} className="scroll-mt-32">
+        <SuccessPanel
+          title={quoteForm.success.title}
+          text={quoteForm.success.text}
+          reference={reference}
+          referenceLabel={formCommon.referenceLabel}
+          headingRef={successRef}
         >
-          {quoteForm.success.title}
-        </h2>
-        <p className="text-ink mt-3 max-w-[36em] text-lg leading-relaxed">{quoteForm.success.text}</p>
-        <p className="text-ink mt-4">
-          {formCommon.referenceLabel} <strong className="font-semibold">{reference}</strong>
-        </p>
-        <ButtonLink href={routes.home} variant="secondary" className="mt-8">
-          {quoteForm.success.backHome}
-        </ButtonLink>
+          <ButtonLink href={routes.home} variant="secondary">
+            {quoteForm.success.backHome}
+          </ButtonLink>
+        </SuccessPanel>
       </div>
     );
   }
@@ -208,9 +205,9 @@ export function QuoteForm({ initialPoles }: { initialPoles: PoleId[] }) {
   const pending = status === "submitting";
 
   return (
-    <div ref={formTopRef} className="scroll-mt-6">
+    <div ref={formTopRef} className="scroll-mt-32">
       <noscript>
-        <p className="border-danger/40 bg-danger-bg text-danger mb-6 rounded-md border p-4 font-medium">
+        <p className="border-danger/40 bg-danger-bg text-danger mb-6 rounded-2xl border p-4 font-medium">
           {quoteForm.noscript}
         </p>
       </noscript>
@@ -218,28 +215,32 @@ export function QuoteForm({ initialPoles }: { initialPoles: PoleId[] }) {
       <ol aria-label={quoteForm.progressLabel} className="grid grid-cols-4 gap-2 sm:gap-3">
         {steps.map((item, index) => (
           <li key={item.id} aria-current={index === step ? "step" : undefined}>
+            <span aria-hidden="true" className="bg-line block h-1.5 overflow-hidden rounded-full">
+              <span
+                className={`bg-brand block h-full origin-left rounded-full transition-transform duration-700 ease-out-expo ${
+                  index <= step ? "scale-x-100" : "scale-x-0"
+                }`}
+              />
+            </span>
             <span
-              aria-hidden="true"
-              className={`block h-1.5 rounded-full ${index <= step ? "bg-brand" : "bg-line"}`}
-            />
-            <span
-              className={`mt-2 hidden text-sm sm:block ${
+              className={`mt-3 hidden items-center gap-2 text-sm transition-colors duration-300 sm:flex ${
                 index === step ? "text-ink font-semibold" : "text-muted"
               }`}
             >
-              {index + 1}. {item.title}
+              <span className="font-mono text-xs">{String(index + 1).padStart(2, "0")}</span>
+              {item.title}
             </span>
           </li>
         ))}
       </ol>
 
       <form noValidate onSubmit={handleSubmit} aria-labelledby="devis-step-title" className="relative mt-8">
-        <p className="text-brand text-sm font-semibold">{quoteForm.stepCounter(step + 1, QUOTE_STEP_COUNT)}</p>
+        <p className="eyebrow text-brand-dark">{quoteForm.stepCounter(step + 1, QUOTE_STEP_COUNT)}</p>
         <h2
           id="devis-step-title"
           ref={headingRef}
           tabIndex={-1}
-          className="text-ink mt-1 text-[clamp(1.75rem,1.4rem+1.2vw,2.25rem)] leading-tight font-bold tracking-[-0.025em]"
+          className="text-display text-ink mt-3 text-[clamp(1.875rem,1.4rem+1.6vw,2.75rem)]"
         >
           {steps[step].title}
         </h2>
@@ -429,7 +430,7 @@ export function QuoteForm({ initialPoles }: { initialPoles: PoleId[] }) {
 
         {isSummary ? (
           <div className="mt-8 space-y-4">
-            <p className="text-ink bg-surface rounded-md p-4 leading-relaxed">{summary.pricingNote}</p>
+            <p className="text-ink bg-surface rounded-2xl p-4 leading-relaxed">{summary.pricingNote}</p>
             <p className="text-muted text-sm leading-relaxed">{formCommon.privacy}</p>
           </div>
         ) : null}
@@ -528,7 +529,7 @@ function QuoteSummary({ data, onEdit }: { data: QuoteData; onEdit: (step: number
         <section
           key={section.step}
           aria-labelledby={`recap-${section.step}`}
-          className="border-line rounded-lg border p-5 sm:p-6"
+          className="border-line rounded-2xl border p-5 sm:p-6"
         >
           <div className="flex items-start justify-between gap-4">
             <h3 id={`recap-${section.step}`} className="text-ink text-lg font-bold">

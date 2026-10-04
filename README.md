@@ -3,10 +3,17 @@
 Site vitrine d’AFRIGÉRANCE : infogérance et intégration de solutions technologiques pour les entreprises au Sénégal.
 
 **État actuel**
-- Pages Accueil, Services, Demander un devis, À propos et Contact terminées.
-- Chaque demande de devis ou de contact est **enregistrée dans une base de données** et consultable dans un **espace administrateur protégé** (`/admin`). Un **email avertit le gestionnaire** de chaque nouvelle demande.
-- Il reste à fournir les paramètres réels (base de données, email) : voir « Mise en route » ci-dessous.
-- Le site n’est pas déployé.
+- **Pages terminées** : Accueil, Services, une fiche détaillée par pôle (Infogérance, Intégration), Demander un devis, Prendre rendez-vous, À propos, Questions fréquentes et Contact. Les pages Mentions légales et Données personnelles sont prêtes mais restent non indexées : il manque les informations légales.
+- **Direction artistique** :
+  - grotesque condensée pour les titres, en écho au logo, et italique à empattements pour les mots mis en valeur ;
+  - marine profond, bleu de la marque et cyan ;
+  - carte de l’Afrique en points, avec un signal qui part de Dakar.
+- **Animations** (voir « Animations » plus bas) :
+  - révélations au défilement, titres mot à mot, profondeur au pointeur ;
+  - transitions entre les pages, défilé des logos, micro-interactions ;
+  - le réglage « réduire les animations » est respecté.
+- **Demandes** : chaque demande de devis, de rendez-vous ou de contact est **enregistrée dans une base de données**. Elle est consultable dans un **espace administrateur protégé** (`/admin`), et un **email avertit le gestionnaire**.
+- **Mise en ligne** : le site est prêt pour **Netlify** (`netlify.toml`). Le guide court est dans [`docs/deploiement-netlify.md`](docs/deploiement-netlify.md). Le site n’est pas encore déployé.
 
 Suivi détaillé du cahier des charges : [`docs/etat-cahier-des-charges.md`](docs/etat-cahier-des-charges.md).
 
@@ -27,7 +34,7 @@ Aucun mot de passe ni aucune clé ne figure dans le code : tout passe par des va
 
 ## Fonctionnement des demandes
 
-1. Le visiteur remplit le formulaire de devis ou de contact. Les réponses sont vérifiées dans le navigateur, puis **à nouveau par le serveur**.
+1. Le visiteur remplit le formulaire de devis, de rendez-vous ou de contact. Les réponses sont vérifiées dans le navigateur, puis **à nouveau par le serveur**.
 2. Le serveur **enregistre la demande** : type, réponses, coordonnées, date de réception, statut « Nouveau ». La confirmation n’est affichée au visiteur **que si l’enregistrement a réussi**. En cas d’échec, il voit un message d’erreur et ses réponses restent dans le formulaire.
 3. Juste après, un **email de notification** part vers le gestionnaire. Il reprend toute la demande : référence, date, pôles, prestations, description du besoin, ville, et coordonnées du demandeur. Il ajoute un lien vers la fiche `/admin` si `SITE_URL` est renseignée. Détails dans « Notification par email » ci-dessous.
 4. Si l’email échoue, la demande est **conservée**. Elle apparaît dans l’administration avec la mention « Échec » et l’erreur renvoyée par Resend, ainsi qu’un bouton **Renvoyer la notification**. Un renvoi n’envoie que l’email, sans jamais créer de seconde demande. La mention « La notification a été envoyée » n’apparaît que si Resend a accepté l’email.
@@ -232,44 +239,34 @@ Pour gagner du temps :
 
 Ces tests ne vérifient pas la réception d’un vrai email ni le fonctionnement avec la vraie base. Pour cela, suivez « Tester avec un vrai email reçu » plus haut.
 
+## Animations
+
+Le mouvement est confié à un petit moteur maison (`src/components/motion/`), sans bibliothèque externe. Il n’anime que des propriétés peu coûteuses (`transform`, `opacity`).
+
+- **Révélations au défilement** : ajoutez `data-reveal` à un élément pour qu’il apparaisse en douceur en entrant à l’écran. Variantes : `data-reveal="fade"`, `"scale"`, `"left"`, `"clip"`. L’attribut `style={{ "--i": 2 }}` décale l’apparition, pour un effet en cascade.
+- **Titres mot à mot** : composant `SplitWords`.
+- **Profondeur** : dans un conteneur `data-parallax`, chaque calque `data-depth="20"` suit légèrement le pointeur (souris uniquement).
+- **Micro-interactions** :
+  - `data-spotlight` ajoute un halo qui suit le pointeur sur une carte ;
+  - `data-magnetic` rapproche légèrement un bouton principal du pointeur.
+- **Transitions entre pages** : composant `PageTransition` (React `ViewTransition`), à placer dans chaque page.
+- **Accessibilité** :
+  - avec « réduire les animations », sans JavaScript, ou pour un élément déjà visible au chargement, tout s’affiche immédiatement ;
+  - le défilé des logos devient une grille fixe.
+
 ## Mise en ligne sur Netlify
 
-Netlify publie le site à partir de GitHub et le reconstruit tout seul à chaque mise à jour de la branche publiée. Next.js est reconnu automatiquement : aucun fichier de configuration Netlify n’est nécessaire. La version de Node.js (22) est fixée par le fichier `.nvmrc`.
+Le guide pas à pas (environ 30 minutes) est dans [`docs/deploiement-netlify.md`](docs/deploiement-netlify.md). En résumé :
 
-**Avant la première publication**, préparez :
+1. **Fusionner le travail dans `main`**, la branche publiée.
+2. **Relier GitHub à Netlify** : `netlify.toml` fournit déjà la commande de construction, le dossier publié et Node.js 22. Netlify installe automatiquement son adaptateur Next.js, qui transforme les pages, les routes `/api` et les actions de l’administration en fonctions.
+3. **Saisir les variables** dans Netlify : `DATABASE_URL` et `RESEND_API_KEY` (secrètes), `NOTIFICATION_EMAIL_FROM`, `NOTIFICATION_EMAIL_TO` et `SITE_URL`.
+4. **Préparer la base de production** depuis votre PC : `npm run db:migrate`, puis `npm run admin:create`.
+5. **Vérifier en ligne** : une demande de devis et une de rendez-vous, l’administration, puis les emails reçus.
 
-- la base de production Neon ;
-- la configuration Resend ;
-- les mentions légales (au minimum l’identité de l’éditeur du site) ;
-- l’accord écrit des partenaires dont le logo est affiché.
-
-1. **Choisir la branche publiée : `main`.** Le travail en cours se fait sur une autre branche, puis il est fusionné dans `main` par une demande de fusion (pull request) relue. Ainsi, rien ne part en ligne par accident.
-2. **Créer le site sur Netlify** :
-   1. sur https://app.netlify.com, connectez-vous avec votre compte GitHub ;
-   2. ajoutez un nouveau projet à partir d’un dépôt existant et choisissez GitHub, puis `afrigerance-commits/afrigerance-site` ;
-   3. choisissez la branche `main`. Laissez la commande de construction proposée (`npm run build`).
-3. **Saisir les variables d’environnement** dans les réglages du projet Netlify, rubrique « Environment variables ».
-
-   | Variable | Valeur |
-   | --- | --- |
-   | `DATABASE_URL` | adresse de la base **de production** Neon (secrète) |
-   | `RESEND_API_KEY` | clé Resend (secrète) |
-   | `NOTIFICATION_EMAIL_FROM` | expéditeur, par exemple `AFRIGERANCE <onboarding@resend.dev>` |
-   | `NOTIFICATION_EMAIL_TO` | adresse du gestionnaire |
-   | `SITE_URL` | adresse du site en ligne, par exemple `https://afrigerance.netlify.app`, puis votre domaine |
-
-   Ne renseignez pas `TEST_DATABASE_URL` sur Netlify : elle ne sert qu’aux tests. Après tout changement de variable, relancez une publication (« Trigger deploy »).
-4. **Préparer la base de production depuis votre PC** :
-   1. mettez temporairement l’adresse de la base de production dans `DATABASE_URL` de votre `.env.local` ;
-   2. lancez `npm run db:migrate`, puis `npm run admin:create` ;
-   3. remettez ensuite votre adresse habituelle.
-5. **Vérifier en ligne** :
-   1. envoyez une demande depuis `/devis` ;
-   2. connectez-vous sur `/admin` : la demande doit y figurer, avec la notification « Envoyée » ;
-   3. vérifiez que l’email est bien arrivé.
-6. **Nom de domaine** (plus tard) : ajoutez-le dans Netlify, rubrique « Domain management », puis mettez à jour `SITE_URL`. Netlify fournit automatiquement le HTTPS.
-
-**Sécurité** : la limite d’envois par visiteur et le blocage des essais de mot de passe reposent sur l’adresse IP que fournit Netlify (en-tête `x-nf-client-connection-ip`), que le visiteur ne peut pas falsifier. Sur un autre hébergeur, il faudrait adapter `src/lib/server/ip.ts`.
+**Sécurité** :
+- la limite d’envois par visiteur et le blocage des essais de mot de passe reposent sur l’adresse IP fournie par Netlify (en-tête `x-nf-client-connection-ip`), que le visiteur ne peut pas falsifier ;
+- les en-têtes de sécurité HTTP sont définis dans `next.config.ts`.
 
 ## Structure
 
@@ -277,18 +274,26 @@ Netlify publie le site à partir de GitHub et le reconstruit tout seul à chaque
 db/migrations/                  Migrations SQL (appliquées par npm run db:migrate)
 scripts/                        db-migrate.mjs, admin-create.mjs, email-test.mjs
 tests/e2e/                      Tests automatiques (Playwright) ; réglages dans playwright.config.ts
+netlify.toml                    Construction sur Netlify (commande, dossier publié, Node.js 22)
 .env.example                    Modèle des variables (sans valeur secrète)
+docs/deploiement-netlify.md     Guide court de mise en ligne
 docs/etat-cahier-des-charges.md Suivi des exigences du cahier des charges
+public/accueil/                 Carte de l’Afrique en points, image fondue du bandeau
+public/partenaires/             Logos « Ils nous font confiance »
 src/
-  content/                      TOUS les textes (site.ts, services.ts, pages.ts, forms.ts, admin.ts)
+  content/                      TOUS les textes (site, home, services, pages, faq, forms, partners, admin)
   lib/forms/                    Validation des formulaires (navigateur ET serveur)
   lib/requests/                 Types, mise en forme et filtres des demandes
   lib/server/                   Serveur uniquement : base, authentification, enregistrement, email
   app/
     (site)/                     Pages publiques (en-tête et pied de page communs)
     admin/                      Espace administrateur : connexion, liste, fiche
-    api/devis, api/contact      Réception des formulaires
-  components/                   Composants du site, des formulaires et de l’administration
+    api/devis, api/rendez-vous, api/contact   Réception des formulaires
+    sitemap.ts, robots.ts, opengraph-image.tsx  Référencement et aperçu de partage
+  components/
+    motion/                     Moteur d’animation (révélations, profondeur, transitions)
+    home/                       Sections de l’accueil
+    forms/                      Formulaires (devis, rendez-vous, contact) et champs communs
 ```
 
 Pour modifier le contenu :

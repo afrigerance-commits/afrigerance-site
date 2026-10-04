@@ -6,7 +6,19 @@ import { hasHorizontalScroll } from "./support/helpers";
 import { servers } from "./support/settings";
 
 const base = servers.noEmail.url;
-const publicPages = ["/", "/services", "/devis", "/a-propos", "/contact", "/mentions-legales"];
+const publicPages = [
+  "/",
+  "/services",
+  "/services/infogerance",
+  "/services/integration",
+  "/devis",
+  "/rendez-vous",
+  "/a-propos",
+  "/faq",
+  "/contact",
+  "/mentions-legales",
+  "/confidentialite",
+];
 const widths = [1440, 768, 390];
 
 for (const path of publicPages) {
@@ -47,11 +59,22 @@ test("aucun lien vide ou « # », chaque lien interne mène à une page et une a
   }
 });
 
-test("accueil → pôle « Intégration » → section correspondante de la page Services", async ({ page }) => {
+test("accueil → carte du pôle « Intégration » → fiche détaillée du pôle", async ({ page }) => {
   await page.goto(base + "/");
-  await page.getByRole("link", { name: /Intégration de solutions technologiques/ }).first().click();
-  await page.waitForURL("**/services#integration");
-  await expect(page.locator("#integration h2")).toBeVisible();
+  const poles = page.locator("#poles-title").locator("xpath=ancestor::section");
+  await poles.scrollIntoViewIfNeeded();
+  await poles.getByRole("link", { name: "Intégration de solutions technologiques", exact: true }).click();
+  await page.waitForURL("**/services/integration");
+  await expect(page.locator("h1")).toContainText("Intégration de solutions");
+});
+
+test("fiche d'un pôle : bouton de devis qui présélectionne le pôle ; pôle inconnu → 404", async ({ page }) => {
+  await page.goto(base + "/services/infogerance");
+  await page.getByRole("link", { name: "Parler de votre besoin" }).first().click();
+  await page.waitForURL("**/devis?pole=infogerance");
+  await expect(page.getByRole("checkbox", { name: "Infogérance", exact: true })).toBeChecked();
+  const response = await page.goto(base + "/services/inconnu");
+  expect(response?.status()).toBe(404);
 });
 
 test("menu mobile : s'ouvre, indique la page active, mène à la page choisie puis se ferme", async ({ page }) => {
@@ -62,10 +85,13 @@ test("menu mobile : s'ouvre, indique la page active, mène à la page choisie pu
   const toggle = page.locator("header button[aria-controls]");
   await expect(toggle).toHaveAttribute("aria-expanded", "true");
   const menu = page.locator(`[id="${await toggle.getAttribute("aria-controls")}"]`);
-  await expect(menu.locator('a[aria-current="page"]')).toHaveText("Nos services");
+  await expect(menu.locator('a[aria-current="page"]')).toContainText("Nos services");
+  // Le reste de la page est inerte tant que le menu plein écran est ouvert.
+  await expect(page.locator("#contenu")).toHaveJSProperty("inert", true);
   await menu.getByRole("link", { name: "À propos" }).click();
   await page.waitForURL("**/a-propos");
   await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await expect(page.locator("#contenu")).toHaveJSProperty("inert", false);
 });
 
 test("le bouton de devis d'un pôle le présélectionne ; un pôle inconnu dans l'adresse est ignoré", async ({ page }) => {
@@ -76,13 +102,17 @@ test("le bouton de devis d'un pôle le présélectionne ; un pôle inconnu dans 
   await expect(page.locator("input[type=checkbox]:checked")).toHaveCount(0);
 });
 
-test("bannière d'accueil : image décorative chargée, ignorée par les lecteurs d'écran", async ({ page }) => {
+test("bannière d'accueil : image fondue et carte décoratives, chargées, ignorées par les lecteurs d'écran", async ({ page }) => {
   test.skip(!hero.image, "Aucune image de bannière configurée (hero.image = null).");
   await page.goto(base + "/");
-  const image = page.locator("#hero-title").locator("xpath=ancestor::section").locator('[aria-hidden="true"] img');
-  await expect(image).toHaveCount(1);
-  await expect(image).toHaveAttribute("alt", "");
-  expect(await image.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
+  const heroSection = page.locator("#hero-title").locator("xpath=ancestor::section");
+  for (const src of [hero.image!.src, "/accueil/afrique.svg"]) {
+    const image = heroSection.locator(`img[src="${src}"]`).first();
+    await expect(image).toHaveAttribute("alt", "");
+    expect(await image.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), src).toBe(true);
+  }
+  // Toutes les images décoratives du bandeau ont un texte alternatif vide.
+  expect(await heroSection.locator("img:not([alt=''])").count()).toBe(0);
 });
 
 test("« Ils nous font confiance » : masquée sans logo ; sinon chaque logo s'affiche avec le nom du partenaire", async ({ page }) => {

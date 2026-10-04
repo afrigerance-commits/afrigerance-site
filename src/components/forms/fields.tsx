@@ -10,7 +10,7 @@ function describedBy(...ids: (string | false | undefined)[]) {
 }
 
 const inputBase =
-  "mt-2 block w-full rounded-md border bg-white px-4 text-base text-ink placeholder:text-muted focus-visible:outline-offset-1";
+  "mt-2.5 block w-full rounded-xl border bg-white px-4 text-base text-ink placeholder:text-muted transition-[border-color,box-shadow] duration-300 hover:border-ink/50 focus-visible:border-brand focus-visible:ring-4 focus-visible:ring-brand/15 focus-visible:outline-none";
 
 function inputState(error?: string) {
   return error ? "border-danger border-2" : "border-field";
@@ -55,10 +55,12 @@ type TextFieldProps = {
   /** Erreur commune à plusieurs champs (ex. « au moins un moyen de contact »). */
   groupErrorId?: string;
   optional?: boolean;
-  type?: "text" | "email" | "tel";
+  type?: "text" | "email" | "tel" | "date";
   autoComplete?: string;
   inputMode?: "text" | "email" | "tel";
   maxLength?: number;
+  min?: string;
+  max?: string;
 };
 
 export function TextField({
@@ -74,6 +76,8 @@ export function TextField({
   autoComplete,
   inputMode,
   maxLength,
+  min,
+  max,
 }: TextFieldProps) {
   return (
     <div>
@@ -93,8 +97,50 @@ export function TextField({
         autoComplete={autoComplete}
         inputMode={inputMode}
         maxLength={maxLength}
-        className={`${inputBase} h-12 ${inputState(error)}`}
+        min={min}
+        max={max}
+        className={`${inputBase} h-14 ${inputState(error)}`}
       />
+      <FieldError id={`${id}-error`} message={error} />
+    </div>
+  );
+}
+
+type SelectFieldProps = {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: readonly ChoiceOption[];
+  placeholder: string;
+  error?: string;
+  optional?: boolean;
+};
+
+/** Liste déroulante avec une première option vide (permet de revenir à « aucun choix »). */
+export function SelectField({ id, label, value, onChange, options, placeholder, error, optional }: SelectFieldProps) {
+  return (
+    <div>
+      <Label htmlFor={id} optional={optional}>
+        {label}
+      </Label>
+      <select
+        id={id}
+        name={id}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        required={!optional}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${id}-error` : undefined}
+        className={`${inputBase} h-14 appearance-none bg-[url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2020%2020'%20fill='none'%20stroke='%230b1038'%20stroke-width='1.8'%3E%3Cpath%20d='M5%208l5%205%205-5'/%3E%3C/svg%3E")] bg-[length:1.25rem] bg-[right_1rem_center] bg-no-repeat pr-11 ${inputState(error)}`}
+      >
+        <option value="">{placeholder}</option>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
       <FieldError id={`${id}-error`} message={error} />
     </div>
   );
@@ -109,12 +155,15 @@ type TextAreaProps = {
   error?: string;
   maxLength?: number;
   rows?: number;
+  optional?: boolean;
 };
 
-export function TextArea({ id, label, value, onChange, hint, error, maxLength, rows = 6 }: TextAreaProps) {
+export function TextArea({ id, label, value, onChange, hint, error, maxLength, rows = 6, optional }: TextAreaProps) {
   return (
     <div>
-      <Label htmlFor={id}>{label}</Label>
+      <Label htmlFor={id} optional={optional}>
+        {label}
+      </Label>
       {hint ? <FieldHint id={`${id}-hint`}>{hint}</FieldHint> : null}
       <textarea
         id={id}
@@ -122,11 +171,11 @@ export function TextArea({ id, label, value, onChange, hint, error, maxLength, r
         value={value}
         rows={rows}
         onChange={(event) => onChange(event.target.value)}
-        required
+        required={!optional}
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy(hint && `${id}-hint`, error && `${id}-error`)}
         maxLength={maxLength}
-        className={`${inputBase} py-3 leading-relaxed ${inputState(error)}`}
+        className={`${inputBase} py-3.5 leading-relaxed ${inputState(error)}`}
       />
       <FieldError id={`${id}-error`} message={error} />
     </div>
@@ -183,7 +232,7 @@ export function ChoiceGroup({
             <label
               key={option.value}
               htmlFor={inputId}
-              className={`flex cursor-pointer items-start gap-3 rounded-md border bg-white p-4 transition-colors hover:border-brand has-checked:border-brand has-checked:bg-brand/5 ${
+              className={`flex cursor-pointer items-start gap-3 rounded-2xl border bg-white p-4 transition-[border-color,background-color,box-shadow] duration-300 hover:border-brand/60 has-checked:border-brand has-checked:bg-brand/[0.04] has-checked:shadow-[0_0_0_1px_var(--color-brand)] has-focus-visible:ring-4 has-focus-visible:ring-brand/15 sm:p-5 ${
                 error ? "border-danger" : "border-line"
               }`}
             >
@@ -241,7 +290,7 @@ export function ErrorSummary({
       ref={summaryRef}
       tabIndex={-1}
       aria-labelledby="error-summary-title"
-      className="border-danger/40 bg-danger-bg rounded-md border p-5 focus-visible:outline-offset-2"
+      className="border-danger/40 bg-danger-bg rounded-2xl border p-5 focus-visible:outline-offset-2"
     >
       <h3 id="error-summary-title" className="text-danger flex items-center gap-2 font-semibold">
         <AlertIcon className="size-5 shrink-0" />
@@ -273,7 +322,7 @@ export function SubmitAlert({ message }: { message: string | null }) {
   return (
     <div
       role="alert"
-      className="border-danger/40 bg-danger-bg text-danger flex items-start gap-3 rounded-md border p-4 font-medium"
+      className="border-danger/40 bg-danger-bg text-danger flex items-start gap-3 rounded-2xl border p-4 font-medium"
     >
       <AlertIcon className="mt-0.5 size-5 shrink-0" />
       <p>{message}</p>
@@ -307,6 +356,43 @@ export function Honeypot({ value, onChange }: { value: string; onChange: (value:
         value={value}
         onChange={(event) => onChange(event.target.value)}
       />
+    </div>
+  );
+}
+
+/**
+ * Confirmation affichée uniquement après l'enregistrement réel de la demande :
+ * coche tracée, titre (focalisé pour les lecteurs d'écran), référence et actions.
+ */
+export function SuccessPanel({
+  title,
+  text,
+  reference,
+  referenceLabel,
+  headingRef,
+  children,
+}: {
+  title: string;
+  text: string;
+  reference: string;
+  referenceLabel: string;
+  headingRef: RefObject<HTMLHeadingElement | null>;
+  children?: ReactNode;
+}) {
+  return (
+    <div className="py-4 sm:py-8">
+      <svg aria-hidden="true" viewBox="0 0 64 64" className="success-check text-success size-16">
+        <circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" strokeWidth="3" pathLength={1} />
+        <path d="M20 33 l8 8 l16 -18" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" pathLength={1} />
+      </svg>
+      <h2 ref={headingRef} tabIndex={-1} className="text-display text-ink mt-7 text-[clamp(2rem,1.5rem+1.8vw,3rem)]">
+        {title}
+      </h2>
+      <p className="text-ink mt-4 max-w-[36em] text-lg leading-relaxed">{text}</p>
+      <p className="bg-surface text-ink mt-6 inline-flex flex-wrap items-center gap-2 rounded-full px-5 py-2.5">
+        {referenceLabel} <strong className="font-mono text-[0.9375rem] font-semibold tracking-wide">{reference}</strong>
+      </p>
+      {children ? <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">{children}</div> : null}
     </div>
   );
 }

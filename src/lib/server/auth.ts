@@ -38,9 +38,11 @@ function isLocalRequest(requestHeaders: Headers) {
 
 /** Administrateur connecté, ou null. Vérifié en base à chaque requête (mis en cache le temps d'un rendu). */
 export const getCurrentAdmin = cache(async (): Promise<AdminUser | null> => {
+  // Le cookie est lu en premier : les pages de l'administration restent ainsi toujours rendues
+  // à la demande, même si la base n'est pas configurée au moment de la construction du site.
+  const token = (await cookies()).get(COOKIE_NAME)?.value;
   const sql = getSql();
   if (!sql) return null;
-  const token = (await cookies()).get(COOKIE_NAME)?.value;
   if (!token || token.length > 200) return null;
   try {
     const rows = await sql<AdminUser[]>`

@@ -11,13 +11,13 @@ import {
 } from "@/lib/forms/contact";
 import { postForm } from "@/lib/forms/submission";
 import { useSubmissionMeta } from "@/lib/forms/useSubmissionMeta";
-import { CheckCircleIcon } from "../icons";
 import { buttonClasses } from "../ui/button";
 import {
   ErrorSummary,
   Honeypot,
   SubmitAlert,
   SubmitLabel,
+  SuccessPanel,
   TextArea,
   TextField,
   type ErrorItem,
@@ -107,19 +107,17 @@ export function ContactForm() {
 
   if (status === "success") {
     return (
-      <div className="border-success/30 bg-success-bg rounded-lg border p-6 sm:p-8">
-        <CheckCircleIcon className="text-success size-10" />
-        <h2 ref={successRef} tabIndex={-1} className="text-ink mt-4 text-2xl font-bold tracking-[-0.02em]">
-          {contactForm.success.title}
-        </h2>
-        <p className="text-ink mt-3 leading-relaxed">{contactForm.success.text}</p>
-        <p className="text-ink mt-4">
-          {formCommon.referenceLabel} <strong className="font-semibold">{reference}</strong>
-        </p>
-        <button type="button" onClick={reset} className={buttonClasses("secondary", "md", "mt-6")}>
+      <SuccessPanel
+        title={contactForm.success.title}
+        text={contactForm.success.text}
+        reference={reference}
+        referenceLabel={formCommon.referenceLabel}
+        headingRef={successRef}
+      >
+        <button type="button" onClick={reset} className={buttonClasses("secondary", "md")}>
           {buttons.again}
         </button>
-      </div>
+      </SuccessPanel>
     );
   }
 
@@ -131,7 +129,7 @@ export function ContactForm() {
   return (
     <div>
       <noscript>
-        <p className="border-danger/40 bg-danger-bg text-danger mb-6 rounded-md border p-4 font-medium">
+        <p className="border-danger/40 bg-danger-bg text-danger mb-6 rounded-2xl border p-4 font-medium">
           {contactForm.noscript}
         </p>
       </noscript>
@@ -139,7 +137,7 @@ export function ContactForm() {
         id="contact-form-title"
         ref={titleRef}
         tabIndex={-1}
-        className="text-ink text-[clamp(1.75rem,1.4rem+1.2vw,2.25rem)] leading-tight font-bold tracking-[-0.025em]"
+        className="text-display text-ink text-[clamp(1.875rem,1.4rem+1.6vw,2.75rem)]"
       >
         {contactForm.title}
       </h2>

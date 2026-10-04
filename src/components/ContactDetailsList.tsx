@@ -29,15 +29,13 @@ const linkClass = "text-brand hover:text-brand-dark rounded-sm font-semibold und
 
 /**
  * Coordonnées confirmées d'AFRIGÉRANCE (src/content/site.ts).
- * Chaque ligne n'apparaît que si la valeur est renseignée ; sinon, un texte neutre renvoie au formulaire.
+ * Chaque ligne n'apparaît que si la valeur est renseignée ; rien n'est affiché tant qu'aucune n'est confirmée.
  */
 export function ContactDetailsList() {
   const { phone, email, whatsapp, address, hours } = contactDetails;
   const hasAny = Boolean(phone || email || whatsapp || address?.length || hours?.length);
 
-  if (!hasAny) {
-    return <p className="text-muted text-lg leading-relaxed">{labels.empty}</p>;
-  }
+  if (!hasAny) return null;
 
   return (
     <dl className="space-y-6">

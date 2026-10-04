@@ -67,7 +67,7 @@ export function formatNotificationEmail(request: NotificationSource) {
     "",
     `— ${notificationEmail.contactSection} —`,
     `${labels.name} : ${request.name}`,
-    ...(request.type === "devis" ? [`${labels.company} : ${request.company ?? empty}`] : []),
+    ...(request.type !== "contact" ? [`${labels.company} : ${request.company ?? empty}`] : []),
     `${labels.email} : ${request.email ?? empty}`,
     `${labels.phone} : ${request.phone ?? empty}`,
     ...(request.email ? ["", notificationEmail.replyHint] : []),

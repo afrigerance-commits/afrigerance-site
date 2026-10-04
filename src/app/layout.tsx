@@ -1,14 +1,39 @@
-import type { Metadata } from "next";
-import { Figtree } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Bricolage_Grotesque, Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { site } from "@/content/site";
+import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
 
-const figtree = Figtree({
-  variable: "--font-figtree",
+/* Titrage : grotesque condensée, en écho au mot-symbole du logo. */
+const display = Bricolage_Grotesque({
+  variable: "--font-bricolage",
+  subsets: ["latin"],
+  axes: ["opsz", "wdth"],
+});
+
+/* Mots mis en valeur dans les titres. */
+const serif = Instrument_Serif({
+  variable: "--font-instrument",
+  subsets: ["latin"],
+  weight: "400",
+  style: ["italic"],
+});
+
+/* Texte courant et interface. */
+const sans = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
 });
 
+/* Repères techniques (numéros d'étape, étiquettes). */
+const mono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+  preload: false,
+});
+
 export const metadata: Metadata = {
+  metadataBase: siteUrl() ?? undefined,
   title: {
     default: `${site.name} — ${site.tagline}`,
     template: `%s | ${site.name}`,
@@ -20,11 +45,19 @@ export const metadata: Metadata = {
     locale: site.locale,
     type: "website",
   },
+  twitter: { card: "summary_large_image" },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#061233",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="fr" className={`${figtree.variable} antialiased`}>
+    <html
+      lang="fr"
+      className={`${display.variable} ${serif.variable} ${sans.variable} ${mono.variable} antialiased`}
+    >
       <body className="flex min-h-dvh flex-col font-sans">{children}</body>
     </html>
   );

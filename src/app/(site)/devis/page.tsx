@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { FormAside } from "@/components/FormAside";
 import { QuoteForm } from "@/components/forms/QuoteForm";
+import { PageTransition } from "@/components/motion/PageTransition";
+import { PageHero } from "@/components/PageHero";
 import { quoteForm } from "@/content/forms";
-import { PageHeader } from "@/components/PageHeader";
 import { quotePage } from "@/content/pages";
 import { isPoleId } from "@/content/services";
+import { routes } from "@/content/site";
 
 export const metadata: Metadata = {
   title: quotePage.metaTitle,
   description: quotePage.metaDescription,
+  alternates: { canonical: routes.quote },
 };
 
 /** /devis?pole=infogerance ou /devis?pole=integration présélectionne le pôle. */
@@ -18,34 +21,32 @@ export default async function QuotePage({ searchParams }: PageProps<"/devis">) {
   const aside = quotePage.aside;
 
   return (
-    <>
-      <PageHeader eyebrow={quotePage.eyebrow} title={quotePage.title} intro={quotePage.intro} />
-      <div className="site-container grid gap-12 py-12 sm:py-16 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-16 lg:py-20 xl:grid-cols-[minmax(0,1fr)_20rem]">
-        <section aria-label={quoteForm.title} className="max-w-3xl">
-          <QuoteForm key={initialPoles.join(",")} initialPoles={initialPoles} />
-        </section>
-        <aside aria-labelledby="devis-aside-title" className="lg:pt-2">
-          <div className="bg-surface rounded-lg p-6">
-            <h2 id="devis-aside-title" className="text-ink text-lg font-bold">
-              {aside.title}
-            </h2>
-            <ul className="text-ink mt-4 list-disc space-y-3 pl-5 leading-relaxed">
-              {aside.items.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-            <p className="text-ink border-line mt-6 border-t pt-5">
-              {aside.contactText}{" "}
-              <Link
-                href={aside.contactCta.href}
-                className="text-brand-dark hover:text-ink rounded-sm font-semibold underline underline-offset-2"
-              >
-                {aside.contactCta.label}
-              </Link>
-            </p>
-          </div>
-        </aside>
+    <PageTransition>
+      <PageHero
+        eyebrow={quotePage.eyebrow}
+        titleLead={quotePage.titleLead}
+        titleAccent={quotePage.titleAccent}
+        intro={quotePage.intro}
+        crumbs={[{ label: quotePage.eyebrow }]}
+        overlap
+      />
+      <div className="bg-surface pb-24 sm:pb-28 lg:pb-32">
+        <div className="site-container grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_22rem]">
+          <section
+            aria-label={quoteForm.title}
+            className="relative z-10 -mt-16 rounded-[2rem] bg-white p-6 shadow-[0_40px_100px_-50px_rgb(4_11_36/0.55)] ring-1 ring-ink/[0.06] sm:-mt-20 sm:p-10 lg:-mt-28 lg:p-12"
+          >
+            <QuoteForm key={initialPoles.join(",")} initialPoles={initialPoles} />
+          </section>
+          <FormAside
+            id="devis-aside-title"
+            title={aside.title}
+            items={aside.items}
+            linkText={aside.contactText}
+            link={aside.contactCta}
+          />
+        </div>
       </div>
-    </>
+    </PageTransition>
   );
 }

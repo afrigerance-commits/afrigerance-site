@@ -18,15 +18,31 @@ export type Prestation = {
   description: string;
 };
 
+export type PoleObjective = {
+  title: string;
+  text: string;
+};
+
 export type ServicePole = {
   id: PoleId;
+  /** Numéro affiché devant le pôle (01, 02). */
+  index: string;
   title: string;
+  /** Titre court (étiquettes, menus). */
+  shortTitle: string;
+  /** Titre du bandeau de la fiche détaillée : partie droite puis partie en italique. */
+  heroLead: string;
+  heroAccent: string;
   /** Liste courte affichée sur l'accueil. */
   description: string;
   /** Phrase d'introduction du pôle sur la page Services. */
   summary: string;
   prestations: Prestation[];
-  /** Section du pôle sur la page Services. */
+  /** Besoins auxquels répond le pôle (fiche détaillée). Aucun résultat chiffré ni engagement. */
+  objectives: PoleObjective[];
+  /** Précisions sur le périmètre, reprises du cahier des charges. */
+  notes: string[];
+  /** Fiche détaillée du pôle. */
   href: string;
   /** Formulaire de devis avec le pôle présélectionné. */
   quoteHref: string;
@@ -35,13 +51,27 @@ export type ServicePole = {
 export const servicePoles: ServicePole[] = [
   {
     id: "infogerance",
+    index: "01",
     title: "Infogérance",
+    shortTitle: "Infogérance",
+    heroLead: "Infogérance :",
+    heroAccent: "votre informatique, suivie au quotidien.",
     description:
       "Gestion du parc, support, infrastructures, cybersécurité, téléphonie IP, sauvegardes et audit.",
     summary:
       "La gestion et le suivi de votre informatique au quotidien, pour disposer d’outils fiables, sécurisés et adaptés à votre activité.",
-    href: `${routes.services}#infogerance`,
+    href: routes.serviceInfogerance,
     quoteHref: `${routes.quote}?pole=infogerance`,
+    objectives: [
+      { title: "Des outils fiables", text: "Des postes, des serveurs et des logiciels suivis, pour que vos équipes travaillent sans interruption inutile." },
+      { title: "Des données protégées", text: "Des accès maîtrisés, des sauvegardes vérifiées et des utilisateurs sensibilisés aux bons réflexes." },
+      { title: "Une informatique lisible", text: "Un état des lieux clair de votre parc et des priorités définies avec vous, pour décider en connaissance de cause." },
+      { title: "Des coûts maîtrisés", text: "Des recommandations pour améliorer la fiabilité de vos équipements et anticiper leurs évolutions." },
+    ],
+    notes: [
+      "Le périmètre, la fréquence des interventions, les canaux et les horaires d’assistance sont définis avec vous lors du devis.",
+      "Les objectifs de reprise après incident sont fixés avec vous, selon vos données et votre activité.",
+    ],
     prestations: [
       {
         id: "parc",
@@ -59,7 +89,7 @@ export const servicePoles: ServicePole[] = [
         id: "infrastructures",
         title: "Infrastructures",
         description:
-          "Installation ou évolution de vos serveurs et postes de travail : préparation, configuration, mise en service et documentation.",
+          "Installation ou évolution de vos serveurs et postes de travail : préparation, configuration, mise en service et documentation.",
       },
       {
         id: "cybersecurite",
@@ -71,7 +101,7 @@ export const servicePoles: ServicePole[] = [
         id: "telephonie",
         title: "Téléphonie IP",
         description:
-          "Téléphonie passant par votre réseau informatique : étude du besoin, configuration des postes et suivi de leur fonctionnement.",
+          "Téléphonie passant par votre réseau informatique : étude du besoin, configuration des postes et suivi de leur fonctionnement.",
       },
       {
         id: "sauvegardes",
@@ -89,13 +119,27 @@ export const servicePoles: ServicePole[] = [
   },
   {
     id: "integration",
+    index: "02",
     title: "Intégration de solutions technologiques",
+    shortTitle: "Intégration",
+    heroLead: "Intégration de solutions",
+    heroAccent: "technologiques.",
     description:
       "Câblage réseau Ethernet et fibre, installation de systèmes de vidéosurveillance, contrôle d’accès biométrique, systèmes de pointage et sécurité incendie.",
     summary:
-      "L’étude, l’installation et la mise en service des équipements techniques de vos locaux : réseau, surveillance, accès et sécurité.",
-    href: `${routes.services}#integration`,
+      "L’étude, l’installation et la mise en service des équipements techniques de vos locaux : réseau, surveillance, accès et sécurité.",
+    href: routes.serviceIntegration,
     quoteHref: `${routes.quote}?pole=integration`,
+    objectives: [
+      { title: "Un réseau solide", text: "Un câblage cuivre ou fibre étudié pour vos locaux, raccordé et testé liaison par liaison." },
+      { title: "Des sites surveillés", text: "Des caméras implantées selon les zones à couvrir, avec un enregistrement et, si possible, un accès à distance." },
+      { title: "Des accès maîtrisés", text: "Des zones et des profils d’accès définis avec vous, dans le respect des règles sur les données personnelles." },
+      { title: "Des locaux mieux protégés", text: "Des équipements de pointage et de sécurité incendie adaptés à votre organisation et à votre site." },
+    ],
+    notes: [
+      "Chaque projet commence par l’étude de votre site : zones, contraintes d’installation, équipements existants.",
+      "Les interventions sur une installation existante se font après diagnostic, selon les informations, les accès et les équipements disponibles.",
+    ],
     prestations: [
       {
         id: "cablage",
@@ -133,6 +177,6 @@ export const servicePoles: ServicePole[] = [
 
 export function getPole(id: PoleId): ServicePole {
   const pole = servicePoles.find((item) => item.id === id);
-  if (!pole) throw new Error(`Pôle inconnu : ${id}`);
+  if (!pole) throw new Error(`Pôle inconnu : ${id}`);
   return pole;
 }

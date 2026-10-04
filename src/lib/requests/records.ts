@@ -2,8 +2,9 @@
  * Conversion des formulaires validés en demandes à enregistrer,
  * et mise en forme des réponses enregistrées pour l'espace administrateur.
  */
-import { contactForm, quoteForm, type Option } from "@/content/forms";
+import { appointmentForm, contactForm, quoteForm, type Option } from "@/content/forms";
 import { getPole, isPoleId } from "@/content/services";
+import type { AppointmentData } from "@/lib/forms/appointment";
 import { contactKind, type ContactData } from "@/lib/forms/contact";
 import type { QuoteData } from "@/lib/forms/quote";
 import type { RequestType } from "./types";
@@ -47,6 +48,29 @@ export function contactToRecord(data: ContactData): RequestRecord {
     email: kind === "email" ? data.contact : null,
     phone: kind === "phone" ? data.contact : null,
     summary: data.subject,
+  };
+}
+
+export function appointmentToRecord(data: AppointmentData): RequestRecord {
+  const { fields } = appointmentForm;
+  const slots = [
+    { date: data.slot1Date, period: data.slot1Period },
+    ...(data.slot2Date ? [{ date: data.slot2Date, period: data.slot2Period }] : []),
+  ];
+  return {
+    answers: {
+      reason: data.reason,
+      pole: data.pole,
+      mode: data.mode,
+      slots,
+      city: data.city,
+      comment: data.comment,
+    },
+    name: data.name,
+    company: data.company || null,
+    email: data.email || null,
+    phone: data.phone || null,
+    summary: `${optionLabel(fields.reason.options, data.reason)} — ${optionLabel(fields.mode.options, data.mode)} — ${formatSlot(slots[0])}`,
   };
 }
 
@@ -102,6 +126,33 @@ function formatQuoteAnswers(answers: Record<string, unknown>): AnswerRow[] {
   return rows;
 }
 
+/** « mardi 14 octobre 2026, matin » (la date du créneau est une date civile, sans fuseau). */
+export function formatSlot(slot: unknown): string {
+  const source = (slot && typeof slot === "object" ? slot : {}) as Record<string, unknown>;
+  const date = text(source.date);
+  if (!date) return "";
+  const parsed = new Date(`${date}T12:00:00Z`);
+  const day = Number.isNaN(parsed.getTime())
+    ? date
+    : parsed.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+  const period = optionLabel(appointmentForm.fields.slots.periods, source.period).toLowerCase();
+  return period ? `${day}, ${period}` : day;
+}
+
+function formatAppointmentAnswers(answers: Record<string, unknown>): AnswerRow[] {
+  const { fields, labels } = appointmentForm;
+  const slots = Array.isArray(answers.slots) ? answers.slots : [];
+  return [
+    { label: labels.reason, value: optionLabel(fields.reason.options, answers.reason) },
+    { label: labels.pole, value: optionLabel(fields.pole.options, answers.pole) },
+    { label: labels.mode, value: optionLabel(fields.mode.options, answers.mode) },
+    { label: labels.slot1, value: formatSlot(slots[0]) },
+    { label: labels.slot2, value: formatSlot(slots[1]) },
+    { label: labels.city, value: text(answers.city) },
+    { label: labels.comment, value: text(answers.comment), long: true },
+  ];
+}
+
 function formatContactAnswers(answers: Record<string, unknown>): AnswerRow[] {
   return [
     { label: contactForm.fields.subject.label, value: text(answers.subject) },
@@ -114,8 +165,5 @@ export function formatAnswers(type: RequestType, answers: unknown): AnswerRow[] 
   const source = (answers && typeof answers === "object" ? answers : {}) as Record<string, unknown>;
   if (type === "devis") return formatQuoteAnswers(source);
   if (type === "contact") return formatContactAnswers(source);
-  return Object.entries(source).map(([label, value]) => ({
-    label,
-    value: typeof value === "string" ? value : JSON.stringify(value),
-  }));
+  return formatAppointmentAnswers(source);
 }

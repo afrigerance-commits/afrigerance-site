@@ -7,7 +7,8 @@ import { mockResend, servers } from "./tests/e2e/support/settings";
 
 const next = "node node_modules/next/dist/bin/next";
 // E2E_SKIP_BUILD=1 réutilise le dernier build (relances rapides quand seul un test a changé).
-const build = process.env.E2E_SKIP_BUILD?.trim() === "1" ? "" : `${next} build && `;
+// Construction sans secret (voir support/build.mjs), puis chaque configuration démarre avec ses variables.
+const build = process.env.E2E_SKIP_BUILD?.trim() === "1" ? "" : "node tests/e2e/support/build.mjs && ";
 const [first, ...others] = Object.values(servers);
 
 export default defineConfig({

@@ -1,48 +1,74 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import type { CSSProperties } from "react";
 import { ContactDetailsList } from "@/components/ContactDetailsList";
 import { ContactForm } from "@/components/forms/ContactForm";
-import { ArrowUpRightIcon } from "@/components/icons";
-import { PageHeader } from "@/components/PageHeader";
-import { ButtonLink } from "@/components/ui/button";
+import { PageTransition } from "@/components/motion/PageTransition";
+import { PageHero } from "@/components/PageHero";
+import { ButtonArrow } from "@/components/ui/button";
 import { contactPage } from "@/content/pages";
+import { hasContactDetails, routes } from "@/content/site";
 
 export const metadata: Metadata = {
   title: contactPage.metaTitle,
   description: contactPage.metaDescription,
+  alternates: { canonical: routes.contact },
 };
 
 export default function ContactPage() {
   return (
-    <>
-      <PageHeader eyebrow={contactPage.eyebrow} title={contactPage.title} intro={contactPage.intro} />
-      <div className="site-container grid gap-12 py-12 sm:py-16 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20 lg:py-20">
-        <div className="space-y-10">
-          <section aria-labelledby="details-title">
-            <h2
-              id="details-title"
-              className="text-ink text-[clamp(1.75rem,1.4rem+1.2vw,2.25rem)] leading-tight font-bold tracking-[-0.025em]"
-            >
-              {contactPage.details.title}
-            </h2>
-            <div className="mt-6">
-              <ContactDetailsList />
+    <PageTransition>
+      <PageHero
+        eyebrow={contactPage.eyebrow}
+        titleLead={contactPage.titleLead}
+        titleAccent={contactPage.titleAccent}
+        intro={contactPage.intro}
+        crumbs={[{ label: contactPage.eyebrow }]}
+        overlap
+      />
+
+      <section className="bg-surface pb-24 sm:pb-28 lg:pb-32">
+        <div className="site-container grid gap-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-10">
+          <div className="relative z-10 -mt-16 rounded-[2rem] bg-white p-6 shadow-[0_40px_100px_-50px_rgb(4_11_36/0.55)] ring-1 ring-ink/[0.06] sm:-mt-20 sm:p-10 lg:-mt-28 lg:p-12">
+            <ContactForm />
+          </div>
+
+          <aside className="space-y-6 lg:pt-12">
+            {hasContactDetails() ? (
+              <div data-reveal="" className="rounded-[2rem] bg-white p-7 ring-1 ring-ink/[0.06] sm:p-8">
+                <h2 className="text-display text-ink text-2xl">{contactPage.details.title}</h2>
+                <div className="mt-6">
+                  <ContactDetailsList />
+                </div>
+              </div>
+            ) : null}
+            <div>
+              <h2 data-reveal="" className="eyebrow text-muted">
+                {contactPage.shortcuts.title}
+              </h2>
+              <ul className="mt-4 space-y-3">
+                {contactPage.shortcuts.items.map((item, index) => (
+                  <li key={item.href} data-reveal="" style={{ "--i": index } as CSSProperties}>
+                    <Link
+                      href={item.href}
+                      data-spotlight=""
+                      className="spotlight group/button flex items-center justify-between gap-6 rounded-3xl bg-white p-6 ring-1 ring-ink/[0.06] transition-[translate,box-shadow] duration-700 ease-out-expo hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-36px_rgb(0_80_204/0.55)]"
+                    >
+                      <span>
+                        <span className="text-ink block text-lg font-semibold tracking-[-0.01em]">{item.title}</span>
+                        <span className="text-muted mt-1 block leading-relaxed">{item.text}</span>
+                      </span>
+                      <span className="bg-surface text-ink group-hover/button:bg-brand flex size-11 shrink-0 items-center justify-center rounded-full transition-colors duration-300 group-hover/button:text-white">
+                        <ButtonArrow className="size-4 [&>svg]:size-4" />
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </section>
-          <section aria-labelledby="quote-cta-title" className="bg-surface rounded-lg p-6 sm:p-8">
-            <h2 id="quote-cta-title" className="text-ink text-xl font-bold">
-              {contactPage.quote.title}
-            </h2>
-            <p className="text-muted mt-2 leading-relaxed">{contactPage.quote.text}</p>
-            <ButtonLink href={contactPage.quote.cta.href} className="mt-5">
-              {contactPage.quote.cta.label}
-              <ArrowUpRightIcon className="size-5" />
-            </ButtonLink>
-          </section>
+          </aside>
         </div>
-        <section aria-label={contactPage.metaTitle}>
-          <ContactForm />
-        </section>
-      </div>
-    </>
+      </section>
+    </PageTransition>
   );
 }
