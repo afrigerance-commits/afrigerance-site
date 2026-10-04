@@ -29,7 +29,7 @@ export default function ContactPage() {
 
       <section className="bg-surface pb-24 sm:pb-28 lg:pb-32">
         <div className="site-container grid gap-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-10">
-          <div className="relative z-10 -mt-16 rounded-[2rem] bg-white p-6 shadow-[0_40px_100px_-50px_rgb(4_11_36/0.55)] ring-1 ring-ink/[0.06] sm:-mt-20 sm:p-10 lg:-mt-28 lg:p-12">
+          <div className="relative z-10 -mt-16 rounded-[2rem] bg-white p-6 shadow-[0_40px_100px_-50px_rgb(17_19_23/0.55)] ring-1 ring-ink/[0.06] sm:-mt-20 sm:p-10 lg:-mt-28 lg:p-12">
             <ContactForm />
           </div>
 
@@ -52,7 +52,7 @@ export default function ContactPage() {
                     <Link
                       href={item.href}
                       data-spotlight=""
-                      className="spotlight group/button flex items-center justify-between gap-6 rounded-3xl bg-white p-6 ring-1 ring-ink/[0.06] transition-[translate,box-shadow] duration-700 ease-out-expo hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-36px_rgb(0_80_204/0.55)]"
+                      className="spotlight group/button flex items-center justify-between gap-6 rounded-3xl bg-white p-6 ring-1 ring-ink/[0.06] transition-[translate,box-shadow] duration-700 ease-out-expo hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-36px_rgb(34_89_140/0.55)]"
                     >
                       <span>
                         <span className="text-ink block text-lg font-semibold tracking-[-0.01em]">{item.title}</span>

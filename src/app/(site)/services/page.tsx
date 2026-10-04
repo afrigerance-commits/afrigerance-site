@@ -31,9 +31,9 @@ export default function ServicesPage() {
             <li key={pole.id}>
               <a
                 href={`#${pole.id}`}
-                className="inline-flex min-h-11 items-center gap-3 rounded-full bg-white/[0.07] py-2 pr-5 pl-2 text-[0.9375rem] font-medium text-white ring-1 ring-white/20 backdrop-blur-md transition-colors hover:bg-white/[0.14]"
+                className="text-brand-dark inline-flex min-h-11 items-center gap-3 rounded-full bg-white py-2 pr-5 pl-2 text-[0.9375rem] font-medium transition-colors hover:bg-brand-soft"
               >
-                <span className="bg-brand flex size-8 items-center justify-center rounded-full">
+                <span className="bg-brand flex size-8 items-center justify-center rounded-full text-white">
                   <PoleIcon id={pole.id} className="size-4" />
                 </span>
                 {pole.title}
@@ -90,7 +90,7 @@ export default function ServicesPage() {
                     data-reveal=""
                     data-spotlight=""
                     style={{ "--i": index % 2 } as CSSProperties}
-                    className="spotlight group rounded-3xl bg-white p-7 ring-1 ring-ink/[0.07] transition-[translate,box-shadow] duration-700 ease-out-expo hover:-translate-y-1 hover:shadow-[0_30px_60px_-40px_rgb(0_80_204/0.5)]"
+                    className="spotlight group rounded-3xl bg-white p-7 ring-1 ring-ink/[0.07] transition-[translate,box-shadow] duration-700 ease-out-expo hover:-translate-y-1 hover:shadow-[0_30px_60px_-40px_rgb(34_89_140/0.5)]"
                   >
                     <span className="bg-surface text-brand flex size-12 items-center justify-center rounded-2xl transition-[background-color,color,rotate] duration-500 ease-out-expo group-hover:bg-brand group-hover:text-white group-hover:-rotate-6">
                       <PrestationIcon id={prestation.id} className="size-6" />

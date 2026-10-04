@@ -6,14 +6,14 @@ Site vitrine d’AFRIGÉRANCE : infogérance et intégration de solutions techno
 - **Pages terminées** : Accueil, Services, une fiche détaillée par pôle (Infogérance, Intégration), Demander un devis, Prendre rendez-vous, À propos, Questions fréquentes et Contact. Les pages Mentions légales et Données personnelles sont prêtes mais restent non indexées : il manque les informations légales.
 - **Direction artistique** :
   - grotesque condensée pour les titres, en écho au logo, et italique à empattements pour les mots mis en valeur ;
-  - marine profond, bleu de la marque et cyan ;
+  - charte graphique d’AFRIGÉRANCE : bleu du logo `#2E75B6` et gris anthracite `#3B4451`, textes en bleu, gris ou noir, fonds blancs, bleus ou gris ;
   - carte de l’Afrique en points, avec un signal qui part de Dakar.
 - **Animations** (voir « Animations » plus bas) :
   - révélations au défilement, titres mot à mot, profondeur au pointeur ;
   - transitions entre les pages, défilé des logos, micro-interactions ;
   - le réglage « réduire les animations » est respecté.
 - **Demandes** : chaque demande de devis, de rendez-vous ou de contact est **enregistrée dans une base de données**. Elle est consultable dans un **espace administrateur protégé** (`/admin`), et un **email avertit le gestionnaire**.
-- **Mise en ligne** : le site est prêt pour **Netlify** (`netlify.toml`). Le guide court est dans [`docs/deploiement-netlify.md`](docs/deploiement-netlify.md). Le site n’est pas encore déployé.
+- **Mise en ligne** : le site est publié sur **Netlify** (https://afrigerance.netlify.app) à chaque fusion dans `main`. Le guide court est dans [`docs/deploiement-netlify.md`](docs/deploiement-netlify.md).
 
 Suivi détaillé du cahier des charges : [`docs/etat-cahier-des-charges.md`](docs/etat-cahier-des-charges.md).
 

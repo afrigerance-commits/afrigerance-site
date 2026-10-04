@@ -23,7 +23,7 @@ export function FaqList({ items, className = "" }: { items: FaqItem[]; className
             {item.question}
             <span
               aria-hidden="true"
-              className="ring-line text-ink flex size-10 shrink-0 items-center justify-center rounded-full ring-1 transition-[rotate,background-color,color] duration-500 ease-out-expo group-open:bg-ink group-open:text-white group-open:rotate-[135deg]"
+              className="ring-line text-ink flex size-10 shrink-0 items-center justify-center rounded-full ring-1 transition-[rotate,background-color,color] duration-500 ease-out-expo group-open:bg-brand group-open:text-white group-open:ring-brand group-open:rotate-[135deg]"
             >
               <Plus className="size-5" strokeWidth={2} />
             </span>

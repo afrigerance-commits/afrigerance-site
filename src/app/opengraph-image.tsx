@@ -22,9 +22,10 @@ export default function OpenGraphImage() {
           justifyContent: "space-between",
           padding: "64px 72px",
           color: "#ffffff",
-          backgroundColor: "#040b24",
+          // Bleu du logo (charte AFRIGÉRANCE), approfondi côté texte.
+          backgroundColor: "#2e75b6",
           backgroundImage:
-            "radial-gradient(circle at 85% 10%, rgba(1,101,255,0.75), transparent 55%), linear-gradient(84deg, #040b24 0%, #062659 45%, #03318a 100%)",
+            "radial-gradient(circle at 88% 8%, rgba(255,255,255,0.14), transparent 55%), linear-gradient(84deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0) 85%)",
         }}
       >
         <div style={{ display: "flex" }}>
@@ -35,10 +36,10 @@ export default function OpenGraphImage() {
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: 76, fontWeight: 700, letterSpacing: -2.5, lineHeight: 1.02 }}>Votre système,</div>
-          <div style={{ fontSize: 76, fontWeight: 700, letterSpacing: -2.5, lineHeight: 1.02, color: "#a8dcff" }}>
+          <div style={{ fontSize: 76, fontWeight: 700, letterSpacing: -2.5, lineHeight: 1.02, color: "#dbe9f6" }}>
             notre responsabilité.
           </div>
-          <div style={{ marginTop: 28, fontSize: 30, color: "#a3d4ff" }}>{site.description}</div>
+          <div style={{ marginTop: 28, fontSize: 30, color: "#ffffff" }}>{site.description}</div>
         </div>
       </div>
     ),

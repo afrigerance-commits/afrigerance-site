@@ -20,13 +20,13 @@ export default function NotFound() {
           <Image src="/accueil/afrique.svg" alt="" width={710} height={737} className="h-auto w-full" />
         </div>
         <div className="site-container pt-36 pb-24 sm:pt-44 sm:pb-32 lg:pt-52 lg:pb-40">
-          <p className="eyebrow text-sky-soft load-rise" style={{ "--i": 0 } as CSSProperties}>
+          <p className="eyebrow text-white load-rise" style={{ "--i": 0 } as CSSProperties}>
             {uiText.notFound.eyebrow}
           </p>
           <h1 id="page-title" className="text-display load-rise mt-6 max-w-[12ch] text-[clamp(2.75rem,1.4rem+5vw,6rem)]" style={{ "--i": 1 } as CSSProperties}>
             {uiText.notFound.title}
           </h1>
-          <p className="text-sky-soft load-rise mt-7 max-w-[34em] text-lg leading-relaxed sm:text-xl" style={{ "--i": 2 } as CSSProperties}>
+          <p className="text-white load-rise mt-7 max-w-[34em] text-lg leading-relaxed sm:text-xl" style={{ "--i": 2 } as CSSProperties}>
             {uiText.notFound.text}
           </p>
           <div className="load-rise mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center" style={{ "--i": 3 } as CSSProperties}>

@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 import { partners, partnersSection, type Partner } from "@/content/partners";
 
 function LogoTile({ partner, decorative }: { partner: Partner; decorative?: boolean }) {
-  const tone = partner.darkBackground ? "bg-ink ring-ink" : "bg-white ring-ink/[0.07]";
+  const tone = partner.darkBackground ? "bg-anthracite ring-anthracite" : "bg-white ring-ink/[0.07]";
   const logo = (
     <span className="relative block size-full">
       <Image
@@ -23,7 +23,7 @@ function LogoTile({ partner, decorative }: { partner: Partner; decorative?: bool
         href={partner.url}
         target="_blank"
         rel="noopener noreferrer"
-        className={`${tile} hover:-translate-y-1 hover:shadow-[0_18px_40px_-20px_rgb(4_11_36/0.4)]`}
+        className={`${tile} hover:-translate-y-1 hover:shadow-[0_18px_40px_-20px_rgb(17_19_23/0.4)]`}
       >
         {logo}
         <span className="sr-only">{partnersSection.newTab}</span>
