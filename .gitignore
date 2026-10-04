@@ -150,3 +150,7 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Extraits d'ouvrages fournis hors ligne par l'autrice (droits non établis
+# pour une republication telle quelle) — voir docs/CONTENT_SOURCES.md.
+/references_mirath/

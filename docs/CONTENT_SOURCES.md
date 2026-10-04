@@ -100,3 +100,33 @@ Cela n'exempte pas d'une relecture par le responsable scientifique de la
 plateforme avant de présenter un extrait comme définitivement validé pour
 un usage éditorial (ex. dans une leçon de fiqh) — voir
 `docs/EDITORIAL_WORKFLOW.md`.
+
+## Ouvrages fournis par l'autrice de la plateforme (`references_mirath/`)
+
+À partir du 4 octobre 2026, l'autrice a fourni directement (hors ligne, pas
+un jeu de données ouvert) des extraits de plusieurs ouvrages qu'elle
+possède, sous forme de texte déjà transcrit (`01_SOURCES_TEXTUELLES/`) ou
+de scans PDF non encore transcrits (`02_SOURCES_SCANNEES/`). Ce dossier
+n'est **pas commité dans le dépôt Git** (fichiers de travail privés, droits
+non établis pour une republication telle quelle) ; seul le contenu
+pédagogique qui en est synthétisé, avec pagination précise vers le PDF
+source, est intégré dans le code du site.
+
+| Ouvrage | État | Utilisé pour |
+|---|---|---|
+| **Mukhtasar al-Akhdari** (trad. Ali Abdullah Gallant, Institut islamique Daroul Îmane, Fès, 2017) | Texte transcrit, exploité | Les 5 leçons du cours `/fiqh/malikite/purification` (eau, ablutions, ghusl, tayammum) |
+| **Cours de fiqh malikite** (source non encore identifiée précisément — à documenter) | Texte transcrit, pas encore exploité | — |
+| **Ar-Risâla** d'Ibn Abî Zayd Al-Qayrawânî | Scans PDF non transcrits (8 fichiers, ~144 pages) | — |
+| **Sahîh Al-Bukhârî**, trad. Kassab, tome 1 | Texte transcrit, pas encore exploité | — |
+| **Le Nectar Cacheté** (Ar-Rahîq Al-Makhtûm) | Scans PDF non transcrits (16 fichiers, ~440+ pages) | — |
+| **Ibn Kathîr — Histoires des prophètes** | Texte transcrit, pas encore exploité | — |
+| **Tazawwudu-s-Sighâr** (texte spirituel, vers) | Texte transcrit (partiel), pas encore exploité | — |
+
+Le prompt de travail fourni avec ces fichiers référence aussi un dossier
+`00_COMMENCER_ICI/` (README, bibliographie et droits en JSON, plan de
+navigation) et un dossier `03_VISUELS_ORIGINAUX/` (8 compositions SVG/PNG) :
+**ni l'un ni l'autre n'est arrivé dans les fichiers reçus** — seuls les
+textes et les deux lots de scans (Risâla, Nectar) sont présents. Les 8
+visuels montrés en aperçu dans la conversation n'existent, à ce stade, que
+comme image de prévisualisation (un screenshot composite), pas comme
+fichiers SVG/PNG individuels utilisables.

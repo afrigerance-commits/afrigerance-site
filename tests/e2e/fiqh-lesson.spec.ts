@@ -20,9 +20,13 @@ test.describe("Leçon de fiqh et affichage du texte arabe", () => {
     await expect(page.getByRole("heading", { level: 1 })).toContainText("ablutions");
   });
 
-  test("signale explicitement le contenu de démonstration et le statut non publié", async ({ page }) => {
+  test("signale explicitement le statut non publié d'une leçon sourcée", async ({ page }) => {
     await page.goto("/fiqh/malikite/purification/leau-et-la-purification");
-    await expect(page.getByText("Contenu de démonstration")).toBeVisible();
     await expect(page.getByText("En cours de vérification")).toBeVisible();
+  });
+
+  test("signale explicitement le contenu de démonstration sur une leçon encore non sourcée", async ({ page }) => {
+    await page.goto("/fiqh/malikite/purification/introduction-madhhab-malikite");
+    await expect(page.getByText("Contenu de démonstration")).toBeVisible();
   });
 });
