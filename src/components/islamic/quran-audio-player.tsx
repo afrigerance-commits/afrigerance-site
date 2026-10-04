@@ -189,7 +189,7 @@ export function QuranAudioToolbar({ chapter }: { chapter: number }) {
   const previous = player.verses[verseIndex - 1];
   const next = player.verses[verseIndex + 1];
 
-  return <section aria-label="Lecteur audio du Coran" className="sticky top-16 z-20 mt-10 overflow-hidden rounded-2xl border border-[#cabf9f] bg-[#f8f4e9]/95 shadow-[0_16px_45px_-25px_rgba(16,58,49,.35)] backdrop-blur-xl dark:border-gold-500/25 dark:bg-ink-950/95">
+  return <section aria-label="Lecteur audio du Coran" className="relative mt-10 overflow-hidden rounded-2xl border border-[#cabf9f] bg-[#f8f4e9]/95 shadow-[0_16px_45px_-25px_rgba(16,58,49,.35)] dark:border-gold-500/25 dark:bg-ink-950/95">
     <div className="border-b border-[#dfd3b9] bg-emerald-900 px-5 py-4 text-ivory-50 dark:border-gold-500/20 sm:px-6">
       <div className="flex items-center gap-3">
         <span className="flex size-9 items-center justify-center rounded-full bg-gold-500/20 text-gold-500"><Headphones className="size-5" /></span>
