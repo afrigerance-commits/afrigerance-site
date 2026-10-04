@@ -32,26 +32,21 @@ export function HomeHero() {
           <Image src={hero.image.src} alt="" fill sizes="(min-width: 64rem) 62vw, 100vw" loading="eager" className="object-cover" />
         </div>
       ) : null}
-      <div
-        aria-hidden="true"
-        data-depth="18"
-        className="pointer-events-none absolute top-[12%] right-[8%] -z-10 size-[26rem] rounded-full bg-brand/40 blur-[110px] lg:size-[34rem]"
-      />
 
       {/* Carte en fond sur mobile et tablette */}
-      <div aria-hidden="true" className="pointer-events-none absolute -right-24 -bottom-16 -z-10 w-[min(36rem,110vw)] opacity-30 [mask-image:linear-gradient(to_top,#000_35%,transparent_85%)] lg:hidden">
+      <div aria-hidden="true" className="pointer-events-none absolute -right-24 -bottom-16 -z-10 w-[min(36rem,110vw)] opacity-20 [mask-image:linear-gradient(to_top,#000_35%,transparent_85%)] lg:hidden">
         <Image src="/accueil/afrique.svg" alt="" width={710} height={737} className="h-auto w-full" />
       </div>
 
       <div className="site-container grid items-center gap-12 pt-32 pb-20 sm:pt-40 sm:pb-24 lg:min-h-[min(max(100svh,48rem),62rem)] lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-8 lg:pt-36 lg:pb-24">
         <div className="scroll-recede relative">
           <p
-            className="load-rise inline-flex items-center gap-3 rounded-full bg-white/[0.06] py-2 pr-5 pl-3 text-[0.9375rem] ring-1 ring-white/15 backdrop-blur-md"
+            className="load-rise text-brand-dark inline-flex items-center gap-3 rounded-full bg-white py-2 pr-5 pl-3 text-[0.9375rem] font-medium shadow-[0_12px_30px_-18px_rgb(17_19_23/0.5)]"
             style={{ "--i": 0 } as CSSProperties}
           >
             <span aria-hidden="true" className="relative flex size-2.5">
-              <span className="animate-beacon bg-cyan absolute inset-0 rounded-full" />
-              <span className="bg-cyan relative size-2.5 rounded-full" />
+              <span className="animate-beacon bg-brand absolute inset-0 rounded-full" />
+              <span className="bg-brand relative size-2.5 rounded-full" />
             </span>
             {hero.badge}
           </p>
@@ -60,13 +55,13 @@ export function HomeHero() {
             <span className="block">
               <SplitWords text={hero.titleLead} />
             </span>{" "}
-            <span className="accent-serif text-sky block">
+            <span className="accent-serif text-brand-soft block">
               <SplitWords text={hero.titleAccent} start={leadWords} />
             </span>
           </h1>
 
           <p
-            className="load-rise text-sky-soft mt-7 max-w-[34em] text-[clamp(1.0625rem,0.95rem+0.5vw,1.3125rem)] leading-relaxed sm:mt-9"
+            className="load-rise text-white mt-7 max-w-[34em] text-[clamp(1.0625rem,0.95rem+0.5vw,1.3125rem)] leading-relaxed sm:mt-9"
             style={{ "--i": 4 } as CSSProperties}
           >
             {hero.description}
@@ -76,7 +71,7 @@ export function HomeHero() {
             className="load-rise mt-9 flex flex-col gap-3 sm:mt-11 sm:flex-row sm:flex-wrap sm:items-center"
             style={{ "--i": 5 } as CSSProperties}
           >
-            <ButtonLink href={hero.primaryCta.href} size="lg" arrow magnetic>
+            <ButtonLink href={hero.primaryCta.href} size="lg" variant="light" arrow magnetic>
               {hero.primaryCta.label}
             </ButtonLink>
             <ButtonLink href={hero.secondaryCta.href} size="lg" variant="onDark">
@@ -111,7 +106,7 @@ export function HomeHero() {
                     d={d}
                     pathLength={1}
                     fill="none"
-                    stroke="rgb(168 220 255 / 0.55)"
+                    stroke="rgb(255 255 255 / 0.6)"
                     strokeWidth={1.25}
                     vectorEffect="non-scaling-stroke"
                     className="hero-route"
@@ -142,12 +137,12 @@ export function HomeHero() {
               {[0, 1, 2].map((ring) => (
                 <span
                   key={ring}
-                  className="animate-beacon absolute -top-8 -left-8 size-16 rounded-full border border-sky/70"
+                  className="animate-beacon absolute -top-8 -left-8 size-16 rounded-full border border-white/70"
                   style={{ animationDelay: `${ring * 0.9}s` }}
                 />
               ))}
-              <span className="absolute -top-2 -left-2 size-4 rounded-full bg-white shadow-[0_0_24px_6px_rgb(92_200_255/0.75)]" />
-              <span className="absolute top-5 left-3 rounded-full bg-white/10 px-3 py-1 font-mono text-xs whitespace-nowrap text-white ring-1 ring-white/20 backdrop-blur-md">
+              <span className="absolute -top-2 -left-2 size-4 rounded-full bg-white shadow-[0_0_24px_6px_rgb(255_255_255/0.6)]" />
+              <span className="text-brand-dark absolute top-5 left-3 rounded-full bg-white px-3 py-1 font-mono text-xs font-medium whitespace-nowrap shadow-[0_10px_24px_-14px_rgb(17_19_23/0.5)]">
                 {hero.mapLabel}
               </span>
             </div>
@@ -164,15 +159,15 @@ export function HomeHero() {
                 >
                   <Link
                     href={chip.href}
-                    className="animate-float group flex items-center gap-3 rounded-2xl bg-night/60 py-3 pr-5 pl-3 ring-1 ring-white/20 backdrop-blur-xl transition-colors hover:bg-night/75"
+                    className="animate-float group text-ink flex items-center gap-3 rounded-2xl bg-white py-3 pr-5 pl-3 shadow-[0_24px_50px_-24px_rgb(17_19_23/0.55)] transition-colors hover:bg-brand-soft"
                     style={{ animationDelay: position.delay }}
                   >
-                    <span className="bg-brand flex size-11 items-center justify-center rounded-xl shadow-[0_10px_30px_-8px_rgb(0_102_255/0.9)]">
+                    <span className="bg-brand flex size-11 items-center justify-center rounded-xl">
                       <PoleIcon id={position.pole} className="size-5 text-white" />
                     </span>
                     <span>
                       <span className="block font-semibold">{chip.label}</span>
-                      <span className="block text-sm text-white/80">{chip.detail}</span>
+                      <span className="text-muted block text-sm">{chip.detail}</span>
                     </span>
                   </Link>
                 </div>
@@ -183,8 +178,8 @@ export function HomeHero() {
       </div>
 
       <div aria-hidden="true" className="load-fade absolute bottom-7 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-3 lg:flex" style={{ "--i": 7 } as CSSProperties}>
-        <span className="eyebrow text-[0.6875rem] text-white/50">{hero.scrollHint}</span>
-        <span className="relative h-10 w-px overflow-hidden bg-white/15">
+        <span className="eyebrow text-[0.6875rem] text-white">{hero.scrollHint}</span>
+        <span className="relative h-10 w-px overflow-hidden bg-white/25">
           <span className="hero-scroll-line absolute inset-x-0 top-0 h-1/2 bg-white/70" />
         </span>
       </div>

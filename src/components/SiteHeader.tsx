@@ -92,10 +92,10 @@ export function SiteHeader() {
       <div
         id={menuId}
         hidden={!open}
-        className="bg-night grain on-dark fixed inset-0 overflow-y-auto text-white lg:hidden"
+        className="bg-anthracite-band grain on-dark fixed inset-0 overflow-y-auto text-white lg:hidden"
       >
         <nav aria-label={uiText.mainNavLabel} className="site-container flex min-h-full flex-col pt-28 pb-10">
-          <p className="eyebrow text-sky-soft load-fade">{uiText.menuTitle}</p>
+          <p className="eyebrow text-white load-fade">{uiText.menuTitle}</p>
           <ul className="mt-6 flex flex-col">
             {[{ label: uiText.home, href: routes.home }, ...mainNav].map((item, index) => {
               const active = isActive(pathname, item.href);
@@ -107,11 +107,11 @@ export function SiteHeader() {
                     aria-current={active ? "page" : undefined}
                     onClick={close}
                     className={`group flex min-h-16 items-center justify-between rounded-sm py-3 font-display text-[2rem] font-semibold tracking-[-0.03em] transition-colors ${
-                      active ? "text-sky" : "text-white"
+                      active ? "text-brand-soft" : "text-white"
                     }`}
                   >
                     {item.label}
-                    <span aria-hidden="true" className="font-mono text-sm text-white/40">
+                    <span aria-hidden="true" className="font-mono text-sm text-white/60">
                       0{index + 1}
                     </span>
                   </Link>
@@ -138,7 +138,7 @@ export function SiteHeader() {
               {headerSecondaryCta.label}
             </Link>
           </div>
-          <p className="mt-auto pt-12 text-sm text-white/50">{site.tagline}.</p>
+          <p className="mt-auto pt-12 text-sm text-white/80">{site.tagline}.</p>
         </nav>
       </div>
 
@@ -146,7 +146,7 @@ export function SiteHeader() {
       <div className="site-container relative pt-3 sm:pt-4">
         <div
           className={`flex h-16 items-center justify-between gap-4 rounded-2xl bg-white pr-2 pl-3 ring-1 ring-ink/[0.07] transition-shadow duration-500 sm:h-[4.75rem] sm:pr-3 sm:pl-5 ${
-            scrolled ? "shadow-[0_22px_60px_-28px_rgb(4_11_36/0.55)]" : "shadow-[0_14px_44px_-26px_rgb(4_11_36/0.5)]"
+            scrolled ? "shadow-[0_22px_60px_-28px_rgb(17_19_23/0.55)]" : "shadow-[0_14px_44px_-26px_rgb(17_19_23/0.5)]"
           }`}
         >
           <Logo width={200} eager className="h-10 sm:h-[3.25rem]" />

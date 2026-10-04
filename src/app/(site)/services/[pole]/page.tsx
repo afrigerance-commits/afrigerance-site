@@ -45,17 +45,17 @@ export default async function PoleDetailPage({ params }: PageProps<"/services/[p
         intro={pole.summary}
         crumbs={[{ label: text.crumbServices, href: routes.services }, { label: pole.shortTitle }]}
         aside={
-          <div className="w-[22rem] rounded-[1.75rem] bg-white/[0.06] p-6 ring-1 ring-white/15 backdrop-blur-xl">
+          <div className="text-ink w-[22rem] rounded-[1.75rem] bg-white p-6 shadow-[0_30px_70px_-40px_rgb(17_19_23/0.6)]">
             <div className="flex items-center gap-3">
-              <span className="bg-brand flex size-11 items-center justify-center rounded-xl shadow-[0_10px_30px_-8px_rgb(0_102_255/0.9)]">
+              <span className="bg-brand flex size-11 items-center justify-center rounded-xl text-white">
                 <PoleIcon id={pole.id} className="size-5" />
               </span>
-              <span className="eyebrow text-sky-soft">{text.prestationsEyebrow}</span>
+              <span className="eyebrow text-brand-dark">{text.prestationsEyebrow}</span>
             </div>
             <ul className="mt-5 space-y-2.5">
               {pole.prestations.map((prestation) => (
-                <li key={prestation.id} className="flex items-center gap-3 text-[0.9375rem] text-white/90">
-                  <PrestationIcon id={prestation.id} className="text-sky size-4 shrink-0" />
+                <li key={prestation.id} className="flex items-center gap-3 text-[0.9375rem]">
+                  <PrestationIcon id={prestation.id} className="text-brand size-4 shrink-0" />
                   {prestation.title}
                 </li>
               ))}
@@ -64,7 +64,7 @@ export default async function PoleDetailPage({ params }: PageProps<"/services/[p
         }
       >
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-          <ButtonLink href={pole.quoteHref} size="lg" arrow magnetic>
+          <ButtonLink href={pole.quoteHref} size="lg" variant="light" arrow magnetic>
             {text.ctaPrimary}
           </ButtonLink>
           <ButtonLink href={text.ctaSecondary.href} size="lg" variant="onDark">
@@ -110,9 +110,9 @@ export default async function PoleDetailPage({ params }: PageProps<"/services/[p
                 data-reveal=""
                 data-spotlight=""
                 style={{ "--i": index % 3 } as CSSProperties}
-                className="spotlight group rounded-3xl bg-white p-8 ring-1 ring-ink/[0.07] transition-[translate,box-shadow] duration-700 ease-out-expo hover:-translate-y-1 hover:shadow-[0_30px_60px_-40px_rgb(0_80_204/0.5)]"
+                className="spotlight group rounded-3xl bg-white p-8 ring-1 ring-ink/[0.07] transition-[translate,box-shadow] duration-700 ease-out-expo hover:-translate-y-1 hover:shadow-[0_30px_60px_-40px_rgb(34_89_140/0.5)]"
               >
-                <span className="bg-ink flex size-14 items-center justify-center rounded-2xl text-white transition-[background-color,rotate] duration-500 ease-out-expo group-hover:bg-brand group-hover:-rotate-6">
+                <span className="bg-anthracite flex size-14 items-center justify-center rounded-2xl text-white transition-[background-color,rotate] duration-500 ease-out-expo group-hover:bg-brand group-hover:-rotate-6">
                   <PrestationIcon id={prestation.id} className="size-6" />
                 </span>
                 <h3 className="text-ink mt-6 text-xl font-semibold tracking-[-0.015em] sm:text-2xl">{prestation.title}</h3>
@@ -172,12 +172,12 @@ export default async function PoleDetailPage({ params }: PageProps<"/services/[p
       {/* Appel final propre au pôle et lien vers l'autre pôle */}
       <section aria-labelledby="pole-cta-title" className="bg-white pb-24 sm:pb-28 lg:pb-32">
         <div className="site-container grid gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
-          <div data-reveal="" className="bg-hero grain on-dark relative isolate overflow-hidden rounded-[2rem] p-8 text-white sm:p-12">
-            <p className="eyebrow text-sky-soft">{text.ctaEyebrow}</p>
+          <div data-reveal="" className="bg-hero-panel grain on-dark relative isolate overflow-hidden rounded-[2rem] p-8 text-white sm:p-12">
+            <p className="eyebrow text-white">{text.ctaEyebrow}</p>
             <h2 id="pole-cta-title" className="text-display mt-5 text-[clamp(2rem,1.3rem+2.4vw,3.5rem)]">
               {text.ctaTitle}
             </h2>
-            <p className="text-sky-soft mt-5 max-w-[32em] text-lg leading-relaxed">{text.ctaText}</p>
+            <p className="text-white mt-5 max-w-[32em] text-lg leading-relaxed">{text.ctaText}</p>
             <ButtonLink href={pole.quoteHref} size="lg" variant="light" arrow className="mt-8">
               {text.ctaPrimary}
             </ButtonLink>
@@ -191,7 +191,7 @@ export default async function PoleDetailPage({ params }: PageProps<"/services/[p
           >
             <span className="flex items-center justify-between gap-4">
               <span className="eyebrow text-brand-dark">{text.otherPoleLabel}</span>
-              <span className="bg-ink flex size-12 items-center justify-center rounded-full text-white">
+              <span className="bg-brand flex size-12 items-center justify-center rounded-full text-white">
                 <ButtonArrow />
               </span>
             </span>

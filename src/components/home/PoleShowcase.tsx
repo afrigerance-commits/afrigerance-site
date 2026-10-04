@@ -30,10 +30,10 @@ export function PoleShowcase() {
             <li key={pole.id} data-reveal="scale" style={{ "--i": index } as CSSProperties}>
               <article
                 data-spotlight=""
-                className="spotlight group relative flex h-full flex-col overflow-hidden rounded-[2rem] bg-white p-7 shadow-[0_30px_80px_-50px_rgb(4_11_36/0.45)] ring-1 ring-ink/[0.06] transition-[translate,box-shadow] duration-700 ease-out-expo hover:-translate-y-1.5 hover:shadow-[0_40px_90px_-45px_rgb(0_80_204/0.45)] sm:p-10 lg:p-12"
+                className="spotlight group relative flex h-full flex-col overflow-hidden rounded-[2rem] bg-white p-7 shadow-[0_30px_80px_-50px_rgb(17_19_23/0.45)] ring-1 ring-ink/[0.06] transition-[translate,box-shadow] duration-700 ease-out-expo hover:-translate-y-1.5 hover:shadow-[0_40px_90px_-45px_rgb(34_89_140/0.45)] sm:p-10 lg:p-12"
               >
                 <div className="flex items-start justify-between gap-6">
-                  <span className="bg-ink relative flex size-16 items-center justify-center rounded-2xl text-white shadow-[0_18px_40px_-16px_rgb(11_16_56/0.7)] transition-transform duration-700 ease-out-expo group-hover:-rotate-6 group-hover:scale-105">
+                  <span className="bg-anthracite relative flex size-16 items-center justify-center rounded-2xl text-white shadow-[0_18px_40px_-16px_rgb(17_19_23/0.7)] transition-transform duration-700 ease-out-expo group-hover:-rotate-6 group-hover:scale-105">
                     <PoleIcon id={pole.id} className="size-7" />
                     <span aria-hidden="true" className="bg-brand absolute -right-1 -bottom-1 size-4 rounded-full ring-4 ring-white" />
                   </span>

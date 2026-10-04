@@ -60,14 +60,14 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
   return (
     <footer>
-      <section aria-labelledby="footer-cta-title" className="bg-night grain on-dark relative isolate overflow-hidden text-white">
+      <section aria-labelledby="footer-cta-title" className="bg-anthracite-band grain on-dark relative isolate overflow-hidden text-white">
         <div aria-hidden="true" className="grid-lines pointer-events-none absolute inset-0 -z-10" />
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -right-40 -bottom-56 -z-10 size-[38rem] rounded-full bg-brand/30 blur-[120px]"
         />
         <div className="site-container py-20 sm:py-24 lg:py-32">
-          <p className="eyebrow text-sky-soft" data-reveal="">
+          <p className="eyebrow text-white" data-reveal="">
             {footer.eyebrow}
           </p>
           <h2
@@ -76,10 +76,10 @@ export function SiteFooter() {
             style={{ "--i": 1 } as CSSProperties}
             className="text-display mt-6 max-w-[12ch] text-[clamp(2.75rem,1.2rem+6.4vw,7rem)]"
           >
-            {footer.titleLead} <span className="accent-serif text-sky">{footer.titleAccent}</span>
+            {footer.titleLead} <span className="accent-serif text-brand-soft">{footer.titleAccent}</span>
           </h2>
           <div className="mt-10 grid gap-10 lg:mt-14 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-            <p data-reveal="" style={{ "--i": 2 } as CSSProperties} className="text-sky-soft max-w-[34em] text-lg leading-relaxed sm:text-xl">
+            <p data-reveal="" style={{ "--i": 2 } as CSSProperties} className="text-white max-w-[34em] text-lg leading-relaxed sm:text-xl">
               {footer.text}
             </p>
             <div data-reveal="" style={{ "--i": 3 } as CSSProperties} className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">

@@ -1,9 +1,11 @@
 @import "tailwindcss";
 
 /*
- * Charte graphique AFRIGÉRANCE.
- * Bleus de la marque (logo et maquette d'origine), marine profond pour les grands aplats,
- * cyan clair pour les accents. Chaque jeton génère ses utilitaires Tailwind (ex. --color-brand → bg-brand).
+ * Charte graphique AFRIGÉRANCE (fournie par l'entreprise, octobre 2026).
+ * Bleu du logo #2E75B6 et gris anthracite #3B4451 ; textes en bleu, gris ou noir ;
+ * fonds blancs, bleu du logo ou gris. Les autres teintes ne sont que des nuances de ces deux couleurs,
+ * choisies pour garder un contraste de lecture suffisant (WCAG AA).
+ * Chaque jeton génère ses utilitaires Tailwind (ex. --color-brand → bg-brand).
  */
 @theme {
   --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
@@ -11,38 +13,26 @@
   --font-serif: var(--font-instrument), Georgia, "Times New Roman", serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Couleurs principales */
-  --color-brand: #0066ff; /* boutons, liens actifs, flèches */
-  --color-brand-dark: #0050cc; /* survol des boutons */
-  --color-brand-bright: #3d8bff; /* reflets sur fond sombre */
-  --color-ink: #0b1038; /* titres et textes principaux */
-  --color-muted: #5d6991; /* descriptions */
-  --color-line: #dbe0ec; /* séparateurs */
-  --color-surface: #f4f6fb; /* fonds de sections alternées */
-  --color-field: #7b86a3; /* contour des champs de formulaire */
-  --color-danger: #b42318; /* messages d'erreur */
+  /* Couleurs de la charte */
+  --color-brand: #2e75b6; /* bleu du logo : boutons, liens, accents, bandeaux */
+  --color-anthracite: #3b4451; /* gris anthracite du logo : bandeaux gris, pastilles */
+  --color-ink: #111317; /* noir : titres et textes principaux */
+  --color-muted: #3b4451; /* gris anthracite : descriptions et textes secondaires */
+
+  /* Nuances dérivées */
+  --color-brand-dark: #22598c; /* survol des boutons, petits textes bleus */
+  --color-brand-soft: #dbe9f6; /* mots accentués sur fond bleu ou anthracite, survols clairs */
+  --color-surface: #f6f7f9; /* gris clair : fonds de sections alternées */
+  --color-line: #dcdfe4; /* séparateurs */
+  --color-field: #7c848f; /* contour des champs de formulaire */
+
+  /* Messages (formulaires, administration) */
+  --color-danger: #b42318;
   --color-danger-bg: #fef3f2;
-  --color-success: #067647; /* confirmation d'envoi */
+  --color-success: #067647;
   --color-success-bg: #ecfdf3;
-  --color-warning: #8a5300; /* statuts en cours / en attente (administration) */
+  --color-warning: #8a5300;
   --color-warning-bg: #fff4e0;
-
-  /* Grands aplats sombres */
-  --color-night: #040b24; /* le plus profond : pied des bandeaux, appel final */
-  --color-navy: #062659; /* départ du dégradé de la maquette */
-  --color-navy-soft: #0b2a6b; /* cartes sur fond sombre */
-  --color-sky: #a8dcff; /* mots accentués sur fond sombre */
-  --color-sky-soft: #a3d4ff; /* textes secondaires sur fond sombre */
-  --color-cyan: #5cc8ff; /* pastilles, signaux */
-
-  /* Bandeau d'accueil (dégradé de la maquette d'origine) */
-  --color-hero-start: #062659;
-  --color-hero-middle: #03318a;
-  --color-hero-end: #0165ff;
-  --color-hero-accent: #a8dcff;
-  --color-hero-text: #a3d4ff;
-  --color-hero-dot: #70bffb;
-  --color-hero-border: #5f8fd6;
 
   /* Courbes de mouvement */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -156,34 +146,47 @@
 
 /* ── Fonds et matières ───────────────────────────────────────────────────── */
 
-/* Dégradé de la maquette, conservé comme signature des bandeaux. */
+/*
+ * Bandeau bleu (accueil, pages intérieures, 404) : bleu du logo en dégradé, approfondi côté texte
+ * pour que le texte blanc reste lisible (contraste AA), éclairci côté carte.
+ */
 @utility bg-hero {
-  background-color: var(--color-hero-start);
+  background-color: var(--color-brand);
   background-image:
-    radial-gradient(60rem 40rem at 85% 0%, rgb(1 101 255 / 0.55), transparent 60%),
-    radial-gradient(40rem 30rem at 100% 100%, rgb(92 200 255 / 0.18), transparent 70%),
-    linear-gradient(84deg, var(--color-night) 0%, var(--color-hero-start) 38%, var(--color-hero-middle) 70%, #0a4fd6 100%);
+    radial-gradient(56rem 38rem at 92% 6%, rgb(255 255 255 / 0.12), transparent 62%),
+    linear-gradient(84deg, rgb(0 0 0 / 0.24) 0%, rgb(0 0 0 / 0.13) 50%, rgb(0 0 0 / 0) 82%);
 
-  /* Tablette : le texte s'étend plus loin à droite, le bleu vif recule. */
+  /* Tablette : le texte s'étend plus loin à droite, le dégradé reste plus profond. */
   @media (width < 64rem) {
     background-image:
-      radial-gradient(34rem 24rem at 100% 0%, rgb(1 101 255 / 0.45), transparent 60%),
-      linear-gradient(84deg, var(--color-night) 0%, var(--color-hero-start) 50%, var(--color-hero-middle) 100%);
+      radial-gradient(30rem 20rem at 100% 0%, rgb(255 255 255 / 0.07), transparent 60%),
+      linear-gradient(84deg, rgb(0 0 0 / 0.24) 0%, rgb(0 0 0 / 0.13) 100%);
   }
 
-  /* Mobile : le texte occupe toute la largeur, le dégradé reste sombre plus longtemps. */
+  /* Mobile : le texte occupe toute la largeur. */
   @media (width < 40rem) {
-    background-image:
-      radial-gradient(28rem 22rem at 100% 0%, rgb(1 101 255 / 0.5), transparent 65%),
-      linear-gradient(170deg, var(--color-night) 0%, var(--color-hero-start) 55%, var(--color-hero-middle) 100%);
+    background-image: linear-gradient(170deg, rgb(0 0 0 / 0.24) 0%, rgb(0 0 0 / 0.14) 100%);
   }
 }
 
-@utility bg-night {
-  background-color: var(--color-night);
+/* Encadré bleu dans une page (appel final d'un pôle) : même bleu, sans le reflet des grands bandeaux. */
+@utility bg-hero-panel {
+  background-color: var(--color-brand);
+  background-image: linear-gradient(84deg, rgb(0 0 0 / 0.22) 0%, rgb(0 0 0 / 0.1) 100%);
+}
+
+/* Sur le bleu, le grain reste plus discret pour ne pas éclaircir le fond sous le texte blanc. */
+.bg-hero.grain::after,
+.bg-hero-panel.grain::after {
+  opacity: 0.045;
+}
+
+/* Bandeau gris anthracite (méthode, appel final, menu mobile), avec un reflet du bleu du logo. */
+@utility bg-anthracite-band {
+  background-color: var(--color-anthracite);
   background-image:
-    radial-gradient(50rem 30rem at 15% 0%, rgb(0 102 255 / 0.28), transparent 65%),
-    radial-gradient(40rem 28rem at 100% 100%, rgb(92 200 255 / 0.12), transparent 70%);
+    radial-gradient(50rem 30rem at 15% 0%, rgb(46 117 182 / 0.24), transparent 65%),
+    radial-gradient(40rem 28rem at 100% 100%, rgb(46 117 182 / 0.12), transparent 70%);
 }
 
 /* Quadrillage technique très discret, estompé vers les bords. */
@@ -197,8 +200,8 @@
 
 @utility grid-lines-light {
   background-image:
-    linear-gradient(to right, rgb(11 16 56 / 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(11 16 56 / 0.05) 1px, transparent 1px);
+    linear-gradient(to right, rgb(59 68 81 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(59 68 81 / 0.06) 1px, transparent 1px);
   background-size: 72px 72px;
   mask-image: radial-gradient(ellipse 60% 70% at 50% 0%, #000 20%, transparent 70%);
 }
@@ -218,17 +221,17 @@
 
 /* Image décorative de la bannière : prend les teintes du dégradé et s'efface vers le texte. */
 @utility hero-image {
-  opacity: 0.35;
+  opacity: 0.3;
   mix-blend-mode: luminosity;
   mask-image: linear-gradient(to right, transparent 25%, rgb(0 0 0 / 0.5) 60%, #000 90%);
 
   @media (width < 64rem) {
-    opacity: 0.25;
+    opacity: 0.18;
     mask-image: linear-gradient(to right, transparent 45%, rgb(0 0 0 / 0.5) 78%, #000 100%);
   }
 
   @media (width < 40rem) {
-    opacity: 0.25;
+    opacity: 0.15;
     mask-image: linear-gradient(to top, #000 0%, rgb(0 0 0 / 0.4) 22%, transparent 50%);
   }
 }
@@ -247,7 +250,7 @@
     opacity: 0;
     background: radial-gradient(
       32rem circle at var(--mx, 50%) var(--my, 0%),
-      var(--spotlight-color, rgb(0 102 255 / 0.1)),
+      var(--spotlight-color, rgb(46 117 182 / 0.1)),
       transparent 45%
     );
     transition: opacity 0.5s var(--ease-out-quint);
@@ -539,7 +542,7 @@
   }
 
   ::selection {
-    background-color: rgb(0 102 255 / 0.18);
+    background-color: rgb(46 117 182 / 0.2);
     color: var(--color-ink);
   }
 

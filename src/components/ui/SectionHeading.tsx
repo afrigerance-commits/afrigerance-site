@@ -33,9 +33,9 @@ export function SectionHeading({
     <div className={`${centered ? "mx-auto text-center" : ""} ${className}`}>
       <p
         data-reveal=""
-        className={`eyebrow inline-flex items-center gap-3 ${dark ? "text-sky-soft" : "text-brand-dark"}`}
+        className={`eyebrow inline-flex items-center gap-3 ${dark ? "text-white" : "text-brand-dark"}`}
       >
-        <span aria-hidden="true" className={`h-px w-8 ${dark ? "bg-sky-soft/60" : "bg-brand/50"}`} />
+        <span aria-hidden="true" className={`h-px w-8 ${dark ? "bg-white/60" : "bg-brand/50"}`} />
         {eyebrow}
       </p>
       <Tag
@@ -50,7 +50,7 @@ export function SectionHeading({
         {titleAccent ? (
           <>
             {" "}
-            <span className={`accent-serif ${dark ? "text-sky" : "text-brand"}`}>{titleAccent}</span>
+            <span className={`accent-serif ${dark ? "text-brand-soft" : "text-brand"}`}>{titleAccent}</span>
           </>
         ) : null}
       </Tag>
@@ -58,7 +58,7 @@ export function SectionHeading({
         <p
           data-reveal=""
           style={{ "--i": 2 } as CSSProperties}
-          className={`mt-6 max-w-[38em] text-lg leading-relaxed sm:text-xl ${dark ? "text-sky-soft" : "text-muted"} ${
+          className={`mt-6 max-w-[38em] text-lg leading-relaxed sm:text-xl ${dark ? "text-white" : "text-muted"} ${
             centered ? "mx-auto" : ""
           }`}
         >

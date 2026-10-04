@@ -9,7 +9,7 @@ import { SectionHeading } from "../ui/SectionHeading";
  */
 export function MethodTimeline({ id = "demarche" }: { id?: string }) {
   return (
-    <section id={id} aria-labelledby={`${id}-title`} className="bg-night grain on-dark relative isolate overflow-hidden py-24 text-white sm:py-28 lg:py-36">
+    <section id={id} aria-labelledby={`${id}-title`} className="bg-anthracite-band grain on-dark relative isolate overflow-hidden py-24 text-white sm:py-28 lg:py-36">
       <div aria-hidden="true" className="grid-lines pointer-events-none absolute inset-0 -z-10 opacity-60" />
       <div
         aria-hidden="true"
@@ -37,7 +37,7 @@ export function MethodTimeline({ id = "demarche" }: { id?: string }) {
           <span
             aria-hidden="true"
             data-reveal="line"
-            className="from-cyan via-brand-bright absolute top-3 bottom-3 left-[1.375rem] w-px origin-top bg-gradient-to-b to-transparent [&.is-revealed]:duration-[2.4s]! sm:left-[1.875rem]"
+            className="from-brand-soft via-brand absolute top-3 bottom-3 left-[1.375rem] w-px origin-top bg-gradient-to-b to-transparent [&.is-revealed]:duration-[2.4s]! sm:left-[1.875rem]"
           />
           {method.steps.map((step, index) => (
             <li
@@ -46,12 +46,12 @@ export function MethodTimeline({ id = "demarche" }: { id?: string }) {
               style={{ "--i": index } as CSSProperties}
               className="relative grid grid-cols-[2.75rem_minmax(0,1fr)] gap-5 pb-12 last:pb-0 sm:grid-cols-[3.75rem_minmax(0,1fr)] sm:gap-8 sm:pb-16"
             >
-              <span className="bg-night relative flex size-11 items-center justify-center rounded-full font-mono text-sm text-sky ring-1 ring-white/20 sm:size-[3.75rem] sm:text-base">
+              <span className="bg-anthracite relative flex size-11 items-center justify-center rounded-full font-mono text-sm text-brand-soft ring-1 ring-white/20 sm:size-[3.75rem] sm:text-base">
                 {String(index + 1).padStart(2, "0")}
               </span>
               <div className="pt-1.5 sm:pt-3">
                 <h3 className="text-display text-[clamp(1.5rem,1.2rem+1.1vw,2.25rem)] text-white">{step.title}</h3>
-                <p className="text-sky-soft mt-3 max-w-[32em] text-lg leading-relaxed">{step.text}</p>
+                <p className="text-white mt-3 max-w-[32em] text-lg leading-relaxed">{step.text}</p>
               </div>
             </li>
           ))}

@@ -84,3 +84,24 @@ test("image d'aperçu de partage générée", async ({ request }) => {
   expect(response.status()).toBe(200);
   expect(response.headers()["content-type"]).toContain("image/png");
 });
+
+test("charte graphique : bandeau bleu du logo, bandeau anthracite, textes noir et gris, bouton blanc sur le bleu", async ({ page }) => {
+  await page.goto(base + "/");
+  const styles = (selector: string) =>
+    page.locator(selector).first().evaluate((element) => {
+      const style = getComputedStyle(element);
+      return { background: style.backgroundColor, color: style.color };
+    });
+  const brand = "rgb(46, 117, 182)";
+  const anthracite = "rgb(59, 68, 81)";
+
+  expect((await styles("section[aria-labelledby='hero-title']")).background).toBe(brand);
+  expect((await styles("#demarche")).background).toBe(anthracite);
+  expect((await styles("section[aria-labelledby='footer-cta-title']")).background).toBe(anthracite);
+  expect((await styles("body")).color).toBe("rgb(17, 19, 23)");
+  expect((await styles("#audiences-title ~ p")).color).toBe(anthracite);
+
+  const heroButton = await styles("section[aria-labelledby='hero-title'] a[href='/devis']");
+  expect(heroButton).toEqual({ background: "rgb(255, 255, 255)", color: "rgb(34, 89, 140)" });
+  expect((await styles("header a[href='/devis']")).background).toBe(brand);
+});

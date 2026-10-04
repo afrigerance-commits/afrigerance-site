@@ -7,11 +7,14 @@ type Size = "md" | "lg";
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-brand text-white shadow-[0_14px_34px_-14px_rgb(0_102_255/0.75)] hover:bg-brand-dark hover:shadow-[0_18px_40px_-14px_rgb(0_102_255/0.85)]",
+    "bg-brand text-white shadow-[0_14px_34px_-14px_rgb(46_117_182/0.75)] hover:bg-brand-dark hover:shadow-[0_18px_40px_-14px_rgb(34_89_140/0.8)]",
   secondary: "bg-white text-ink ring-1 ring-ink/15 ring-inset hover:ring-ink/40 hover:bg-surface",
+  // Sur fond bleu ou anthracite : contour blanc, fond plein blanc au survol (aucun voile clair sous le texte blanc).
   onDark:
-    "bg-white/[0.07] text-white ring-1 ring-white/25 ring-inset backdrop-blur-md hover:bg-white/[0.14] hover:ring-white/45 focus-visible:outline-white",
-  light: "bg-white text-ink shadow-[0_14px_34px_-14px_rgb(0_0_0/0.5)] hover:bg-sky focus-visible:outline-white",
+    "text-white ring-1 ring-white/75 ring-inset hover:bg-white hover:text-brand-dark hover:ring-white focus-visible:outline-white",
+  // Bouton principal sur fond bleu : blanc, texte bleu.
+  light:
+    "bg-white text-brand-dark shadow-[0_14px_34px_-14px_rgb(17_19_23/0.45)] hover:bg-brand-soft focus-visible:outline-white",
 };
 
 const sizes: Record<Size, string> = {
