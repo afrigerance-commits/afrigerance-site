@@ -56,6 +56,7 @@ export function QuranAudioProvider({ verses, children }: { verses: VerseAudioRef
   const currentVerseRef = useRef<number | null>(null);
   const currentBitrateRef = useRef<64 | 128>(128);
   const failureHandledRef = useRef(false);
+  const watchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     reciterIdRef.current = reciterId;
@@ -85,7 +86,15 @@ export function QuranAudioProvider({ verses, children }: { verses: VerseAudioRef
     }
   }, []);
 
+  const clearWatchdog = useCallback(() => {
+    if (watchdogRef.current !== null) {
+      clearTimeout(watchdogRef.current);
+      watchdogRef.current = null;
+    }
+  }, []);
+
   const handleFailure = useCallback(() => {
+    clearWatchdog();
     if (failureHandledRef.current) return;
     failureHandledRef.current = true;
     const verseNumber = currentVerseRef.current;
@@ -98,7 +107,7 @@ export function QuranAudioProvider({ verses, children }: { verses: VerseAudioRef
     } else {
       advance(verseNumber);
     }
-  }, [advance]);
+  }, [advance, clearWatchdog]);
 
   const attemptPlay = useCallback(
     (verseNumber: number, bitrate: 64 | 128, continueSequence: boolean) => {
@@ -113,6 +122,7 @@ export function QuranAudioProvider({ verses, children }: { verses: VerseAudioRef
       currentBitrateRef.current = bitrate;
       failureHandledRef.current = false;
       setPlayingVerse(verseNumber);
+      clearWatchdog();
       audio.src = getAyahAudioUrl(verse.globalNumber, reciterIdRef.current, bitrate);
       audio.play().catch(() => {
         // Le gestionnaire natif `error` traite déjà la plupart des échecs ;
@@ -120,8 +130,14 @@ export function QuranAudioProvider({ verses, children }: { verses: VerseAudioRef
         // promesse sans émettre l'évènement `error` (ex. flux interrompu).
         handleFailure();
       });
+      // Filet de sécurité supplémentaire : certains échecs (mauvais
+      // identifiant de récitateur, redirection, CORS) ne déclenchent ni
+      // `error` ni le rejet de `play()` — le flux reste silencieusement en
+      // chargement. Si la lecture n'a pas réellement démarré sous 5 s, on
+      // considère l'essai en échec et on passe à la suite.
+      watchdogRef.current = setTimeout(() => handleFailure(), 5000);
     },
-    [handleFailure],
+    [handleFailure, clearWatchdog],
   );
 
   useEffect(() => {
@@ -133,27 +149,36 @@ export function QuranAudioProvider({ verses, children }: { verses: VerseAudioRef
     audioRef.current = audio;
 
     const handleEnded = () => {
+      clearWatchdog();
       const verseNumber = currentVerseRef.current;
       if (verseNumber != null) advance(verseNumber);
     };
     const handleError = () => handleFailure();
+    // Confirme qu'un flux a réellement commencé à jouer : annule le
+    // minuteur de secours, évite de le déclencher à tort sur un verset qui
+    // met simplement plus de temps que les autres à démarrer.
+    const handlePlaying = () => clearWatchdog();
 
     audio.addEventListener("ended", handleEnded);
     audio.addEventListener("error", handleError);
+    audio.addEventListener("playing", handlePlaying);
     return () => {
+      clearWatchdog();
       audio.pause();
       audio.src = "";
       audio.removeEventListener("ended", handleEnded);
       audio.removeEventListener("error", handleError);
+      audio.removeEventListener("playing", handlePlaying);
     };
-  }, [advance, handleFailure]);
+  }, [advance, handleFailure, clearWatchdog]);
 
   const stop = useCallback(() => {
+    clearWatchdog();
     audioRef.current?.pause();
     sequentialRef.current = false;
     currentVerseRef.current = null;
     setPlayingVerse(null);
-  }, []);
+  }, [clearWatchdog]);
 
   const playVerse = useCallback(
     (verseNumber: number, continueSequence = false) => attemptPlay(verseNumber, 128, continueSequence),
