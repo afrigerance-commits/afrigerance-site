@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { PageHeader } from "@/components/layout/page-header";
 import { Reveal } from "@/components/motion/reveal";
@@ -20,6 +21,13 @@ export default function HadithPage() {
         title="Les recueils de hadith"
         description="Texte arabe et traduction française, organisés par livre, avec le degré d'authenticité lorsqu'il est fourni par l'édition source."
         divider
+      />
+      <Image
+        src="/images/mirath/hadith_transmission.svg"
+        alt="Livre ouvert et chaîne de transmission matérialisée par des nœuds dorés."
+        width={1600}
+        height={900}
+        className="mx-auto mt-8 max-h-72 w-full max-w-3xl rounded-2xl object-cover"
       />
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
         {hadithCollections.map((c, i) => (

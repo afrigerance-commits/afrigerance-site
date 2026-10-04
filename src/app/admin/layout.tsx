@@ -22,6 +22,7 @@ export const dynamic = "force-dynamic";
 const navItems = [
   { href: "/admin", label: "Tableau de bord", icon: LayoutDashboard },
   { href: "/admin/articles", label: "Articles", icon: FileText },
+  { href: "/admin/brouillons", label: "Brouillons documentaires", icon: FileText },
   { href: "/admin/sources", label: "Sources", icon: Library },
   { href: "/admin/livres", label: "Livres", icon: BookMarked },
   { href: "/admin/videos", label: "Vidéos", icon: Video },

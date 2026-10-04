@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Reveal } from "@/components/motion/reveal";
 import { LightDivider } from "@/components/motion/light-divider";
 import { Timeline } from "@/components/content/timeline-event";
@@ -22,6 +23,13 @@ export default function SiraPage() {
         </p>
       </Reveal>
       <LightDivider className="mt-8" />
+      <Image
+        src="/images/mirath/sira_chronologie.svg"
+        alt="Dunes abstraites, étoile géométrique et chemin historique symbolique, sans personnages."
+        width={1600}
+        height={900}
+        className="mx-auto mt-8 max-h-72 w-full max-w-3xl rounded-2xl object-cover"
+      />
 
       <div className="mt-16">
         <Timeline events={siraEvents} />

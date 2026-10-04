@@ -62,5 +62,5 @@ export const articles: Article[] = [
 ];
 
 export function getArticle(slug: string) {
-  return articles.find((a) => a.slug === slug);
+  return articles.find((a) => a.slug === slug && a.statut === "publie");
 }

@@ -57,6 +57,9 @@ export default async function AdminDashboardPage() {
       </Card>
 
       <div className="flex flex-wrap gap-3">
+        <Link href="/admin/brouillons" className="text-sm font-medium text-primary hover:underline">
+          Relire les quatre articles sourcés →
+        </Link>
         <Link href="/admin/articles/nouveau" className="text-sm font-medium text-primary hover:underline">
           Rédiger un nouvel article →
         </Link>

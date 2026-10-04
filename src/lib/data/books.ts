@@ -1,90 +1,95 @@
 import type { Book } from "@/lib/types/content";
 
-/**
- * Fiches de démonstration. Aucun fichier n’est fourni ni aucun lien de
- * téléchargement fabriqué : seules des fiches bibliographiques et, le cas
- * échéant, des liens vers des sources externes réputées sont indiqués.
- */
+/** Notices fondées sur le registre du corpus fourni ; aucun PDF ni couverture d'édition n'est publié. */
 export const books: Book[] = [
   {
+    slug: "mukhtasar-al-akhdari",
+    titreOriginal: "Le Mukhtasar d’al-Akhdari",
+    titreFrancais: "Le Mukhtasar d’al-Akhdari",
+    auteur: "Abdur-Rahman al-Akhdarî",
+    discipline: "Fiqh malikite",
+    langue: "Arabe et français",
+    edition: "Traduction Ali Abdullah Gallant, première édition, Fès, 2017",
+    presentation: "Un manuel concis consacré notamment à la purification et à la prière dans le référentiel malikite. La page de titre de l'exemplaire fourni précise l'édition et le traducteur. Les notes de lecture MIRÂTH sont en cours de validation.",
+    referencesBibliographiques: "Exemplaire fourni : page de titre, PDF p. 1 ; préface, PDF p. 3-4.",
+    droits: "droits_non_verifies",
+  },
+  {
+    slug: "cours-de-fiqh-malikite",
+    titreOriginal: "Cours de Fiqh Malikite",
+    titreFrancais: "Cours de Fiqh Malikite",
+    auteur: "Auteur à confirmer",
+    discipline: "Fiqh malikite",
+    langue: "Français, avec passages arabes",
+    edition: "Document de cours fourni ; édition à confirmer",
+    presentation: "Document de cours conservé pour l'étude et la vérification des thèmes de fiqh. Son attribution et les passages arabes extraits automatiquement demandent une vérification sur l'original.",
+    referencesBibliographiques: "Exemplaire fourni, 92 pages PDF ; registre bibliographique MIRÂTH.",
+    droits: "droits_non_verifies",
+  },
+  {
     slug: "ar-risala-ibn-abi-zayd",
-    titreOriginal: "الرسالة",
-    titreFrancais: "Ar-Risâla (L’Épître)",
+    titreOriginal: "Ar-Risâla",
+    titreFrancais: "La Risâla d’Ibn Abî Zayd Al-Qayrawânî",
     auteur: "Ibn Abî Zayd Al-Qayrawânî",
-    discipline: "Fiqh malikite",
-    langue: "Arabe (traductions existantes à référencer)",
-    presentation:
-      "Abrégé classique de jurisprudence malikite, utilisé depuis des siècles comme texte d’introduction dans les écoles malikites, notamment en Afrique du Nord et de l’Ouest.",
-    referencesBibliographiques: "Édition de référence à documenter par le vérificateur avant publication.",
+    discipline: "Fiqh malikite / Croyance",
+    langue: "Arabe et français",
+    edition: "Traduction Léon Bercher, revue par Mohammed Zawi, Dar Al-Kotob Al-Ilmiyah, 2010 — à contrôler sur l'exemplaire",
+    presentation: "L'exemplaire fourni est un scan image. Ses pages doivent être lues visuellement avant la rédaction de leçons ; aucune transcription automatique n'est tenue pour vérifiée.",
+    referencesBibliographiques: "Registre bibliographique MIRÂTH ; exemplaire segmenté en 8 PDF, 144 pages.",
     droits: "droits_non_verifies",
-    demonstration: true,
   },
   {
-    slug: "muwatta-imam-malik",
-    titreOriginal: "الموطأ",
-    titreFrancais: "Al-Muwatta'",
-    auteur: "L’imam Mâlik ibn Anas",
-    discipline: "Hadith / Fiqh malikite",
-    langue: "Arabe (traductions existantes à référencer)",
-    presentation:
-      "L’un des plus anciens recueils organisant hadiths, avis des compagnons et jurisprudence par thème, fondateur pour l’école malikite.",
-    referencesBibliographiques: "Édition de référence à documenter par le vérificateur avant publication.",
+    slug: "kassab-sahih-bukhari-tome-1",
+    titreOriginal: "3 000 hadiths et citations coraniques",
+    titreFrancais: "Recueil des traditions du Sahih d’El Bokhari, tome 1",
+    auteur: "Mohammed Yacine Kassab",
+    discipline: "Hadith / Documentation",
+    langue: "Français",
+    edition: "Tome 1 ; éditeur et année à confirmer",
+    presentation: "Compilation française fondée sur le Sahîh d'Al-Bukhârî. Son avertissement décrit des omissions, un classement adapté et l'abrègement des chaînes de transmission. Chaque citation de hadith doit être vérifiée dans une édition primaire avant publication.",
+    referencesBibliographiques: "Exemplaire fourni, couverture PDF p. 1, avertissement PDF p. 7 / imprimée p. 9 ; droits de reproduction réservés PDF p. 2.",
     droits: "droits_non_verifies",
-    demonstration: true,
   },
   {
-    slug: "mukhtasar-khalil",
-    titreOriginal: "مختصر خليل",
-    titreFrancais: "Mukhtasar Khalîl",
-    auteur: "Khalîl ibn Ishâq Al-Jundî",
-    discipline: "Fiqh malikite",
-    langue: "Arabe",
-    presentation:
-      "Abrégé de référence du fiqh malikite, largement commenté dans la tradition malikite classique.",
+    slug: "histoires-des-prophetes-ibn-kathir",
+    titreOriginal: "Les histoires des prophètes",
+    titreFrancais: "Les histoires des prophètes",
+    auteur: "Ibn Kathîr",
+    discipline: "Histoires des prophètes",
+    langue: "Français",
+    edition: "Traduction de l'équipe littéraire des Éditions Maison d'Ennour",
+    presentation: "L'ouvrage fourni rassemble des passages coraniques, des commentaires et des récits transmis. Une future fiche distinguera ces niveaux de source et signalera les récits qui demandent une corroboration.",
+    referencesBibliographiques: "Exemplaire fourni, page de titre PDF p. 1 ; 444 pages PDF.",
     droits: "droits_non_verifies",
-    demonstration: true,
   },
   {
-    slug: "sahih-al-bukhari",
-    titreOriginal: "صحيح البخاري",
-    titreFrancais: "Sahîh Al-Bukhârî",
-    auteur: "L’imam Al-Bukhârî",
-    discipline: "Hadith",
-    langue: "Arabe (traductions existantes à référencer)",
-    presentation:
-      "Recueil de hadiths considéré par la tradition sunnite comme l’un des plus rigoureux sur le plan de l’authentification des chaînes de transmission.",
-    droits: "consultation_externe",
-    lienConsultationExterne: "https://sunnah.com/bukhari",
-    demonstration: true,
-  },
-  {
-    slug: "sahih-muslim",
-    titreOriginal: "صحيح مسلم",
-    titreFrancais: "Sahîh Muslim",
-    auteur: "L’imam Muslim ibn Al-Hajjâj",
-    discipline: "Hadith",
-    langue: "Arabe (traductions existantes à référencer)",
-    presentation: "Second des deux recueils de hadiths les plus authentifiés selon la tradition sunnite (les deux Sahîh).",
-    droits: "consultation_externe",
-    lienConsultationExterne: "https://sunnah.com/muslim",
-    demonstration: true,
+    slug: "tazawwudu-ss-sighar",
+    titreOriginal: "Tazawwudu-s-sighar",
+    titreFrancais: "Viatique des adolescents",
+    auteur: "Attribution à confirmer sur la source",
+    discipline: "Spiritualité / Croyance / Éthique",
+    langue: "Français ; langue originale à préciser",
+    edition: "Traduction française fournie, édition à confirmer",
+    presentation: "Texte structuré en vers dans l'exemplaire fourni. Son attribution, sa pagination et les numéros des vers doivent être vérifiés avant toute citation ou leçon.",
+    referencesBibliographiques: "Exemplaire fourni, 20 pages PDF ; registre bibliographique MIRÂTH.",
+    droits: "droits_non_verifies",
   },
   {
     slug: "ar-rahiq-al-makhtum",
-    titreOriginal: "الرحيق المختوم",
-    titreFrancais: "Ar-Rahîq Al-Makhtûm (Le Nectar cacheté)",
+    titreOriginal: "Ar-Rahîq al-Makhtûm",
+    titreFrancais: "Le Nectar cacheté",
     auteur: "Safî ar-Rahmân Al-Mubârakfûrî",
     discipline: "Sîra",
-    langue: "Arabe (traductions existantes à référencer)",
-    presentation:
-      "Biographie du Prophète ﷺ largement diffusée, ayant reçu un prix lors d’un concours organisé par la Ligue islamique mondiale.",
+    langue: "Français",
+    edition: "Version française fournie ; Darussalam indiqué sur la page de titre, à contrôler visuellement",
+    presentation: "Biographie du Prophète ﷺ conservée dans le corpus de travail sous forme de scans. La chronologie et les détails des récits seront publiés uniquement après lecture et attribution des pages originales.",
+    referencesBibliographiques: "Registre bibliographique MIRÂTH ; exemplaire scanné, 746 pages indiquées dans le kit.",
     droits: "droits_non_verifies",
-    demonstration: true,
   },
 ];
 
 export function getBook(slug: string) {
-  return books.find((b) => b.slug === slug);
+  return books.find((book) => book.slug === slug);
 }
 
 export const rightsStatusLabels: Record<Book["droits"], string> = {

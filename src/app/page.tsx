@@ -19,10 +19,12 @@ import { videos } from "@/lib/data/videos";
 import { learningPaths } from "@/lib/data/learning-paths";
 
 export default function HomePage() {
+  const publishedArticles = articles.filter((article) => article.statut === "publie");
   return (
     <>
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border bg-ink-950 text-ivory-50">
+        <div className="pointer-events-none absolute inset-0 bg-[url('/images/mirath/mirath_hero.svg')] bg-cover bg-center opacity-40" aria-hidden="true" />
         <HeroGeometry />
         <div className="relative mx-auto flex max-w-5xl flex-col items-center gap-8 px-4 py-28 text-center sm:px-6 sm:py-36 lg:px-8">
           <Reveal>
@@ -148,14 +150,14 @@ export default function HomePage() {
         </Reveal>
       </section>
 
-      {/* Derniers articles */}
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      {/* Derniers articles : jamais de brouillons sur la page publique */}
+      <section className={publishedArticles.length ? "mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" : "hidden"}>
         <Reveal className="mb-12 flex flex-col items-center gap-3 text-center">
           <h2 className="font-display text-3xl font-semibold sm:text-4xl">Derniers articles</h2>
           <p className="max-w-2xl text-muted">Réflexions, rappels et actualités de la plateforme.</p>
         </Reveal>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {articles.map((article, i) => (
+          {publishedArticles.map((article, i) => (
             <Reveal key={article.slug} delay={i * 0.05}>
               <ArticleCard article={article} />
             </Reveal>

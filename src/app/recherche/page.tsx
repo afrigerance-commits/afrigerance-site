@@ -29,7 +29,7 @@ interface SearchResult {
 function buildIndex(): SearchResult[] {
   return [
     ...disciplines.map((d) => ({ titre: d.name, description: d.description, href: `/explorer-le-savoir/${d.slug}`, type: "Discipline" })),
-    ...articles.map((a) => ({ titre: a.titre, description: a.resume, href: `/blog/${a.slug}`, type: "Article" })),
+    ...articles.filter((a) => a.statut === "publie").map((a) => ({ titre: a.titre, description: a.resume, href: `/blog/${a.slug}`, type: "Article" })),
     ...books.map((b) => ({ titre: b.titreFrancais, description: b.presentation, href: `/bibliotheque/${b.slug}`, type: "Livre" })),
     ...scholars.map((s) => ({ titre: s.transcriptionFrancaise, description: s.presentation, href: `/compagnons/${s.slug}`, type: "Figure" })),
     ...siraEvents.map((e) => ({ titre: e.titre, description: e.presentation, href: `/sira/${e.slug}`, type: "Sîra" })),

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Reveal } from "@/components/motion/reveal";
 import { LightDivider } from "@/components/motion/light-divider";
 import { BookCard } from "@/components/content/book-card";
@@ -22,6 +23,13 @@ export default function BibliothequePage() {
         </p>
       </Reveal>
       <LightDivider className="mt-8" />
+      <Image
+        src="/images/mirath/bibliotheque.svg"
+        alt="Collection de livres stylisés en vert émeraude et or."
+        width={1600}
+        height={900}
+        className="mx-auto mt-8 max-h-72 w-full max-w-3xl rounded-2xl object-cover"
+      />
       <div className="mt-14 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
         {books.map((book, i) => (
           <Reveal key={book.slug} delay={i * 0.04}>

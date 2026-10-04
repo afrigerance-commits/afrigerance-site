@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Reveal } from "@/components/motion/reveal";
 import { LightDivider } from "@/components/motion/light-divider";
 import { CourseCard } from "@/components/content/course-card";
@@ -39,6 +40,13 @@ export default function AcademieFiqhMalikitePage() {
         <p className="mx-auto max-w-2xl text-muted">{siteConfig.madhhab.note}</p>
       </Reveal>
       <LightDivider className="mt-8" />
+      <Image
+        src="/images/mirath/fiqh_purification.svg"
+        alt="Aiguière d’eau et goutte stylisées au sein d’une arcade géométrique."
+        width={1600}
+        height={900}
+        className="mx-auto mt-8 max-h-72 w-full max-w-3xl rounded-2xl object-cover"
+      />
 
       <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-3">
         {niveaux.map((niveau, i) => (
