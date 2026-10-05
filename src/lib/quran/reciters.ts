@@ -14,9 +14,9 @@ export const reciters: Reciter[] = [
   { id: "ar.abdurrahmaansudais", nom: "Abdurrahman As-Sudais", portrait: "/images/reciters/sudais.png" },
   { id: "ar.husary", nom: "Mahmoud Al-Husary", portrait: "/images/reciters/husary.jpg" },
   { id: "ar.minshawi", nom: "Mohamed Al-Minshawi", portrait: "/images/reciters/minshawi.jpg" },
-  { id: "ar.hudhaify", nom: "Ali Al-Houdhayfi", portrait: "" },
+  { id: "ar.hudhaify", nom: "Ali Al-Houdhayfi", portrait: "/images/reciters/hudhaify.webp" },
   { id: "everyayah.ghamdi", nom: "Saad Al-Ghamdi", portrait: "/images/reciters/saad-ghamdi.webp", everyAyahFolder: "Ghamadi_40kbps" },
-  { id: "everyayah.matroud", nom: "Abdullah Matrood", portrait: "", everyAyahFolder: "Abdullah_Matroud_128kbps" },
+  { id: "everyayah.matroud", nom: "Abdullah Matrood", portrait: "https://tvquran.com/uploads/authors/images/%D8%B9%D8%A8%D8%AF%20%D8%A7%D9%84%D9%84%D9%87%20%D8%A7%D9%84%D9%85%D8%B7%D8%B1%D9%88%D8%AF.jpg", everyAyahFolder: "Abdullah_Matroud_128kbps" },
   { id: "everyayah.ali-jaber", nom: "Ali Jaber", portrait: "/images/reciters/ali-jaber.webp", everyAyahFolder: "Ali_Jaber_64kbps" },
   { id: "tvquran.hady-toure", nom: "Muhammad Hady Touré", portrait: "https://tvquran.com/uploads/authors/images/%D9%85%D8%AD%D9%85%D8%AF%20%D8%A7%D9%84%D9%87%D8%A7%D8%AF%D9%8A%20%D8%AA%D9%88%D8%B1%D9%8A.jpg", mode: "surah" },
 ];
