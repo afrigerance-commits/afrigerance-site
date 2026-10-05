@@ -1,8 +1,9 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { Bookmark, BookmarkCheck, BookOpen, ExternalLink, Minus, Plus } from "lucide-react";
+import { Bookmark, BookmarkCheck, Minus, Plus } from "lucide-react";
 import { VersePlayButton } from "@/components/islamic/quran-audio-player";
+import { QuranTafsir } from "@/components/islamic/quran-tafsir";
 import { parseTajweed, tajweedRules, type TajweedSegment } from "@/lib/quran/tajweed";
 
 interface ReadingState {
@@ -120,15 +121,7 @@ export function QuranVerseContent({ chapter, number, arabic, french }: { chapter
       <VersePlayButton verseNumber={number} />
     </div>
     {reading.showFrench && <p lang="fr" className="mt-5 max-w-[68ch] border-l-2 border-gold-600/35 pl-4 text-[15px] leading-7 text-foreground/85 sm:ml-3">{french}</p>}
-    <details className="mt-5 rounded-xl border border-gold-600/20 bg-[#f8f4e9]/70 px-4 py-3 text-sm dark:bg-emerald-900/15">
-      <summary className="flex cursor-pointer items-center gap-2 font-semibold text-emerald-900 dark:text-gold-500"><BookOpen className="size-4" /> Tafsîr du verset {number}</summary>
-      <div className="mt-3 space-y-3 text-xs leading-6 text-muted">
-        <p>Consulter les textes à leur source. Leur contenu n’est pas retranscrit ici et les versions accessibles sont en arabe ou en anglais.</p>
-        <a className="flex w-fit items-center gap-1.5 font-medium text-primary underline underline-offset-4" href={`https://quran.com/fr/${chapter}:${number}/tafsirs/ar-tafsir-ibn-kathir`} target="_blank" rel="noopener noreferrer">Tafsîr d’Ibn Kathîr · texte arabe <ExternalLink className="size-3.5" /></a>
-        <a className="flex w-fit items-center gap-1.5 font-medium text-primary underline underline-offset-4" href={`https://www.altafsir.com/Tafasir.asp?LanguageId=2&tAyahNo=${number}&tDisplay=yes&tMadhNo=0&tSoraNo=${chapter}&tTafsirNo=73`} target="_blank" rel="noopener noreferrer">Recueil attribué à Ibn ‘Abbâs · traduction anglaise <ExternalLink className="size-3.5" /></a>
-        <p>Attribution contestée : le recueil « Tanwîr al-Miqbâs » ne peut pas être présenté comme l’œuvre certaine d’Ibn ‘Abbâs. Les récits particuliers demandent une vérification de leur transmission.</p>
-      </div>
-    </details>
+    <QuranTafsir chapter={chapter} verse={number} />
     <a href={`/coran/${chapter}#verset-${number}`} className="sr-only">Lien vers le verset {number}</a>
   </div>;
 }

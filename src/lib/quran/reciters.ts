@@ -4,6 +4,7 @@ export interface Reciter {
   nom: string;
   portrait: string;
   mode?: "surah";
+  everyAyahFolder?: string;
 }
 
 export const reciters: Reciter[] = [
@@ -14,6 +15,9 @@ export const reciters: Reciter[] = [
   { id: "ar.husary", nom: "Mahmoud Al-Husary", portrait: "/images/reciters/husary.jpg" },
   { id: "ar.minshawi", nom: "Mohamed Al-Minshawi", portrait: "/images/reciters/minshawi.jpg" },
   { id: "ar.hudhaify", nom: "Ali Al-Houdhayfi", portrait: "" },
+  { id: "everyayah.ghamdi", nom: "Saad Al-Ghamdi", portrait: "", everyAyahFolder: "Ghamadi_40kbps" },
+  { id: "everyayah.matroud", nom: "Abdullah Matrood", portrait: "", everyAyahFolder: "Abdullah_Matroud_128kbps" },
+  { id: "everyayah.ali-jaber", nom: "Ali Jaber", portrait: "", everyAyahFolder: "Ali_Jaber_64kbps" },
   { id: "tvquran.hady-toure", nom: "Muhammad Hady Touré", portrait: "", mode: "surah" },
 ];
 
@@ -28,8 +32,15 @@ export interface VerseAudioRef { number: number; globalNumber: number }
  * Un catalogue incomplet ou dont la numérotation diverge est refusé entier.
  */
 export async function loadRecitation(chapter: number, reciterId: string, verses: VerseAudioRef[]): Promise<Map<number, string[]>> {
-  if (!reciters.some((reciter) => reciter.id === reciterId && reciter.mode !== "surah") || !Number.isInteger(chapter) || chapter < 1 || chapter > 114) {
+  const reciter = reciters.find((item) => item.id === reciterId && item.mode !== "surah");
+  if (!reciter || !Number.isInteger(chapter) || chapter < 1 || chapter > 114 || !verses.length ||
+    verses.some((verse, index) => !Number.isInteger(verse.number) || verse.number < 1 || (index > 0 && verse.number !== verses[index - 1].number + 1) || !Number.isInteger(verse.globalNumber) || verse.globalNumber < 1)) {
     throw new Error("Récitateur ou sourate invalide.");
+  }
+  if (reciter.everyAyahFolder) {
+    return new Map(verses.map((verse) => [verse.number,
+      [`https://everyayah.com/data/${reciter.everyAyahFolder}/${String(chapter).padStart(3, "0")}${String(verse.number).padStart(3, "0")}.mp3`],
+    ]));
   }
   const response = await fetch(`https://api.alquran.cloud/v1/surah/${chapter}/${reciterId}`);
   if (!response.ok) throw new Error("Le service audio est temporairement indisponible.");

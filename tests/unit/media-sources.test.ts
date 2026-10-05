@@ -35,4 +35,17 @@ describe("catalogue audio coranique", () => {
     } }) }));
     await expect(loadRecitation(2, "ar.saoodshuraym", [{ number: 2, globalNumber: 9 }])).rejects.toThrow("numérotation");
   });
+
+  it.each([
+    ["everyayah.ghamdi", "Ghamadi_40kbps"],
+    ["everyayah.matroud", "Abdullah_Matroud_128kbps"],
+    ["everyayah.ali-jaber", "Ali_Jaber_64kbps"],
+  ])("associe les fichiers EveryAyah à leur numéro de sourate et de verset (%s)", async (id, folder) => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    const result = await loadRecitation(2, id, [{ number: 1, globalNumber: 8 }, { number: 2, globalNumber: 9 }]);
+    expect(result.get(2)).toEqual([`https://everyayah.com/data/${folder}/002002.mp3`]);
+    expect(fetchMock).not.toHaveBeenCalled();
+    await expect(loadRecitation(2, id, [{ number: 1, globalNumber: 8 }, { number: 1, globalNumber: 9 }])).rejects.toThrow("invalide");
+  });
 });

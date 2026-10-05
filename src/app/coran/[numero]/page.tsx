@@ -104,13 +104,13 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
         <a href="http://tanzil.net" target="_blank" rel="noopener noreferrer nofollow" className="underline">
           projet Tanzil
         </a>
-        . Récitation audio fournie par l&apos;API ouverte{" "}
+        . Récitations audio fournies par l&apos;API ouverte{" "}
         <a href="https://alquran.cloud" target="_blank" rel="noopener noreferrer nofollow" className="underline">
           Al Quran Cloud
         </a>
-        .
+        {" "}et <a href="https://everyayah.com/recitations_ayat.html" target="_blank" rel="noopener noreferrer nofollow" className="underline">EveryAyah</a>.
       </p>
-      <p className="mt-3 text-center text-xs leading-relaxed text-muted">Les signes de pause du texte arabe initial sont conservés. Le mode tajwîd utilise séparément l’édition annotée d’Al Quran Cloud : désactivez-le pour retrouver la graphie habituelle. Les tafsîrs s’ouvrent sur leurs sources depuis chaque verset ; aucune traduction française non vérifiée n’est attribuée aux auteurs.</p>
+      <p className="mt-3 text-center text-xs leading-relaxed text-muted">Les signes de pause du texte arabe initial sont conservés. Le mode tajwîd utilise séparément l’édition annotée d’Al Quran Cloud : désactivez-le pour retrouver la graphie habituelle. Le texte arabe d’Ibn Kathîr et l’explication française Al-Mukhtasar s’affichent sur cette page ; ce sont deux ouvrages différents.</p>
 
       <div className="mt-10 flex items-center justify-between gap-4 border-t border-border pt-6 text-sm">
         {prev ? (
