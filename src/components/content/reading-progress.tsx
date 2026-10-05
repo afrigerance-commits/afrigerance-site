@@ -1,30 +1,24 @@
 "use client";
+import { useEffect, useRef } from "react";
 
-import { motion, useScroll, useSpring } from "motion/react";
-
-/**
- * Barre de progression de lecture, fixée en haut du viewport, qui suit le
- * défilement de la page (pas d'un conteneur interne) avec un léger lissage
- * ressort. N'apparaît pas et ne gêne rien sous `prefers-reduced-motion`
- * (la progression reste visible, seul le lissage du ressort est désactivé
- * par le navigateur lui-même via `scroll-behavior`).
- */
+/** Indicateur natif : pas de ressort ni de rerender React pendant le scroll. */
 export function ReadingProgress() {
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 220, damping: 30, restDelta: 0.001 });
-
-  return (
-    <motion.div
-      className="fixed inset-x-0 top-0 z-50 h-1 origin-left bg-accent"
-      style={{ scaleX }}
-      role="progressbar"
-      aria-label="Progression de lecture"
-    >
-      {/* Pointe lumineuse en tête de la barre : la connaissance qui avance avec la lecture. */}
-      <span
-        aria-hidden="true"
-        className="absolute right-0 top-1/2 h-3 w-3 -translate-y-1/2 translate-x-1/2 rounded-full bg-gold-500 shadow-[0_0_10px_3px_rgba(198,166,103,0.65)]"
-      />
-    </motion.div>
-  );
+  const ref=useRef<HTMLDivElement>(null);
+  useEffect(()=>{
+    let frame=0;
+    const update=()=>{
+      if(frame)return;
+      frame=requestAnimationFrame(()=>{
+        frame=0;
+        const range=document.documentElement.scrollHeight-window.innerHeight;
+        const value=range>0?Math.max(0,Math.min(1,window.scrollY/range)):0;
+        if(ref.current){ref.current.style.transform=`scaleX(${value})`;ref.current.setAttribute("aria-valuenow",String(Math.round(value*100)));}
+      });
+    };
+    const observer=typeof ResizeObserver!=="undefined"?new ResizeObserver(update):null;
+    observer?.observe(document.body);
+    update();window.addEventListener("scroll",update,{passive:true});window.addEventListener("resize",update);
+    return()=>{cancelAnimationFrame(frame);observer?.disconnect();window.removeEventListener("scroll",update);window.removeEventListener("resize",update);};
+  },[]);
+  return <div ref={ref} className="fixed inset-x-0 top-0 z-50 h-0.5 origin-left bg-accent" style={{transform:"scaleX(0)"}} role="progressbar" aria-label="Progression de lecture" aria-valuemin={0} aria-valuemax={100} aria-valuenow={0}/>;
 }

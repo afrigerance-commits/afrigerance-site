@@ -15,7 +15,7 @@
   --color-gold-700: #7a5c27;
   --color-ivory-50: #f8f5ee;
   --color-white: #ffffff;
-  --color-muted-500: #68747b;
+  --color-muted-500: #626e75;
 
   --background: var(--color-ivory-50);
   --foreground: var(--color-ink-950);
@@ -277,3 +277,5 @@ input[type="search"]::-webkit-search-cancel-button { cursor: pointer; }
 .light-divider-visible .light-divider-beam { animation: light-transmission 1.8s var(--ease-editorial) both; }
 @keyframes light-transmission { 0% { opacity:0; transform:translateX(-100%); } 20%,80% { opacity:1; } 100% { opacity:0; transform:translateX(0); } }
 @media (prefers-reduced-motion:reduce) { .light-divider-visible .light-divider-beam { animation:none; } }
+
+body:has([aria-label="Progression de lecture"]) .scroll-progress { display:none; }

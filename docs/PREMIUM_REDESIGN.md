@@ -89,7 +89,7 @@ Signets et reprise : stockage sur l'appareil, validation des données stockées,
 
 ## Performance, SEO et accessibilité
 
-Images locales optimisées par Next Image avec tailles responsives et image hero prioritaire. Vidéos sans iframe au chargement initial. Révélation des listes avec IntersectionObserver plutôt qu'une animation Motion par carte. Transform/opacité pour les entrées ; pas de dépendance ajoutée. Layouts responsives, menus Radix, labels de recherche, focus visible, raccourci clavier, résultats annoncés et texte arabe/RTL préservés.
+Images locales optimisées par Next Image avec tailles responsives et image hero prioritaire. Vidéos sans iframe au chargement initial. Révélation des listes avec IntersectionObserver plutôt qu'une animation Motion par carte. Progression de lecture native avec requestAnimationFrame, attributs ARIA chiffrés et sans rerender React au scroll. Texte secondaire assombri : contraste de 4,81:1 sur fond ivoire, au lieu de 4,41:1. Transform/opacité pour les entrées ; pas de dépendance ajoutée. Layouts responsives, menus Radix, labels de recherche, focus visible, raccourci clavier, résultats annoncés et texte arabe/RTL préservés.
 
 Canonical des routes principales, sitemap public, robots, titres, données structurées existantes et image OpenGraph/Twitter vérifiés. Tous les liens du sitemap sont contrôlés en HTTP dans le build local. L'URL publique canonique ne retombe plus sur localhost faute de variable.
 
