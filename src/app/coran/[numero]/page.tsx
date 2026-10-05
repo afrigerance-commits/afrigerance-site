@@ -110,7 +110,7 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
         </a>
         .
       </p>
-      <p className="mt-3 text-center text-xs leading-relaxed text-muted">Les signes de pause de l’édition arabe sont conservés. Le coloriage des règles de tajwîd sera proposé après validation d’un jeu d’annotations qui corresponde exactement à cette graphie ; une couleur mal placée pourrait induire en erreur.</p>
+      <p className="mt-3 text-center text-xs leading-relaxed text-muted">Les signes de pause du texte arabe initial sont conservés. Le mode tajwîd utilise séparément l’édition annotée d’Al Quran Cloud : désactivez-le pour retrouver la graphie habituelle. Les tafsîrs s’ouvrent sur leurs sources depuis chaque verset ; aucune traduction française non vérifiée n’est attribuée aux auteurs.</p>
 
       <div className="mt-10 flex items-center justify-between gap-4 border-t border-border pt-6 text-sm">
         {prev ? (

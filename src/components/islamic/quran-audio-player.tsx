@@ -253,7 +253,7 @@ export function QuranAudioToolbar({ chapter }: { chapter: number }) {
         {reciters.map((reciter) => <button key={reciter.id} type="button" onClick={() => player.chooseReciter(reciter.id)} aria-pressed={player.reciterId === reciter.id}
           className={`flex min-w-32 max-w-32 flex-col items-center gap-2 rounded-xl border p-3 text-center text-xs font-medium transition-colors hover:border-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 ${player.reciterId === reciter.id ? "border-emerald-800 bg-emerald-900/10 text-emerald-950 dark:border-gold-500 dark:bg-gold-500/15 dark:text-ivory-50" : "border-border bg-white/65 text-muted dark:bg-white/5"}`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          {reciter.portrait ? <img src={reciter.portrait} alt="" loading="lazy" className={`size-14 rounded-full object-cover ring-2 ${player.reciterId === reciter.id ? "ring-gold-500" : "ring-[#d8ccb2]"}`} /> : <span aria-hidden="true" className="flex size-14 items-center justify-center rounded-full bg-emerald-900 font-display text-lg text-gold-500 ring-2 ring-[#d8ccb2]">HT</span>}
+          {reciter.portrait ? <img src={reciter.portrait} alt="" loading="lazy" className={`size-14 rounded-full object-cover ring-2 ${player.reciterId === reciter.id ? "ring-gold-500" : "ring-[#d8ccb2]"}`} /> : <span aria-hidden="true" className="flex size-14 items-center justify-center rounded-full bg-emerald-900 font-display text-lg text-gold-500 ring-2 ring-[#d8ccb2]">{reciter.nom.split(" ").map((word) => word[0]).slice(0, 2).join("")}</span>}
           <span>{reciter.nom}</span>
           {reciter.mode === "surah" && <span className="text-[10px] text-muted">Sourate entière</span>}
         </button>)}
@@ -290,8 +290,11 @@ export function QuranAudioToolbar({ chapter }: { chapter: number }) {
         <p className="text-xs font-semibold uppercase tracking-[.16em] text-emerald-900 dark:text-gold-500">Autre lecture · sourate entière</p>
         <div className="mt-3 flex flex-wrap gap-2">
           <a href={chapter ? `https://www.mp3quran.net/ar/nourin_siddig/${chapter}` : "https://www.mp3quran.net/ar/nourin_siddig"} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-border px-3 py-2 text-sm font-medium hover:border-gold-600">Noreen Sidiq <span className="text-xs text-muted">ad-Dûrî</span> <ExternalLink className="size-3.5" /></a>
+          <a href="https://everyayah.com/data/Ghamadi_40kbps/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-border px-3 py-2 text-sm font-medium hover:border-gold-600">Saad Al-Ghamdi <ExternalLink className="size-3.5" /></a>
+          <a href="https://everyayah.com/data/Abdullah_Matroud_128kbps/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-border px-3 py-2 text-sm font-medium hover:border-gold-600">Abdullah Matrood <ExternalLink className="size-3.5" /></a>
+          <a href="https://everyayah.com/data/Ali_Jaber_64kbps/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-border px-3 py-2 text-sm font-medium hover:border-gold-600">Ali Jaber <ExternalLink className="size-3.5" /></a>
         </div>
-        <p className="mt-2 text-xs leading-5 text-muted">La lecture ad-Dûrî de Noreen s’ouvre sur sa source et diffère du texte Hafs affiché ici.</p>
+        <p className="mt-2 text-xs leading-5 text-muted">La lecture ad-Dûrî de Noreen diffère du texte Hafs affiché. Ghamdi, Matrood et Ali Jaber s’ouvrent sur le catalogue de leur source : leur synchronisation verset par verset doit encore être vérifiée avant leur intégration au lecteur.</p>
       </div>
       <details className="mt-3 text-xs text-muted">
         <summary className="w-fit cursor-pointer hover:underline">Crédits des portraits</summary>
@@ -316,7 +319,7 @@ export function QuranMiniPlayer() {
 
   return <aside aria-label="Mini-lecteur du Coran" className="fixed bottom-[calc(env(safe-area-inset-bottom)+0.75rem)] left-3 right-3 z-40 flex max-w-sm items-center gap-2 rounded-2xl border border-gold-500/35 bg-emerald-950 px-3 py-2.5 text-ivory-50 shadow-[0_16px_42px_rgba(4,38,32,.3)] sm:bottom-5 sm:left-5 sm:right-auto sm:min-w-72">
     {active.portrait ? <img src={active.portrait} alt="" className="size-10 shrink-0 rounded-full object-cover ring-1 ring-gold-500/60" />
-      : <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full border border-gold-500/60 font-display text-sm text-gold-500">HT</span>}
+      : <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full border border-gold-500/60 font-display text-sm text-gold-500">{active.nom.split(" ").map((word) => word[0]).slice(0, 2).join("")}</span>}
     <div className="min-w-0 flex-1 leading-tight">
       <p className="truncate text-xs font-semibold">{active.nom}</p>
       <p aria-live="polite" className="mt-0.5 truncate text-[11px] text-ivory-50/70">{player.loading ? "Chargement…" : player.playingSurah ? "Sourate entière" : `Verset ${player.playingVerse}/${player.verses.length}`}{player.repeatMode === "surah" ? " · en boucle" : player.repeatMode === "verse" ? " · répété" : ""}</p>

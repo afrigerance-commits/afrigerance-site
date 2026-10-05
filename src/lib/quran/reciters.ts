@@ -13,6 +13,7 @@ export const reciters: Reciter[] = [
   { id: "ar.abdurrahmaansudais", nom: "Abdurrahman As-Sudais", portrait: "/images/reciters/sudais.png" },
   { id: "ar.husary", nom: "Mahmoud Al-Husary", portrait: "/images/reciters/husary.jpg" },
   { id: "ar.minshawi", nom: "Mohamed Al-Minshawi", portrait: "/images/reciters/minshawi.jpg" },
+  { id: "ar.hudhaify", nom: "Ali Al-Houdhayfi", portrait: "" },
   { id: "tvquran.hady-toure", nom: "Muhammad Hady Touré", portrait: "", mode: "surah" },
 ];
 
