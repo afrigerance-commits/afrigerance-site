@@ -15,10 +15,10 @@ export const reciters: Reciter[] = [
   { id: "ar.husary", nom: "Mahmoud Al-Husary", portrait: "/images/reciters/husary.jpg" },
   { id: "ar.minshawi", nom: "Mohamed Al-Minshawi", portrait: "/images/reciters/minshawi.jpg" },
   { id: "ar.hudhaify", nom: "Ali Al-Houdhayfi", portrait: "" },
-  { id: "everyayah.ghamdi", nom: "Saad Al-Ghamdi", portrait: "", everyAyahFolder: "Ghamadi_40kbps" },
+  { id: "everyayah.ghamdi", nom: "Saad Al-Ghamdi", portrait: "/images/reciters/saad-ghamdi.webp", everyAyahFolder: "Ghamadi_40kbps" },
   { id: "everyayah.matroud", nom: "Abdullah Matrood", portrait: "", everyAyahFolder: "Abdullah_Matroud_128kbps" },
-  { id: "everyayah.ali-jaber", nom: "Ali Jaber", portrait: "", everyAyahFolder: "Ali_Jaber_64kbps" },
-  { id: "tvquran.hady-toure", nom: "Muhammad Hady Touré", portrait: "", mode: "surah" },
+  { id: "everyayah.ali-jaber", nom: "Ali Jaber", portrait: "/images/reciters/ali-jaber.webp", everyAyahFolder: "Ali_Jaber_64kbps" },
+  { id: "tvquran.hady-toure", nom: "Muhammad Hady Touré", portrait: "https://tvquran.com/uploads/authors/images/%D9%85%D8%AD%D9%85%D8%AF%20%D8%A7%D9%84%D9%87%D8%A7%D8%AF%D9%8A%20%D8%AA%D9%88%D8%B1%D9%8A.jpg", mode: "surah" },
 ];
 
 export const defaultReciterId = reciters[0].id;
