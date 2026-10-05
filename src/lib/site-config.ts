@@ -8,7 +8,7 @@ export const siteConfig = {
   tagline: "Un héritage de savoir, une lumière à transmettre",
   description:
     "Un espace francophone pour apprendre les sciences islamiques avec rigueur : Coran et tafsîr, hadith, fiqh malikite, sîra prophétique et bibliothèque islamique documentée.",
-  url: process.env.NEXT_PUBLIC_SITE_URL || process.env.URL || "http://localhost:3000",
+  url: (process.env.NEXT_PUBLIC_SITE_URL || "https://miraath.netlify.app").replace(/\/+$/, ""),
   locale: "fr-FR",
   founder: {
     name: "Le fondateur",

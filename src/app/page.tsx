@@ -1,251 +1,47 @@
 import Link from "next/link";
-import { ArrowRight, Search, BookOpen, Compass, Library } from "lucide-react";
-import { YoutubeIcon } from "@/components/icons/youtube-icon";
+import Image from "next/image";
+import { ArrowUpRight, ArrowRight, BookOpen, Library, Check, Headphones, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Reveal } from "@/components/motion/reveal";
-import { LightDivider } from "@/components/motion/light-divider";
-import { ArabicText } from "@/components/islamic/arabic-text";
-import { QuranQuote } from "@/components/islamic/quran-quote";
-import { DisciplineCard } from "@/components/content/discipline-card";
+import { HomeHero } from "@/components/home/hero";
+import { ReadingResume } from "@/components/islamic/reading-resume";
+import { FeaturedGateways } from "@/components/content/featured-gateways";
 import { ArticleCard } from "@/components/content/article-card";
 import { BookCard } from "@/components/content/book-card";
 import { VideoCard } from "@/components/content/video-card";
-import { FeaturedGateways } from "@/components/content/featured-gateways";
-import { disciplines } from "@/lib/site-config";
 import { getPublishedArticles } from "@/lib/data/published-articles";
+import { getPublishedVideos } from "@/lib/data/published-videos";
 import { books } from "@/lib/data/books";
-import { videos } from "@/lib/data/videos";
 import { learningPaths } from "@/lib/data/learning-paths";
+import { getChapters } from "@/lib/quran/data";
 
 export default async function HomePage() {
-  const publishedArticles = await getPublishedArticles();
-  return (
-    <>
-      {/* Hero */}
-      <section className="relative isolate overflow-hidden border-b border-[#ded4be] bg-[#f5f0e6] text-ink-950 dark:border-border dark:bg-ink-950 dark:text-ivory-50">
-        <div className="pointer-events-none absolute -left-48 top-8 h-[480px] w-[480px] rounded-full bg-[#e7d9b8]/35 blur-3xl dark:bg-emerald-900/20" aria-hidden="true" />
-        <div className="pointer-events-none absolute inset-0 opacity-[.18] dark:opacity-[.08]" style={{ backgroundImage: "radial-gradient(#977b4a 0.7px, transparent 0.7px)", backgroundSize: "24px 24px" }} aria-hidden="true" />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-14 sm:px-6 sm:py-20 lg:min-h-[680px] lg:grid-cols-[1.05fr_.95fr] lg:gap-16 lg:px-8 lg:py-16">
-          <div className="max-w-2xl">
-            <Reveal>
-              <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[.22em] text-emerald-900 dark:text-gold-500">
-                <span className="h-px w-9 bg-gold-600" aria-hidden="true" />
-                MIRÂTH <span className="text-gold-700 dark:text-gold-500">✦</span> Une bibliothèque vivante
-              </div>
-            </Reveal>
-            <Reveal delay={0.08}>
-              <h1 className="mt-7 font-display text-[clamp(2.85rem,5vw,5.25rem)] font-semibold leading-[1.08] tracking-[-.045em]">
-                Un héritage de savoir.
-                <span className="mt-1 block text-emerald-900 dark:text-gold-500">Une lumière à transmettre.</span>
-              </h1>
-            </Reveal>
-            <Reveal delay={0.16}>
-              <p className="mt-7 max-w-xl text-base leading-8 text-[#4a5857] dark:text-ivory-50/80 sm:text-lg">
-                Coran, recueils de hadith, fiqh malikite et bibliothèque : avancez à votre rythme, avec des références identifiées et des parcours accessibles.
-              </p>
-            </Reveal>
-            <Reveal delay={0.24} className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Button size="lg" asChild className="bg-emerald-900 text-ivory-50 hover:bg-emerald-700 dark:bg-gold-500 dark:text-ink-950 dark:hover:bg-gold-600">
-                <Link href="/apprendre">Commencer à apprendre <ArrowRight className="h-4 w-4" /></Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild className="border-[#bfb298] bg-transparent text-emerald-900 hover:bg-white/70 dark:border-ivory-50/30 dark:text-ivory-50 dark:hover:bg-white/10">
-                <Link href="/coran">Lire le Coran</Link>
-              </Button>
-            </Reveal>
-            <Reveal delay={0.32} className="mt-9 max-w-xl">
-              <form action="/recherche" className="flex items-center gap-2 rounded-xl border border-[#d8ccb5] bg-white/85 p-1.5 shadow-sm dark:border-white/15 dark:bg-white/10">
-                <Search className="ml-3 h-4 w-4 shrink-0 text-emerald-900 dark:text-gold-500" aria-hidden="true" />
-                <Input name="q" aria-label="Rechercher sur MIRÂTH" placeholder="Un thème, un livre, une sourate…" className="min-w-0 border-0 bg-transparent text-ink-950 placeholder:text-[#69716e] focus-visible:ring-0 dark:text-ivory-50 dark:placeholder:text-ivory-50/60" />
-                <Button type="submit" variant="accent" size="sm">Rechercher</Button>
-              </form>
-            </Reveal>
-            <Reveal delay={0.4} className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-xs font-medium text-[#5d6966] dark:text-ivory-50/65">
-              <span>114 sourates</span><span aria-hidden="true">✦</span><span>Trois recueils de hadith</span><span aria-hidden="true">✦</span><span>Ouvrages référencés</span>
-            </Reveal>
-          </div>
-          <Reveal delay={0.2} className="relative mx-auto w-full max-w-[530px]">
-            <div className="absolute -inset-3 rounded-t-[46%] rounded-b-[2rem] border border-gold-600/35 dark:border-gold-500/30" aria-hidden="true" />
-            <div className="relative aspect-[.94] overflow-hidden rounded-t-[46%] rounded-b-[1.5rem] bg-emerald-900 shadow-[0_28px_70px_-28px_rgba(13,48,41,.52)] lg:aspect-[.84]">
-              <div className="absolute inset-0 bg-[url('/images/mirath/hero_arch.svg')] bg-cover bg-center" role="img" aria-label="Arc ornemental et livre ouvert, illustration de la transmission du savoir" />
-              <div className="absolute inset-x-6 bottom-5 flex items-center justify-between border-t border-[#dec38a]/35 pt-4 text-[#f5e8c9] sm:inset-x-9 sm:bottom-8">
-                <span className="text-[10px] font-semibold uppercase tracking-[.24em] sm:text-xs">Savoir · Sources · Transmission</span>
-                <ArabicText className="text-2xl leading-none sm:text-3xl">ميراث</ArabicText>
-              </div>
-            </div>
-          </Reveal>
+  const [articles, videos] = await Promise.all([getPublishedArticles(), getPublishedVideos()]);
+  return <>
+    <HomeHero />
+    <div className="premium-container"><ReadingResume chapters={getChapters()} /></div>
+    <FeaturedGateways />
+    <section className="premium-section border-b border-border">
+      <div className="premium-container grid gap-12 lg:grid-cols-[.8fr_1.2fr] lg:gap-24">
+        <div className="lg:sticky lg:top-32 lg:self-start"><Reveal><p className="eyebrow">Une lecture qui vous accompagne</p><h2 className="section-title mt-5">Prenez le temps.<br /><span className="text-primary">Gardez le fil.</span></h2><p className="mt-6 max-w-md leading-8 text-muted">Une sourate, une voix, un verset. L’essentiel reste devant vous, et votre dernière lecture vous attend lorsque vous revenez.</p><Button asChild className="mt-7"><Link href="/coran/1">Essayer le lecteur <ArrowUpRight /></Link></Button></Reveal></div>
+        <div className="space-y-12 sm:space-y-16">
+          {[{number:"01",title:"Lire avec clarté",text:"Texte arabe, traduction française et taille ajustable. Activez le code couleur du tajwîd selon votre besoin.",Icon:BookOpen},{number:"02",title:"Écouter sans perdre le verset",text:"Choisissez votre récitateur. Le verset en cours est mis en évidence et les commandes restent accessibles dans le mini lecteur.",Icon:Headphones},{number:"03",title:"Revenir là où vous étiez",text:"Posez un signet ou reprenez votre dernière position de lecture. Ces repères sont conservés sur votre appareil.",Icon:Bookmark}].map(({number,title,text,Icon})=><Reveal key={number} className="story-step grid grid-cols-[auto_1fr] gap-6 border-t border-border pt-8"><span className="font-display text-5xl text-accent/65">{number}</span><div><Icon className="mb-5 size-6 text-primary" strokeWidth={1.4} aria-hidden="true" /><h3 className="font-display text-3xl tracking-tight">{title}</h3><p className="mt-4 max-w-lg leading-8 text-muted">{text}</p></div></Reveal>)}
         </div>
-      </section>
-
-      <FeaturedGateways />
-
-      {/* Accès direct aux sciences islamiques */}
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <Reveal className="flex flex-col gap-3 text-center">
-          <span className="mx-auto inline-flex items-center gap-2 text-sm font-medium text-accent-text">
-            <Compass className="h-4 w-4" /> Explorer le savoir
-          </span>
-          <h2 className="font-display text-3xl font-semibold sm:text-4xl">Douze sciences islamiques à découvrir</h2>
-          <p className="mx-auto max-w-2xl text-muted">
-            Du Coran et son exégèse jusqu’à la langue arabe, chaque discipline possède sa propre collection de
-            ressources, organisée par thème et par niveau.
-          </p>
-        </Reveal>
-        <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {disciplines.slice(0, 8).map((d, i) => (
-            <Reveal key={d.slug} delay={i * 0.05}>
-              <DisciplineCard discipline={d} />
-            </Reveal>
-          ))}
-        </div>
-        <div className="mt-8 text-center">
-          <Button variant="link" asChild>
-            <Link href="/explorer-le-savoir">
-              Voir les douze disciplines <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-      </section>
-
-      {/* Commencer à apprendre */}
-      <section className="border-y border-border bg-surface">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <Reveal className="flex flex-col gap-3 text-center">
-            <span className="mx-auto inline-flex items-center gap-2 text-sm font-medium text-accent-text">
-              <BookOpen className="h-4 w-4" /> Commencer à apprendre
-            </span>
-            <h2 className="font-display text-3xl font-semibold sm:text-4xl">Des parcours pour démarrer sans attendre</h2>
-            <p className="mx-auto max-w-2xl text-muted">
-              Aucune création de compte n’est nécessaire pour commencer. La connexion devient utile pour sauvegarder
-              votre progression et vos favoris.
-            </p>
-          </Reveal>
-          <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {learningPaths.map((path, i) => (
-              <Reveal key={path.slug} delay={i * 0.05}>
-                <Link href={`/apprendre/${path.slug}`} className="group block h-full rounded-xl border border-border bg-background p-6 transition-all hover:-translate-y-1 hover:border-accent hover:shadow-md">
-                  <h3 className="font-display text-lg font-semibold">{path.titre}</h3>
-                  <p className="mt-2 text-sm text-muted">{path.description}</p>
-                  <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary">
-                    {path.etapes.length} étapes <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-                  </span>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <LightDivider className="mt-4" />
-
-      {/* Citation coranique */}
-      <section className="mx-auto max-w-5xl px-4 py-20 sm:px-6 lg:px-8">
-        <Reveal>
-          <QuranQuote
-            arabe="وَقُل رَّبِّ زِدْنِي عِلْمًا"
-            traduction="Et dis : « Ô mon Seigneur, accrois mes connaissances. »"
-            sourate="Tâ-Hâ (20)"
-            verset="114"
-          />
-          <p className="mt-6 text-center">
-            <Link href="/coran/20" className="text-sm font-medium text-primary hover:underline">
-              Lire la sourate Tâ-Hâ en entier →
-            </Link>
-          </p>
-        </Reveal>
-      </section>
-
-      {/* Derniers articles : jamais de brouillons sur la page publique */}
-      <section className={publishedArticles.length ? "mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" : "hidden"}>
-        <Reveal className="mb-12 flex flex-col items-center gap-3 text-center">
-          <h2 className="font-display text-3xl font-semibold sm:text-4xl">Derniers articles</h2>
-          <p className="max-w-2xl text-muted">Réflexions, rappels et actualités de la plateforme.</p>
-        </Reveal>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {publishedArticles.map((article, i) => (
-            <Reveal key={article.slug} delay={i * 0.05}>
-              <ArticleCard article={article} />
-            </Reveal>
-          ))}
-        </div>
-        <div className="mt-8 text-center">
-          <Button variant="link" asChild>
-            <Link href="/blog">
-              Tous les articles <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-      </section>
-
-      {/* Bibliothèque */}
-      <section className="border-y border-border bg-surface">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <Reveal className="mb-12 flex flex-col items-center gap-3 text-center">
-            <span className="inline-flex items-center gap-2 text-sm font-medium text-accent-text">
-              <Library className="h-4 w-4" /> Bibliothèque islamique numérique
-            </span>
-            <h2 className="font-display text-3xl font-semibold sm:text-4xl">Des références soigneusement organisées</h2>
-          </Reveal>
-          <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-6">
-            {books.slice(0, 6).map((book, i) => (
-              <Reveal key={book.slug} delay={i * 0.04}>
-                <BookCard book={book} />
-              </Reveal>
-            ))}
-          </div>
-          <div className="mt-8 text-center">
-            <Button variant="link" asChild>
-              <Link href="/bibliotheque">
-                Parcourir la bibliothèque <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Vidéos réelles uniquement */}
-      <section className={videos.some((video) => video.youtubeId) ? "mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" : "hidden"}>
-        <Reveal className="mb-12 flex flex-col items-center gap-3 text-center">
-          <span className="inline-flex items-center gap-2 text-sm font-medium text-accent-text">
-            <YoutubeIcon className="h-4 w-4" /> Vidéothèque
-          </span>
-          <h2 className="font-display text-3xl font-semibold sm:text-4xl">Nos derniers enseignements en vidéo</h2>
-        </Reveal>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-          {videos.filter((video) => video.youtubeId).map((video, i) => (
-            <Reveal key={video.slug} delay={i * 0.05}>
-              <VideoCard video={video} />
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      {/* Fondateur */}
-      <section className="relative border-t border-border bg-emerald-900 text-ivory-50">
-        <LightDivider tone="inverse" className="absolute left-1/2 top-0 max-w-xs -translate-x-1/2 -translate-y-1/2" />
-        <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-4 py-20 text-center sm:px-6 lg:px-8">
-          <Reveal>
-              <Avatar className="h-20 w-20 border border-gold-500/50">
-                <AvatarFallback className="bg-gold-500 text-ink-950"><BookOpen className="h-9 w-9" strokeWidth={1.4} aria-hidden="true" /></AvatarFallback>
-            </Avatar>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <h2 className="font-display text-2xl font-semibold sm:text-3xl">Le mot du fondateur</h2>
-          </Reveal>
-          <Reveal delay={0.2}>
-            <p className="max-w-2xl text-ivory-50/85">
-              « Un espace où la connaissance se transmet avec rigueur, où chaque enseignement est accompagné de ses
-              références et où le savoir devient accessible à tous. »
-            </p>
-          </Reveal>
-          <Reveal delay={0.3}>
-            <Button variant="accent" asChild>
-              <Link href="/a-propos/fondateur">Découvrir le fondateur</Link>
-            </Button>
-          </Reveal>
-        </div>
-      </section>
-    </>
-  );
+      </div>
+    </section>
+    <section className="source-section relative overflow-hidden bg-emerald-900 text-ivory-50">
+      <div className="premium-container grid items-center gap-12 py-20 sm:py-28 lg:grid-cols-2">
+        <Reveal className="relative overflow-hidden rounded-[2rem]"><Image src="/images/mirath/hadith_etude.webp" alt="Illustration de livres sans titres sur une table d’étude" width={1536} height={1024} sizes="(min-width:1024px) 45vw, 90vw" className="w-full object-cover" /><span className="absolute bottom-5 left-5 rounded-full border border-white/30 bg-emerald-900/90 px-4 py-2 text-xs">Les sources font partie de la lecture.</span></Reveal>
+        <Reveal><p className="eyebrow text-gold-500">La confiance se documente</p><h2 className="section-title mt-5">Un savoir transmis.<br /><span className="text-gold-500">Des références visibles.</span></h2><p className="mt-6 max-w-lg leading-8 text-ivory-50/80">Les éditions sont identifiées. Les traductions sont distinguées du texte arabe. Quand une information doit être vérifiée, son statut est annoncé.</p><ul className="mt-7 space-y-4 text-sm text-ivory-50/90">{["Sources et éditions indiquées","Attributions discutées signalées","Fiqh : référentiel malikite"].map(s=><li key={s} className="flex gap-3"><Check className="size-4 shrink-0 text-gold-500" aria-hidden="true" />{s}</li>)}</ul><Link href="/a-propos/politique-editoriale" className="editorial-link mt-8 inline-flex items-center gap-3 text-sm text-gold-500">Lire notre politique éditoriale <ArrowUpRight className="size-4" /></Link></Reveal>
+      </div>
+    </section>
+    <section className="premium-container premium-section">
+      <Reveal className="section-heading"><div><p className="eyebrow">Votre point de départ</p><h2 className="section-title mt-4">Un premier pas suffit.</h2></div><p className="max-w-sm leading-7 text-muted">Choisissez un parcours de découverte. Chaque étape mène à une ressource accessible.</p></Reveal>
+      <div className="mt-12 grid gap-0 border-t border-border md:grid-cols-3">{learningPaths.map((path,i)=><Reveal key={path.slug} delay={i*.07}><Link href={`/apprendre/${path.slug}`} className="path-card group flex h-full flex-col border-b border-border py-8 md:border-r md:px-7"><span className="text-xs text-accent-text">PARCOURS 0{i+1} · {path.etapes.length} ÉTAPES</span><h3 className="mt-5 max-w-xs font-display text-2xl leading-tight">{path.titre}</h3><p className="mt-4 flex-1 text-sm leading-7 text-muted">{path.description}</p><span className="mt-7 inline-flex items-center gap-3 text-sm font-semibold text-primary">Découvrir le parcours <ArrowRight className="size-4 transition-transform group-hover:translate-x-2" /></span></Link></Reveal>)}</div>
+    </section>
+    {videos.length>0&&<section className="premium-section border-y border-border bg-surface"><div className="premium-container"><Reveal className="section-heading"><div><p className="eyebrow">Écouter & approfondir</p><h2 className="section-title mt-4">La parole en partage.</h2></div><Link href="/videos" className="editorial-link inline-flex items-center gap-2 text-sm text-primary">Toutes les vidéos <ArrowUpRight className="size-4" /></Link></Reveal><div className="mt-10 grid gap-7 md:grid-cols-3">{videos.slice(0,3).map(v=><VideoCard key={v.slug} video={v}/>)}</div></div></section>}
+    {articles.length>0&&<section className="premium-container premium-section"><Reveal className="section-heading"><div><p className="eyebrow">À lire</p><h2 className="section-title mt-4">Les derniers articles.</h2></div><Link href="/blog" className="editorial-link inline-flex items-center gap-2 text-sm text-primary">Tous les articles <ArrowUpRight className="size-4" /></Link></Reveal><div className="mt-10 grid gap-7 md:grid-cols-3">{articles.slice(0,3).map(a=><ArticleCard key={a.slug} article={a}/>)}</div></section>}
+    <section className="premium-section border-t border-border"><div className="premium-container"><Reveal className="section-heading"><div><p className="eyebrow flex items-center gap-2"><Library className="size-4" /> La bibliothèque</p><h2 className="section-title mt-4">Des ouvrages à découvrir.</h2></div><Link href="/bibliotheque" className="editorial-link inline-flex items-center gap-2 text-sm text-primary">Ouvrir la bibliothèque <ArrowUpRight className="size-4" /></Link></Reveal><div className="mt-12 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-6">{books.slice(0,6).map(book=><Reveal key={book.slug}><BookCard book={book}/></Reveal>)}</div></div></section>
+    <section className="premium-container pb-20"><Reveal className="invitation-panel relative overflow-hidden rounded-[2rem] bg-primary px-6 py-12 text-primary-foreground sm:px-12 sm:py-16"><p className="text-xs font-semibold uppercase tracking-[.2em] opacity-70">MIRÂTH · Accès libre</p><div className="mt-5 flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-end"><h2 className="max-w-xl font-display text-4xl leading-tight tracking-tight sm:text-5xl">Faites une place au savoir,<br />dans votre quotidien.</h2><Button asChild size="lg" variant="accent"><Link href="/apprendre">Choisir mon parcours <ArrowUpRight /></Link></Button></div></Reveal></section>
+  </>;
 }

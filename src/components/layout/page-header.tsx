@@ -14,11 +14,11 @@ export function PageHeader({
   divider?: boolean;
 }) {
   return (
-    <div className="mb-14 flex flex-col items-center gap-6">
+    <div className="relative mb-12 flex flex-col items-center gap-6 border-b border-border pb-10">
       <Reveal className="mx-auto flex max-w-2xl flex-col gap-4 text-center">
-        {eyebrow && <span className="mx-auto text-sm font-medium text-accent-text">{eyebrow}</span>}
-        <h1 className="font-display text-4xl font-semibold sm:text-5xl">{title}</h1>
-        {description && <p className="text-muted">{description}</p>}
+        {eyebrow && <span className="eyebrow mx-auto">{eyebrow}</span>}
+        <h1 className="section-title text-balance">{title}</h1>
+        {description && <p className="text-pretty leading-8 text-muted">{description}</p>}
       </Reveal>
       {divider && <LightDivider />}
     </div>

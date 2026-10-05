@@ -24,7 +24,11 @@ function FooterColumn({ title, links }: { title: string; links: readonly { label
 export function Footer() {
   return (
     <footer className="border-t border-border bg-surface">
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+      <div className="premium-container py-16">
+        <div className="mb-14 flex flex-col items-start justify-between gap-6 border-b border-border pb-10 lg:flex-row lg:items-end">
+          <p className="max-w-xl font-display text-3xl leading-tight tracking-tight sm:text-4xl">Lire. Comprendre.<br /><span className="text-primary">Transmettre.</span></p>
+          <nav aria-label="Ressources essentielles" className="flex flex-wrap gap-4 text-sm font-semibold text-primary"><Link href="/coran" className="editorial-link">Coran ↗</Link><Link href="/hadith" className="editorial-link">Hadith ↗</Link><Link href="/videos" className="editorial-link">Vidéos ↗</Link></nav>
+        </div>
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-5">
           <div className="flex flex-col gap-4 lg:col-span-2">
             <Logo />

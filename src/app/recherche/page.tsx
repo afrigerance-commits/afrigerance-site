@@ -5,6 +5,8 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { normalizeSearch } from "@/lib/quran/reading-position";
+import { getPublishedVideos } from "@/lib/data/published-videos";
 import { getPublishedArticles } from "@/lib/data/published-articles";
 import { books } from "@/lib/data/books";
 import { scholars } from "@/lib/data/scholars";
@@ -27,8 +29,9 @@ interface SearchResult {
 }
 
 async function buildIndex(): Promise<SearchResult[]> {
-  const articles = await getPublishedArticles();
+  const [articles, videos] = await Promise.all([getPublishedArticles(), getPublishedVideos()]);
   return [
+    ...videos.map((v) => ({ titre: v.titre, description: v.description, href: `/videos#video-${v.slug}`, type: "Vidéo" })),
     ...disciplines.map((d) => ({ titre: d.name, description: d.description, href: `/explorer-le-savoir/${d.slug}`, type: "Discipline" })),
     ...articles.filter((a) => a.statut === "publie").map((a) => ({ titre: a.titre, description: a.resume, href: `/blog/${a.slug}`, type: "Article" })),
     ...books.map((b) => ({ titre: b.titreFrancais, description: b.presentation, href: `/bibliotheque/${b.slug}`, type: "Livre" })),
@@ -57,19 +60,19 @@ export default async function RecherchePage({
 }: PageProps<"/recherche">) {
   const { q } = await searchParams;
   const query = (Array.isArray(q) ? q[0] : q)?.trim() ?? "";
-  const normalized = query.toLowerCase();
+  const normalized = normalizeSearch(query);
 
   const results = query
     ? (await buildIndex()).filter(
-        (r) => r.titre.toLowerCase().includes(normalized) || r.description.toLowerCase().includes(normalized),
+        (r) => normalizeSearch(r.titre).includes(normalized) || normalizeSearch(r.description).includes(normalized),
       )
     : [];
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
       <PageHeader eyebrow="Recherche" title="Rechercher sur la plateforme" />
-      <form action="/recherche" className="mb-12 flex items-center gap-2">
-        <Input name="q" defaultValue={query} placeholder="Rechercher un cours, un livre, un article…" />
+      <form action="/recherche" className="mb-12 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+        <Input aria-label="Votre recherche" name="q" defaultValue={query} placeholder="Rechercher un cours, un livre, un article…" />
         <Button type="submit">
           <SearchIcon className="h-4 w-4" /> Rechercher
         </Button>

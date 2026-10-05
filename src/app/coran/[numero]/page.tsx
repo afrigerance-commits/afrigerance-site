@@ -14,6 +14,7 @@ import { QuranAudioProvider, QuranAudioToolbar, QuranMiniPlayer } from "@/compon
 import { QuranVerseRow } from "@/components/islamic/quran-verse-row";
 import { QuranReadingTools, QuranVerseContent } from "@/components/islamic/quran-reading-tools";
 import { SourateSwitcher } from "@/components/islamic/sourate-switcher";
+import { ReadingPositionTracker } from "@/components/islamic/reading-resume";
 
 export function generateStaticParams() {
   return getChapters().map((c) => ({ numero: String(c.number) }));
@@ -82,6 +83,7 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
       )}
 
       <QuranAudioProvider chapter={number} verses={verses.map((v) => ({ number: v.number, globalNumber: v.globalNumber! }))}>
+        <ReadingPositionTracker chapter={number} verseCount={verses.length} />
         <QuranAudioToolbar chapter={number} />
         <QuranReadingTools chapter={number}>
         <div className="mt-5 flex flex-col gap-1 rounded-[1.5rem] border border-gold-600/20 bg-[#fffcf5] px-2 py-2 shadow-sm dark:bg-emerald-950/20 sm:px-4">

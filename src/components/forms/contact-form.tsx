@@ -25,9 +25,7 @@ export function ContactForm() {
   if (!CONTACT_EMAIL) {
     return (
       <p className="rounded-lg border border-dashed border-border p-5 text-sm text-muted">
-        L’adresse de contact n’est pas encore configurée. Définissez{" "}
-        <code className="rounded bg-surface-muted px-1.5 py-0.5">NEXT_PUBLIC_CONTACT_EMAIL</code> dans vos variables
-        d’environnement pour activer ce formulaire.
+        Le formulaire de contact sera bientôt disponible. En attendant, vous pouvez consulter notre politique éditoriale pour connaître notre démarche et nos critères de publication.
       </p>
     );
   }
@@ -47,7 +45,7 @@ export function ContactForm() {
         <Textarea id="message" required rows={5} value={message} onChange={(e) => setMessage(e.target.value)} />
       </div>
       <Button type="submit" variant="accent" className="w-fit">
-        Envoyer <Send className="h-4 w-4" />
+        Ouvrir ma messagerie <Send className="h-4 w-4" />
       </Button>
     </form>
   );

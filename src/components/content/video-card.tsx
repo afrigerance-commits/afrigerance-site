@@ -1,55 +1,20 @@
-import Link from "next/link";
-import { Play } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+"use client";
+import { useState } from "react";
+import { Play, ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { YoutubeIcon } from "@/components/icons/youtube-icon";
 import type { Video } from "@/lib/types/content";
 
 export function VideoCard({ video }: { video: Video }) {
-  const hasLink = Boolean(video.youtubeId);
-  const thumbnail = hasLink
-    ? `https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg`
-    : null;
-
-  return (
-    <Card className="flex h-full flex-col overflow-hidden">
-      <div className="relative flex aspect-video items-center justify-center bg-surface-muted">
-        {thumbnail ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={thumbnail} alt="" className="h-full w-full object-cover" />
-        ) : (
-          <div className="flex flex-col items-center gap-2 text-muted">
-            <YoutubeIcon className="h-8 w-8" />
-            <span className="text-xs">Vidéo à configurer</span>
-          </div>
-        )}
-        {hasLink && (
-          <div className="absolute inset-0 flex items-center justify-center bg-ink-950/20">
-            <Play className="h-10 w-10 text-ivory-50" fill="currentColor" />
-          </div>
-        )}
-      </div>
-      <CardContent className="flex flex-1 flex-col gap-2 pt-4">
-        <Badge variant="outline" className="w-fit">
-          {video.categorie}
-        </Badge>
-        <h3 className="font-display text-base font-semibold leading-snug">{video.titre}</h3>
-        <p className="line-clamp-3 text-sm text-muted">{video.description}</p>
-        <div className="mt-auto pt-2">
-          {hasLink ? (
-            <Link
-              href={`https://www.youtube.com/watch?v=${video.youtubeId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
-            >
-              Regarder sur YouTube <YoutubeIcon className="h-4 w-4" />
-            </Link>
-          ) : (
-            <span className="text-xs text-muted">Lien YouTube non encore configuré par l’administration.</span>
-          )}
-        </div>
-      </CardContent>
-    </Card>
-  );
+  const [playing,setPlaying]=useState(false);
+  const valid=/^[\w-]{11}$/.test(video.youtubeId);
+  return <article id={`video-${video.slug}`} className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-[var(--shadow-editorial)]">
+    <div className="relative aspect-video overflow-hidden bg-surface-muted">
+      {playing&&valid?<iframe src={`https://www.youtube-nocookie.com/embed/${video.youtubeId}?autoplay=1&rel=0`} title={video.titre} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen className="absolute inset-0 size-full border-0"/>:valid?<button type="button" onClick={()=>setPlaying(true)} aria-label={`Regarder : ${video.titre}`} className="absolute inset-0 size-full">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={`https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg`} alt="" width={480} height={360} loading="lazy" decoding="async" className="size-full object-cover transition-transform duration-700 group-hover:scale-105"/>
+        <span className="absolute inset-0 flex items-center justify-center bg-ink-950/25"><span className="flex size-14 items-center justify-center rounded-full border border-white/70 bg-white/15 text-white backdrop-blur-sm transition-transform group-hover:scale-110"><Play className="ml-1 size-5" fill="currentColor"/></span></span>
+      </button>:<p className="p-6 text-sm text-muted">Vidéo indisponible.</p>}
+    </div>
+    <div className="flex flex-1 flex-col gap-3 p-5 sm:p-6"><Badge variant="outline" className="w-fit text-[10px]">{video.categorie}</Badge><h3 className="font-display text-xl font-medium leading-snug">{video.titre}</h3><p className="line-clamp-3 text-sm leading-7 text-muted">{video.description}</p><a href={`https://www.youtube.com/watch?v=${video.youtubeId}`} target="_blank" rel="noopener noreferrer" className="mt-auto inline-flex items-center gap-2 pt-3 text-xs font-semibold text-primary">Ouvrir sur YouTube <ArrowUpRight className="size-3.5"/></a><p className="text-[10px] text-muted">Le lecteur YouTube se charge à votre clic.</p></div>
+  </article>;
 }

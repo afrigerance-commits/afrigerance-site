@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Reveal } from "@/components/motion/reveal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArabicText } from "@/components/islamic/arabic-text";
+import { SavedHadiths } from "@/components/islamic/hadith-actions";
 import { hadithCollections } from "@/lib/hadith/data";
 
 export const metadata: Metadata = {
@@ -28,10 +29,12 @@ export default function HadithPage() {
           alt="Illustration de livres sans titres sur une table d’étude."
           width={1536}
           height={1024}
+          sizes="(min-width:1024px) 900px, 90vw"
           className="aspect-[2.7] w-full object-cover sm:aspect-[3.6]"
           priority
         />
       </Reveal>
+      <SavedHadiths />
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
         {hadithCollections.map((c, i) => (
           <Reveal key={c.slug} delay={i * 0.06}>

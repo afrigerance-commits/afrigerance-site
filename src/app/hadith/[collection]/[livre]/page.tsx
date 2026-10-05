@@ -7,6 +7,7 @@ import { ArabicText } from "@/components/islamic/arabic-text";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getCollection, getBooks, getHadithsForBook } from "@/lib/hadith/data";
+import { HadithActions } from "@/components/islamic/hadith-actions";
 import { ReadingProgress } from "@/components/content/reading-progress";
 
 const PAGE_SIZE = 20;
@@ -84,6 +85,7 @@ export default async function HadithBookPage({
                   <p className="text-base leading-8 text-foreground/90">{h.francais}</p>
                 </div>
               )}
+              <HadithActions href={`${pageHref(currentPage)}#hadith-${h.numero}`} title={`${collection.nom} · ${book.titreFrancais} · N° ${h.numero}`} text={`${h.arabe}${h.francais ? `\n\n${h.francais}` : ""}`} />
             </article>
           </Reveal>
         ))}

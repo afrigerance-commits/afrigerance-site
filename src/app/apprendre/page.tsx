@@ -18,8 +18,7 @@ export default function ApprendrePage() {
         <span className="mx-auto text-sm font-medium text-accent-text">Parcours d’apprentissage</span>
         <h1 className="font-display text-4xl font-semibold sm:text-5xl">Commencer à apprendre</h1>
         <p className="mx-auto max-w-2xl text-muted">
-          Aucune création de compte n’est nécessaire pour commencer un parcours. La connexion devient utile pour
-          sauvegarder votre progression, vos favoris et reprendre votre lecture.
+          Aucune création de compte n’est nécessaire. Explorez les ressources à votre rythme ; votre dernière lecture du Coran et vos signets de hadiths restent sur cet appareil.
         </p>
       </Reveal>
       <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2">

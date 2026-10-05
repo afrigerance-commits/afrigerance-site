@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Search, ChevronDown, BookOpen, ScrollText, CirclePlay } from "lucide-react";
+import { Menu, ChevronDown, BookOpen, ScrollText, CirclePlay } from "lucide-react";
+import { QuickSearch } from "@/components/layout/quick-search";
 import { Logo } from "@/components/layout/logo";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -27,14 +28,30 @@ import { disciplines, siteConfig } from "@/lib/site-config";
 export function Header({ authSlot }: { authSlot?: React.ReactNode }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const progress = useRef<HTMLDivElement>(null);
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0; setScrolled(window.scrollY > 24);
+        const range = document.documentElement.scrollHeight - window.innerHeight;
+        if (progress.current) progress.current.style.transform = `scaleX(${range > 0 ? Math.min(1, window.scrollY / range) : 0})`;
+      });
+    };
+    update(); window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => { cancelAnimationFrame(frame); window.removeEventListener("scroll", update); window.removeEventListener("resize", update); };
+  }, [pathname]);
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname?.startsWith(href));
   const featuredIcons = [null, BookOpen, ScrollText, CirclePlay];
   const secondaryActive = siteConfig.nav.secondary.some((item) => isActive(item.href));
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+    <header className={cn("sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-md transition-[background-color,box-shadow] duration-300", scrolled && "nav-scrolled")}>
+      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between gap-2 px-4 sm:h-20 sm:gap-4 sm:px-6 lg:px-8">
         <Logo />
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Navigation principale">
@@ -46,8 +63,8 @@ export function Header({ authSlot }: { authSlot?: React.ReactNode }) {
                 href={item.href}
                 aria-current={isActive(item.href) ? "page" : undefined}
                 className={cn(
-                  "inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md",
-                  i === 0 ? "text-foreground/75 hover:bg-surface-muted" : "border border-accent/40 bg-surface text-primary shadow-sm hover:border-accent hover:bg-surface-muted",
+                  "inline-flex items-center gap-2 rounded-full px-3.5 py-2.5 text-sm font-semibold transition-colors duration-200",
+                  "text-foreground/75 hover:bg-surface-muted hover:text-primary",
                   isActive(item.href) && "border-accent bg-emerald-900 text-ivory-50 shadow-md dark:bg-gold-500 dark:text-ink-950",
                 )}
               >
@@ -93,15 +110,11 @@ export function Header({ authSlot }: { authSlot?: React.ReactNode }) {
         </nav>
 
         <div className="flex items-center gap-1.5">
-          <Button variant="ghost" size="icon" asChild aria-label="Rechercher">
-            <Link href="/recherche">
-              <Search />
-            </Link>
-          </Button>
+          <QuickSearch />
           <ThemeToggle />
           {authSlot}
           <Button variant="accent" size="sm" asChild className="ml-1 hidden sm:inline-flex">
-            <Link href="/apprendre">Commencer à apprendre</Link>
+            <Link href="/apprendre">Apprendre</Link>
           </Button>
 
           <Sheet open={open} onOpenChange={setOpen}>
@@ -112,7 +125,7 @@ export function Header({ authSlot }: { authSlot?: React.ReactNode }) {
             </SheetTrigger>
             <SheetContent>
               <SheetHeader>
-                <SheetTitle>Menu</SheetTitle>
+                <SheetTitle className="font-display text-3xl">Explorer MIRÂTH</SheetTitle>
               </SheetHeader>
               <nav className="min-h-0 flex-1 overflow-y-auto pr-1" aria-label="Navigation mobile">
                 <div className="flex flex-col gap-2">
@@ -166,6 +179,7 @@ export function Header({ authSlot }: { authSlot?: React.ReactNode }) {
           </Sheet>
         </div>
       </div>
+      <div ref={progress} className="scroll-progress" aria-hidden="true" />
     </header>
   );
 }

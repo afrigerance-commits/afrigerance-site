@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { EditorialEmpty } from "@/components/content/editorial-empty";
 import { Reveal } from "@/components/motion/reveal";
 import { ScholarCard } from "@/components/content/scholar-card";
 import { scholars } from "@/lib/data/scholars";
@@ -27,9 +28,7 @@ export default function CompagnonsPage() {
         ))}
       </div>
       {!scholars.some((s) => s.statut === "publie") && (
-        <p className="mt-8 rounded-xl border border-border bg-surface p-6 text-center text-sm text-muted">
-          Les biographies sont en cours de vérification documentaire avant leur publication.
-        </p>
+        <EditorialEmpty title="Des biographies documentées, en préparation." description="Chaque notice attend une vérification des ouvrages sources avant sa publication. En attendant, explorez les recueils et les ouvrages présentés dans la bibliothèque." />
       )}
     </div>
   );

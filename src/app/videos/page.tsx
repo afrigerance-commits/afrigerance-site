@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "@/components/motion/reveal";
-import { VideoCard } from "@/components/content/video-card";
+import { VideoExplorer } from "@/components/content/video-explorer";
 import { YoutubeIcon } from "@/components/icons/youtube-icon";
 import { getPublishedVideos } from "@/lib/data/published-videos";
 import { siteConfig } from "@/lib/site-config";
@@ -38,20 +38,9 @@ export default async function VideosPage() {
         )}
       </Reveal>
       <Reveal className="relative mx-auto mt-10 max-w-5xl overflow-hidden rounded-[1.75rem] border border-gold-500/40 bg-emerald-900 shadow-xl">
-        <Image src="/images/mirath/video_studio.webp" alt="Illustration d’un studio de vidéo éducative" width={1536} height={1024} className="aspect-[2.7] w-full object-cover sm:aspect-[3.6]" priority />
+        <Image src="/images/mirath/video_studio.webp" alt="Illustration d’un studio de vidéo éducative" width={1536} height={1024} sizes="(min-width:1024px) 1000px, 90vw" className="aspect-[2.7] w-full object-cover sm:aspect-[3.6]" priority />
       </Reveal>
-      <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {videos.map((video, i) => (
-          <Reveal key={video.slug} delay={i * 0.05}>
-            <VideoCard video={video} />
-          </Reveal>
-        ))}
-      </div>
-      {videos.length === 0 && (
-        <p className="mt-8 rounded-xl border border-border bg-surface p-6 text-center text-sm text-muted">
-          Les vidéos seront ajoutées lorsque leurs liens authentiques auront été fournis.
-        </p>
-      )}
+      <VideoExplorer videos={videos} />
     </div>
   );
 }
