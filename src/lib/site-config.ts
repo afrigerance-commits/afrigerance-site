@@ -36,6 +36,7 @@ export const siteConfig = {
       { label: "Explorer le savoir", href: "/explorer-le-savoir" },
       { label: "Fiqh malikite", href: "/fiqh/malikite" },
       { label: "Sîra", href: "/sira" },
+      { label: "Invocations", href: "/invocations" },
       { label: "Bibliothèque", href: "/bibliotheque" },
       { label: "Blog", href: "/blog" },
       { label: "Apprendre", href: "/apprendre" },
@@ -51,6 +52,7 @@ export const siteConfig = {
         { label: "Explorer le savoir", href: "/explorer-le-savoir" },
         { label: "Bibliothèque", href: "/bibliotheque" },
         { label: "Vidéothèque", href: "/videos" },
+        { label: "Invocations", href: "/invocations" },
         { label: "Parcours d’apprentissage", href: "/apprendre" },
       ],
       legal: [
