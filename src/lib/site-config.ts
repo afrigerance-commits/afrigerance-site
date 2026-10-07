@@ -45,7 +45,6 @@ export const siteConfig = {
     footer: {
       plateforme: [
         { label: "À propos", href: "/a-propos" },
-        { label: "Le fondateur", href: "/a-propos/fondateur" },
         { label: "Contact", href: "/contact" },
         { label: "Référentiel malikite", href: "/a-propos/referentiel-malikite" },
       ],
@@ -65,6 +64,25 @@ export const siteConfig = {
     },
   },
 } as const;
+
+/** Navigation par intention ; les disciplines restent accessibles depuis Explorer le savoir. */
+export const navigationGroups = [
+  { label: "Lire", description: "Textes & références", links: [
+    { label: "Invocations", href: "/invocations" },
+    { label: "Bibliothèque", href: "/bibliotheque" },
+    { label: "Articles", href: "/blog" },
+  ] },
+  { label: "Apprendre", description: "Leçons & disciplines", links: [
+    { label: "Parcours guidés", href: "/apprendre" },
+    { label: "Fiqh malikite", href: "/fiqh/malikite" },
+    { label: "Sîra", href: "/sira" },
+    { label: "Explorer le savoir", href: "/explorer-le-savoir" },
+  ] },
+  { label: "Au quotidien", description: "Écoute & pratique", links: [
+    { label: "Vidéos", href: "/videos" },
+    { label: "Horaires de prière", href: "/#horaires-prieres" },
+  ] },
+] as const;
 
 export const disciplines = [
   {

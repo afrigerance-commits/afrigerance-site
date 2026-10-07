@@ -6,15 +6,9 @@ import { Reveal } from "@/components/motion/reveal";
 import { BookCover } from "@/components/content/book-cover";
 import { DemoBadge } from "@/components/islamic/reliability-badge";
 import { Badge } from "@/components/ui/badge";
-import { books, getBook, rightsStatusLabels } from "@/lib/data/books";
-import type { Book } from "@/lib/types/content";
+import { books, getBook } from "@/lib/data/books";
+import { getBookAccess } from "@/lib/book-access";
 
-const rightsVariant: Record<Book["droits"], "success" | "default" | "warning" | "muted"> = {
-  librement_diffusable: "success",
-  diffusion_autorisee: "success",
-  consultation_externe: "default",
-  droits_non_verifies: "muted",
-};
 
 export function generateStaticParams() {
   return books.map((b) => ({ slug: b.slug }));
@@ -31,6 +25,7 @@ export default async function BookPage({ params }: PageProps<"/bibliotheque/[slu
   const { slug } = await params;
   const book = getBook(slug);
   if (!book) notFound();
+  const access = getBookAccess(book);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
@@ -46,7 +41,7 @@ export default async function BookPage({ params }: PageProps<"/bibliotheque/[slu
 
         <Reveal delay={0.1} className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant={rightsVariant[book.droits]}>{rightsStatusLabels[book.droits]}</Badge>
+            <Badge variant={access.mode === "notice" ? "muted" : "success"}>{access.label}</Badge>
             {book.demonstration && <DemoBadge />}
           </div>
           <h1 className="font-display text-3xl font-semibold sm:text-4xl">{book.titreFrancais}</h1>
@@ -74,6 +69,8 @@ export default async function BookPage({ params }: PageProps<"/bibliotheque/[slu
 
           <p className="text-foreground/90">{book.presentation}</p>
 
+          {access.mode === "read" && <a href={access.href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 w-fit items-center rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground">Lire l’ouvrage</a>}
+          <p className="text-sm leading-7 text-muted">{access.mode === "notice" ? "Vous consultez une notice bibliographique. Le texte intégral de cette édition n’est pas disponible sur MIRÂTH." : "L’accès au texte est distinct de sa notice bibliographique."}</p>
           {book.droits === "consultation_externe" && book.lienConsultationExterne && (
             <a
               href={book.lienConsultationExterne}

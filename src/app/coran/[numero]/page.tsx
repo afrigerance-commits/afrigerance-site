@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 import { ArabicText } from "@/components/islamic/arabic-text";
-import { Badge } from "@/components/ui/badge";
+import { ReaderFocus } from "@/components/islamic/reader-focus";
 import { Separator } from "@/components/ui/separator";
 import { getChapters, getChapterMeta, getChapterVerses } from "@/lib/quran/data";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -46,6 +46,7 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+      <ReaderFocus>
       <ReadingProgress />
       <JsonLd
         data={{
@@ -57,21 +58,13 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
           url: `${siteConfig.url}/coran/${chapter.number}`,
         }}
       />
-      <Link href="/coran" className="mb-8 inline-flex items-center gap-1.5 text-sm text-muted hover:text-primary">
+      <Link href="/coran" className="reader-secondary mb-3 inline-flex items-center gap-1.5 text-sm text-muted hover:text-primary">
         <ArrowLeft className="h-3.5 w-3.5" /> Le Coran
       </Link>
 
-      <Reveal className="relative isolate flex flex-col items-center gap-4 overflow-hidden rounded-[2rem] border border-gold-600/25 bg-[#f5f0e6] px-5 py-12 text-center shadow-sm dark:bg-emerald-900/15 sm:py-16">
-        <span aria-hidden="true" className="pointer-events-none absolute -top-32 left-1/2 -z-10 size-80 -translate-x-1/2 rounded-full bg-gold-500/15 blur-3xl" />
-        <Badge variant="outline">
-          Sourate {chapter.number} · {chapter.revelation === "Mecca" ? "Mecquoise" : "Médinoise"} ·{" "}
-          {chapter.versesCount} versets
-        </Badge>
-        <h1 className="font-display text-4xl font-semibold tracking-tight text-emerald-950 dark:text-ivory-50 sm:text-5xl">{chapter.nameFrench}</h1>
-        <ArabicText as="p" variant="quran" className="text-3xl text-gold-700 dark:text-gold-500">
-          {chapter.nameArabic}
-        </ArabicText>
-        <SourateSwitcher chapters={chapters} current={chapter.number} />
+      <Reveal className="flex flex-col gap-4 border-b border-accent/30 pb-6 pt-4 sm:flex-row sm:items-center sm:justify-between">
+        <div><p className="text-xs font-semibold uppercase tracking-wider text-accent-text">Sourate {chapter.number} · {chapter.revelation === "Mecca" ? "Mecquoise" : "Médinoise"} · {chapter.versesCount} versets</p><h1 className="mt-3 font-display text-3xl font-semibold tracking-tight text-primary sm:text-4xl">{chapter.nameFrench}</h1><ArabicText as="p" variant="quran" className="mt-2 text-2xl text-accent-text">{chapter.nameArabic}</ArabicText></div>
+        <div className="reader-secondary w-full sm:max-w-64"><SourateSwitcher chapters={chapters} current={chapter.number} /></div>
       </Reveal>
 
       {isBismillahImplicit && (
@@ -99,8 +92,9 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
         <QuranMiniPlayer />
       </QuranAudioProvider>
 
-      <Separator className="my-10" />
-      <p className="text-center text-xs text-muted">
+      <Separator className="reader-secondary my-8" />
+      <details className="reader-secondary rounded-xl border border-border p-4"><summary className="min-h-11 cursor-pointer py-2 text-sm font-semibold text-primary">Éditions et sources du lecteur</summary>
+      <p className="mt-3 text-sm leading-7 text-muted">
         Texte arabe : édition du complexe Roi Fahd (lecture de Hafs). Traduction française : Muhammad Hamidullah.
         Les deux diffusés par le{" "}
         <a href="http://tanzil.net" target="_blank" rel="noopener noreferrer nofollow" className="underline">
@@ -112,9 +106,10 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
         </a>
         {" "}et <a href="https://everyayah.com/recitations_ayat.html" target="_blank" rel="noopener noreferrer nofollow" className="underline">EveryAyah</a>.
       </p>
-      <p className="mt-3 text-center text-xs leading-relaxed text-muted">Les signes de pause du texte arabe initial sont conservés. Le mode tajwîd utilise séparément l’édition annotée d’Al Quran Cloud : désactivez-le pour retrouver la graphie habituelle. Le texte arabe d’Ibn Kathîr et l’explication française Al-Mukhtasar s’affichent sur cette page ; ce sont deux ouvrages différents.</p>
+      <p className="mt-3 text-sm leading-7 text-muted">Les signes de pause du texte arabe initial sont conservés. Le mode tajwîd utilise séparément l’édition annotée d’Al Quran Cloud : désactivez-le pour retrouver la graphie habituelle. Le texte arabe d’Ibn Kathîr et l’explication française Al-Mukhtasar s’affichent sur cette page ; ce sont deux ouvrages différents.</p>
 
-      <div className="mt-10 flex items-center justify-between gap-4 border-t border-border pt-6 text-sm">
+      </details>
+      <div className="reader-secondary mt-8 flex items-center justify-between gap-4 border-t border-border pt-6 text-sm">
         {prev ? (
           <Link href={`/coran/${prev.number}`} className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline">
             <ArrowLeft className="h-4 w-4" /> {prev.nameFrench}
@@ -128,6 +123,7 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
           </Link>
         )}
       </div>
+      </ReaderFocus>
     </div>
   );
 }

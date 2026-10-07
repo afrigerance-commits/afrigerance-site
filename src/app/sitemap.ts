@@ -25,7 +25,6 @@ const staticRoutes = [
   "/blog",
   "/apprendre",
   "/a-propos",
-  "/a-propos/fondateur",
   "/a-propos/referentiel-malikite",
   "/a-propos/politique-editoriale",
   "/contact",
@@ -53,7 +52,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   books.forEach((b) => entries.push({ url: url(`/bibliotheque/${b.slug}`) }));
   scholars.filter((s) => s.statut === "publie").forEach((s) => entries.push({ url: url(`/compagnons/${s.slug}`) }));
   siraEvents.filter((e) => e.statut === "publie").forEach((e) => entries.push({ url: url(`/sira/${e.slug}`) }));
-  learningPaths.forEach((p) => entries.push({ url: url(`/apprendre/${p.slug}`) }));
+  learningPaths.forEach((p) => {
+    entries.push({ url: url(`/apprendre/${p.slug}`) });
+    p.lessons.forEach(lesson => entries.push({ url: url(`/apprendre/${p.slug}/${lesson.slug}`) }));
+  });
   fiqhCourses
     .filter((c) => c.statut === "publie")
     .forEach((c) => {

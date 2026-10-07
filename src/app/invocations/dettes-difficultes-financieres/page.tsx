@@ -107,6 +107,7 @@ export default function DebtInvocationsPage() {
 
         <section id="invocations" className="scroll-mt-28">
           <PageHeader
+            level={2}
             eyebrow="01"
             title="Invocations à réciter"
             description="Le texte arabe est affiché en RTL. Le contexte et le nombre de répétitions ne sont indiqués que lorsqu’ils apparaissent dans la narration retenue."
@@ -175,6 +176,7 @@ export default function DebtInvocationsPage() {
 
         <section id="hadiths" className="mt-24 scroll-mt-28">
           <PageHeader
+            level={2}
             eyebrow="02"
             title="Hadiths sur les dettes et la subsistance"
             description="Cette collection est une sélection thématique. Les explications ci-dessous sont éditoriales et sont volontairement séparées des paroles prophétiques."
@@ -184,7 +186,7 @@ export default function DebtInvocationsPage() {
           <div className="grid gap-5 lg:grid-cols-2">
             {debtHadiths.map((item, index) => (
               <Reveal key={item.id} delay={(index % 4) * 0.035}>
-                <article className="flex h-full flex-col rounded-[1.5rem] border border-gold-500/30 bg-surface p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-gold-500/60 hover:shadow-lg sm:p-7">
+                <article id={item.id} className="scroll-mt-28 flex h-full flex-col rounded-[1.5rem] border border-gold-500/30 bg-surface p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-gold-500/60 hover:shadow-lg sm:p-7">
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="eyebrow">Hadith {String(index + 1).padStart(2, "0")}</p>

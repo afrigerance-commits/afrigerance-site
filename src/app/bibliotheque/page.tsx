@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { getBookAccess } from "@/lib/book-access";
 import { Reveal } from "@/components/motion/reveal";
-import { LightDivider } from "@/components/motion/light-divider";
+
 import { BookCard } from "@/components/content/book-card";
 import { books } from "@/lib/data/books";
 
@@ -22,15 +22,13 @@ export default function BibliothequePage() {
           vérification préalable de ses droits de diffusion.
         </p>
       </Reveal>
-      <LightDivider className="mt-8" />
-      <Image
-        src="/images/mirath/bibliotheque.svg"
-        alt="Collection de livres stylisés en vert émeraude et or."
-        width={1600}
-        height={900}
-        className="mx-auto mt-8 max-h-72 w-full max-w-3xl rounded-2xl object-cover"
-      />
-      <div className="mt-14 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+      <div className="mt-8 grid gap-3 rounded-2xl border border-accent/30 bg-surface p-5 text-sm sm:grid-cols-3">
+        <p><span className="block font-display text-2xl text-primary">{books.filter(book => getBookAccess(book).mode === "read").length}</span> ouvrages à lire ici</p>
+        <p><span className="block font-display text-2xl text-primary">{books.filter(book => getBookAccess(book).mode === "external").length}</span> accès à une source externe</p>
+        <p><span className="block font-display text-2xl text-primary">{books.filter(book => getBookAccess(book).mode === "notice").length}</span> notices documentaires</p>
+      </div>
+      <p className="mt-4 text-sm leading-7 text-muted">Une notice présente l’ouvrage et son édition ; elle ne donne pas accès au livre complet. Les fichiers sont proposés uniquement lorsque leur diffusion est autorisée.</p>
+      <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {books.map((book, i) => (
           <Reveal key={book.slug} delay={i * 0.04}>
             <BookCard book={book} />

@@ -143,5 +143,28 @@ export interface LearningPath extends DemoFlag {
   titre: string;
   description: string;
   niveauRequis: "aucun" | "debutant" | "intermediaire";
+  objectifs: string[];
+  lessons: LearningLesson[];
   etapes: { titre: string; lienHref: string }[];
+}
+
+export interface LearningQuestion {
+  question: string;
+  options: string[];
+  answer: number;
+  explanation: string;
+}
+export interface LearningLesson {
+  slug: string;
+  titre: string;
+  minutes: number;
+  objectif: string;
+  sections: { titre: string; paragraphes: string[] }[];
+  quranVerses?: { chapter: number; verses: number[] };
+  hadithIds?: string[];
+  retenir: string[];
+  exercice: string;
+  correction: string;
+  questions: LearningQuestion[];
+  ressources: { label: string; href: string }[];
 }

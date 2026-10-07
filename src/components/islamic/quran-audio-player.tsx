@@ -240,14 +240,10 @@ export function QuranAudioToolbar({ chapter }: { chapter: number }) {
   const previous = player.verses[verseIndex - 1];
   const next = player.verses[verseIndex + 1];
 
-  return <section aria-label="Lecteur audio du Coran" className="relative mt-10 overflow-hidden rounded-2xl border border-[#cabf9f] bg-[#f8f4e9]/95 shadow-[0_16px_45px_-25px_rgba(16,58,49,.35)] dark:border-gold-500/25 dark:bg-ink-950/95">
-    <div className="border-b border-[#dfd3b9] bg-emerald-900 px-5 py-4 text-ivory-50 dark:border-gold-500/20 sm:px-6">
-      <div className="flex items-center gap-3">
-        <span className="flex size-9 items-center justify-center rounded-full bg-gold-500/20 text-gold-500"><Headphones className="size-5" /></span>
-        <div><p className="font-display text-lg font-semibold">Écouter la sourate</p><p className="text-xs text-ivory-50/70">Choisissez une voix et lancez la récitation.</p></div>
-      </div>
-    </div>
-    <div className="px-4 py-4 sm:px-6">
+  return <section aria-label="Lecteur audio du Coran" className="reader-secondary relative mt-5 overflow-hidden rounded-2xl border border-[#cabf9f] bg-[#f8f4e9]/95 shadow-[0_16px_45px_-25px_rgba(16,58,49,.35)] dark:border-gold-500/25 dark:bg-ink-950/95">
+    <div className="px-4 py-3 sm:px-5">
+      <details>
+        <summary className="flex min-h-11 cursor-pointer items-center gap-3 text-sm font-semibold text-primary"><Headphones className="size-5 shrink-0" aria-hidden="true" /><span>Choisir un récitateur · {active.nom}</span></summary>
       <p className="mb-3 text-xs font-semibold uppercase tracking-[.16em] text-emerald-900 dark:text-gold-500">Récitateur</p>
       <div className="flex gap-3 overflow-x-auto pb-3" role="group" aria-label="Choisir un récitateur">
         {reciters.map((reciter) => <button key={reciter.id} type="button" onClick={() => player.chooseReciter(reciter.id)} aria-pressed={player.reciterId === reciter.id}
@@ -255,9 +251,10 @@ export function QuranAudioToolbar({ chapter }: { chapter: number }) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           {reciter.portrait ? <img src={reciter.portrait} alt="" loading="lazy" className={`size-14 rounded-full object-cover ring-2 ${player.reciterId === reciter.id ? "ring-gold-500" : "ring-[#d8ccb2]"}`} /> : <span aria-hidden="true" className="flex size-14 items-center justify-center rounded-full bg-emerald-900 font-display text-lg text-gold-500 ring-2 ring-[#d8ccb2]">{reciter.nom.split(" ").map((word) => word[0]).slice(0, 2).join("")}</span>}
           <span>{reciter.nom}</span>
-          {reciter.mode === "surah" && <span className="text-[10px] text-muted">Sourate entière</span>}
+          {reciter.mode === "surah" && <span className="text-xs text-muted">Sourate entière</span>}
         </button>)}
       </div>
+      </details>
       <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-4">
         {active.mode === "surah" ? (!player.playingSurah ? <Button onClick={player.playSurah} disabled={player.loading} className="bg-emerald-900 text-ivory-50 hover:bg-emerald-700"><Play className="size-4" /> Écouter Muhammad Hady Touré</Button> : <><Button variant="outline" onClick={player.paused ? player.resume : player.pause}>{player.paused ? <Play className="size-4" /> : <Pause className="size-4" />}{player.paused ? "Reprendre" : "Pause"}</Button><Button variant="ghost" onClick={player.stop}><Square className="size-4" /> Arrêter</Button></>) : player.playingVerse === null ? <Button onClick={() => player.playVerse(player.verses[0].number, true)} disabled={player.loading} className="bg-emerald-900 text-ivory-50 hover:bg-emerald-700">
           {player.loading ? <LoaderCircle className="size-4 animate-spin" /> : <Play className="size-4" />} {player.loading ? "Chargement…" : "Écouter la sourate"}
@@ -276,16 +273,17 @@ export function QuranAudioToolbar({ chapter }: { chapter: number }) {
       <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-4" role="group" aria-label="Répétition audio">
         <span className="mr-1 text-xs font-semibold text-muted">Répétition</span>
         {active.mode !== "surah" && <button type="button" onClick={() => player.chooseRepeatMode("verse")} aria-pressed={player.repeatMode === "verse"}
-          className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-gold-500 ${player.repeatMode === "verse" ? "border-emerald-800 bg-emerald-900 text-white" : "border-border hover:border-emerald-800"}`}>
+          className={`inline-flex items-center gap-1.5 rounded-lg border min-h-11 px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-gold-500 ${player.repeatMode === "verse" ? "border-emerald-800 bg-emerald-900 text-white" : "border-border hover:border-emerald-800"}`}>
           <Repeat1 className="size-4" /> Répéter le verset
         </button>}
         <button type="button" onClick={() => player.chooseRepeatMode("surah")} aria-pressed={player.repeatMode === "surah"}
-          className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-gold-500 ${player.repeatMode === "surah" ? "border-emerald-800 bg-emerald-900 text-white" : "border-border hover:border-emerald-800"}`}>
+          className={`inline-flex items-center gap-1.5 rounded-lg border min-h-11 px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-gold-500 ${player.repeatMode === "surah" ? "border-emerald-800 bg-emerald-900 text-white" : "border-border hover:border-emerald-800"}`}>
           <Repeat className="size-4" /> Boucler la sourate
         </button>
       </div>
       {player.error && <p role="alert" className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 dark:bg-red-950/40 dark:text-red-200">{player.error}</p>}
       {active.mode === "surah" && <p className="mt-3 text-xs leading-5 text-muted">Récitation Hafs de la sourate entière, diffusée par TVQuran. La lecture n’est pas synchronisée avec les versets affichés. <a href="https://www.tvquran.com/en/scholar/355/profile/mohammed-hady-toure" target="_blank" rel="noopener noreferrer" className="underline">Source et collection</a>.</p>}
+      <details className="mt-3 border-t border-border pt-2 text-sm"><summary className="min-h-11 cursor-pointer py-3 font-medium text-primary">Sources audio et crédits</summary>
       {active.everyAyahFolder && <p className="mt-3 text-xs leading-5 text-muted">Lecture verset par verset depuis <a href={`https://everyayah.com/data/${active.everyAyahFolder}/`} target="_blank" rel="noopener noreferrer" className="underline">EveryAyah</a>. Concordance écoutée sur des échantillons des sourates 1, 2 et 112 ; le reste du catalogue n’a pas été contrôlé individuellement.</p>}
       <div className="mt-5 border-t border-border pt-4">
         <p className="text-xs font-semibold uppercase tracking-[.16em] text-emerald-900 dark:text-gold-500">Autres récitations · sources externes</p>
@@ -309,6 +307,7 @@ export function QuranAudioToolbar({ chapter }: { chapter: number }) {
           <a className="underline" target="_blank" rel="noopener noreferrer" href="https://www.tvquran.com/en/scholar/50/profile/abdullah-al-mattrod">Abdullah Matrood</a> et{" "}
           <a className="underline" target="_blank" rel="noopener noreferrer" href="https://www.tvquran.com/en/scholar/355/profile/mohammed-hady-toure">Muhammad Hady Touré</a> : photos affichées depuis leurs fiches TVQuran.
         </p>
+      </details>
       </details>
     </div>
   </section>;

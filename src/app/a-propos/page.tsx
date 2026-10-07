@@ -58,9 +58,6 @@ export default function AProposPage() {
       </div>
 
       <Reveal delay={0.2} className="mt-16 flex flex-wrap justify-center gap-4 text-sm">
-        <Link href="/a-propos/fondateur" className="text-primary hover:underline">
-          Le fondateur
-        </Link>
         <Link href="/a-propos/referentiel-malikite" className="text-primary hover:underline">
           Notre référentiel malikite
         </Link>

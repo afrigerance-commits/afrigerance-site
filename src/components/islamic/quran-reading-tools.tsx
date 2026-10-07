@@ -85,15 +85,15 @@ export function QuranReadingTools({ chapter, children }: { chapter: number; chil
   }
 
   return <ReadingContext.Provider value={{ bookmarked, setBookmark, showFrench, fontSize, tajweed: tajweedEnabled ? tajweed : null }}>
-    <div className="mt-8 flex flex-wrap items-center gap-2 rounded-2xl border border-gold-600/25 bg-[#f8f4e9] p-3 text-sm dark:bg-emerald-900/15 sm:p-4" aria-label="Options de lecture">
+    <div className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-gold-600/25 bg-[#f8f4e9] p-3 text-sm dark:bg-emerald-900/15 sm:p-4" aria-label="Options de lecture">
       <span className="mr-auto font-semibold text-emerald-950 dark:text-ivory-50">Ma lecture</span>
       {bookmarked && <a href={`#verset-${bookmarked}`} className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-emerald-800 underline underline-offset-4 hover:bg-emerald-900/10 dark:text-gold-500"><BookmarkCheck className="size-4" /> Reprendre au verset {bookmarked}</a>}
-      <button type="button" aria-pressed={showFrench} onClick={toggleFrench} className="rounded-lg border border-border bg-white/70 px-3 py-1.5 font-medium hover:border-emerald-700 dark:bg-white/5">Traduction {showFrench ? "visible" : "masquée"}</button>
-      <button type="button" aria-pressed={tajweedEnabled} onClick={() => setTajweedEnabled((current) => !current)} className="rounded-lg border border-border bg-white/70 px-3 py-1.5 font-medium hover:border-emerald-700 dark:bg-white/5">Tajwîd {tajweedEnabled ? "activé" : "désactivé"}</button>
+      <button type="button" aria-pressed={showFrench} onClick={toggleFrench} className="rounded-lg border border-border bg-white/70 min-h-11 px-3 py-2 font-medium hover:border-emerald-700 dark:bg-white/5">Traduction {showFrench ? "visible" : "masquée"}</button>
+      <button type="button" aria-pressed={tajweedEnabled} onClick={() => setTajweedEnabled((current) => !current)} className="rounded-lg border border-border bg-white/70 min-h-11 px-3 py-2 font-medium hover:border-emerald-700 dark:bg-white/5">Tajwîd {tajweedEnabled ? "activé" : "désactivé"}</button>
       <div className="flex items-center rounded-lg border border-border bg-white/70 dark:bg-white/5" aria-label="Taille du texte arabe">
-        <button type="button" aria-label="Réduire le texte arabe" disabled={fontSize <= 26} onClick={() => changeFont(-4)} className="p-2 disabled:opacity-40"><Minus className="size-4" /></button>
+        <button type="button" aria-label="Réduire le texte arabe" disabled={fontSize <= 26} onClick={() => changeFont(-4)} className="flex size-11 items-center justify-center disabled:opacity-40"><Minus className="size-4" /></button>
         <span className="px-1 text-xs" aria-hidden="true">Aa</span>
-        <button type="button" aria-label="Agrandir le texte arabe" disabled={fontSize >= 46} onClick={() => changeFont(4)} className="p-2 disabled:opacity-40"><Plus className="size-4" /></button>
+        <button type="button" aria-label="Agrandir le texte arabe" disabled={fontSize >= 46} onClick={() => changeFont(4)} className="flex size-11 items-center justify-center disabled:opacity-40"><Plus className="size-4" /></button>
       </div>
     </div>
     {tajweedEnabled && <div className="mt-2 rounded-xl border border-gold-600/20 bg-[#fffcf5] px-4 py-3 text-xs leading-6 text-muted dark:bg-emerald-950/20" role="status">
@@ -120,7 +120,7 @@ export function QuranVerseContent({ chapter, number, arabic, french }: { chapter
       <p lang="ar" dir="rtl" className="quran-quote min-w-0 flex-1 text-right text-emerald-950 dark:text-ivory-50" style={{ fontSize: reading.fontSize }}>{annotated ? annotated.map((part, index) => part.rule ? <span key={index} title={tajweedRules[part.rule].label} style={{ color: tajweedRules[part.rule].color }}>{part.text}</span> : part.text) : arabic}</p>
       <VersePlayButton verseNumber={number} />
     </div>
-    {reading.showFrench && <p lang="fr" className="mt-5 max-w-[68ch] border-l-2 border-gold-600/35 pl-4 text-[15px] leading-7 text-foreground/85 sm:ml-3">{french}</p>}
+    {reading.showFrench && <p lang="fr" className="mt-5 max-w-[68ch] border-l-2 border-gold-600/35 pl-4 text-base leading-8 text-foreground/85 sm:ml-3">{french}</p>}
     <QuranTafsir chapter={chapter} verse={number} />
     <a href={`/coran/${chapter}#verset-${number}`} className="sr-only">Lien vers le verset {number}</a>
   </div>;

@@ -23,7 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { disciplines, siteConfig } from "@/lib/site-config";
+import { navigationGroups, siteConfig } from "@/lib/site-config";
 
 export function Header({ authSlot }: { authSlot?: React.ReactNode }) {
   const pathname = usePathname();
@@ -86,24 +86,12 @@ export function Header({ authSlot }: { authSlot?: React.ReactNode }) {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="max-h-[min(75vh,600px)] w-[min(90vw,560px)] overflow-y-auto p-3">
-                  <p className="px-2.5 pb-2 text-xs font-semibold uppercase tracking-widest text-muted">Autres rubriques</p>
-                  <div className="grid grid-cols-2 gap-1 border-b border-border pb-3">
-                    {siteConfig.nav.secondary.map((item) => (
-                      <DropdownMenuItem key={item.href} asChild>
-                        <Link href={item.href} className="rounded-md px-2.5 py-2 text-sm font-medium">{item.label}</Link>
-                      </DropdownMenuItem>
-                    ))}
-                  </div>
-                  <p className="px-2.5 pb-2 pt-4 text-xs font-semibold uppercase tracking-widest text-muted">Disciplines</p>
-                  <div className="grid grid-cols-2 gap-1">
-                  {disciplines.map((d) => (
-                    <DropdownMenuItem key={d.slug} asChild>
-                      <Link href={`/explorer-le-savoir/${d.slug}`} className="flex flex-col items-start gap-0.5 rounded-md p-2.5">
-                        <span className="text-sm font-medium">{d.name}</span>
-                        <span className="text-xs text-muted">{d.description}</span>
-                      </Link>
-                    </DropdownMenuItem>
-                  ))}
+                  <div className="grid gap-4 sm:grid-cols-3">
+                    {navigationGroups.map(group => <div key={group.label}>
+                      <p className="px-2.5 pt-2 text-sm font-semibold text-primary">{group.label}</p>
+                      <p className="px-2.5 pb-3 pt-1 text-xs text-muted">{group.description}</p>
+                      {group.links.map(item => <DropdownMenuItem key={item.href} asChild><Link href={item.href} className="min-h-11 rounded-lg px-2.5 py-2 text-sm">{item.label}</Link></DropdownMenuItem>)}
+                    </div>)}
                   </div>
                 </DropdownMenuContent>
           </DropdownMenu>
@@ -149,24 +137,10 @@ export function Header({ authSlot }: { authSlot?: React.ReactNode }) {
                   );
                 })}
                 </div>
-                <p className="mt-7 mb-2 px-3 text-xs font-semibold uppercase tracking-widest text-muted">Explorer aussi</p>
-                <div className="flex flex-col gap-1">
-                  {siteConfig.nav.secondary.map((item) => (
-                    <SheetClose asChild key={item.href}>
-                      <Link href={item.href} className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/80 hover:bg-surface-muted">{item.label}</Link>
-                    </SheetClose>
-                  ))}
-                </div>
-                <details className="mt-4 rounded-xl border border-border p-3">
-                  <summary className="cursor-pointer text-sm font-semibold">Toutes les disciplines</summary>
-                  <div className="mt-2 flex flex-col gap-1">
-                    {disciplines.map((d) => (
-                      <SheetClose asChild key={d.slug}>
-                        <Link href={`/explorer-le-savoir/${d.slug}`} className="rounded-lg px-2 py-2 text-sm text-muted hover:bg-surface-muted">{d.name}</Link>
-                      </SheetClose>
-                    ))}
-                  </div>
-                </details>
+                {navigationGroups.map(group => <div key={group.label} className="mt-5 border-t border-border pt-4">
+                  <p className="mb-2 px-3 text-sm font-semibold text-accent-text">{group.label}</p>
+                  <div className="flex flex-col gap-1">{group.links.map(item => <SheetClose asChild key={item.href}><Link href={item.href} className="min-h-11 rounded-lg px-3 py-3 text-sm text-foreground/85 hover:bg-surface-muted">{item.label}</Link></SheetClose>)}</div>
+                </div>)}
               </nav>
               <div className="pt-4">
                 <SheetClose asChild>

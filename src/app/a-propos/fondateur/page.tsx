@@ -1,31 +1,7 @@
+import { redirect } from "next/navigation";
 import type { Metadata } from "next";
-import { PageHeader } from "@/components/layout/page-header";
-import { Reveal } from "@/components/motion/reveal";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { BookOpen } from "lucide-react";
 
-export const metadata: Metadata = {
-  title: "Le fondateur",
-  description: "Présentation du fondateur de la plateforme et de sa vision.",
-  alternates: { canonical: "/a-propos/fondateur" },
-};
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
-export default function FondateurPage() {
-  return (
-    <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
-      <PageHeader eyebrow="Le fondateur" title="Une page à compléter" />
-      <Reveal className="flex flex-col items-center gap-5 text-center">
-        <Avatar className="h-24 w-24">
-          <AvatarFallback className="bg-emerald-900 text-gold-500"><BookOpen className="h-11 w-11" strokeWidth={1.4} aria-hidden="true" /></AvatarFallback>
-        </Avatar>
-        <Badge variant="muted">Contenu de démonstration — en attente de rédaction par le fondateur</Badge>
-        <p className="max-w-xl text-muted">
-          Cette page accueillera la biographie du fondateur, son parcours d’enseignement et sa vision pour la
-          plateforme, rédigés et validés directement par lui. Aucun texte biographique n’a été inventé ici afin
-          d’éviter toute fausse attribution.
-        </p>
-      </Reveal>
-    </div>
-  );
-}
+// La biographie reste hors ligne jusqu’à réception d’un texte validé.
+export default function FondateurPage() { redirect("/a-propos"); }
