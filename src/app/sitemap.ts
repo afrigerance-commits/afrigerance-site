@@ -16,6 +16,8 @@ const staticRoutes = [
   "/fiqh/malikite",
   "/coran",
   "/hadith",
+  "/invocations",
+  "/invocations/dettes-difficultes-financieres",
   "/sira",
   "/compagnons",
   "/bibliotheque",
