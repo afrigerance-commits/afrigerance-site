@@ -15,6 +15,7 @@ import { fiqhCourses } from "@/lib/data/fiqh";
 import { disciplines } from "@/lib/site-config";
 import { getChapters } from "@/lib/quran/data";
 import { hadithCollections, getBooks } from "@/lib/hadith/data";
+import { invocationCollection, debtInvocations, debtHadiths } from "@/lib/data/invocations";
 
 export const metadata: Metadata = {
   title: "Recherche",
@@ -44,6 +45,9 @@ async function buildIndex(): Promise<SearchResult[]> {
       href: `/coran/${c.number}`,
       type: "Coran",
     })),
+    { titre: invocationCollection.title, description: invocationCollection.description, href: `/invocations/${invocationCollection.slug}`, type: "Invocations" },
+    ...debtInvocations.map((item) => ({ titre: item.title, description: `${item.translation} — ${item.reference}`, href: `/invocations/${invocationCollection.slug}#invocations`, type: "Invocation" })),
+    ...debtHadiths.map((item) => ({ titre: item.title, description: `${item.translation} — ${item.reference}`, href: `/invocations/${invocationCollection.slug}#hadiths`, type: "Hadith thématique" })),
     ...hadithCollections.flatMap((collection) =>
       getBooks(collection.slug).map((book) => ({
         titre: book.titreFrancais,
