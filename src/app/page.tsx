@@ -4,6 +4,7 @@ import { ArrowUpRight, ArrowRight, BookOpen, Library, Check, Headphones, Bookmar
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/reveal";
 import { HomeHero } from "@/components/home/hero";
+import { PrayerClock } from "@/components/islamic/prayer-clock";
 import { ReadingResume } from "@/components/islamic/reading-resume";
 import { FeaturedGateways } from "@/components/content/featured-gateways";
 import { ArticleCard } from "@/components/content/article-card";
@@ -19,6 +20,7 @@ export default async function HomePage() {
   const [articles, videos] = await Promise.all([getPublishedArticles(), getPublishedVideos()]);
   return <>
     <HomeHero />
+    <PrayerClock />
     <div className="premium-container"><ReadingResume chapters={getChapters()} /></div>
     <FeaturedGateways />
     <section className="premium-section border-b border-border">

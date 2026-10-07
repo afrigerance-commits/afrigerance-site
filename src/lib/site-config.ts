@@ -33,6 +33,7 @@ export const siteConfig = {
       { label: "Vidéos", href: "/videos" },
     ],
     secondary: [
+      { label: "Horaires de prière", href: "/#horaires-prieres" },
       { label: "Explorer le savoir", href: "/explorer-le-savoir" },
       { label: "Fiqh malikite", href: "/fiqh/malikite" },
       { label: "Sîra", href: "/sira" },
@@ -49,6 +50,7 @@ export const siteConfig = {
         { label: "Référentiel malikite", href: "/a-propos/referentiel-malikite" },
       ],
       ressources: [
+        { label: "Horaires de prière", href: "/#horaires-prieres" },
         { label: "Explorer le savoir", href: "/explorer-le-savoir" },
         { label: "Bibliothèque", href: "/bibliotheque" },
         { label: "Vidéothèque", href: "/videos" },
