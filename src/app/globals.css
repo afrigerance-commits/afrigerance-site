@@ -166,7 +166,7 @@ html {
 
 body {
   background: var(--color-background);
-  background-image: url("/images/mirath/mandala-pattern.svg");
+  background-image: url("/images/mirath/mandala-pattern.svg?v=4");
   background-size: 600px 600px;
   color: var(--color-foreground);
   /* var(--font-arabic) en repli : certains glyphes isolés (ﷺ, ﷻ…) apparaissent
@@ -237,8 +237,8 @@ body {
 .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 2rem; }
 .editorial-link { text-underline-offset: 7px; text-decoration-thickness: 1px; }
 .editorial-link:hover { text-decoration: underline; }
-.mirath-hero { background: url("/images/mirath/mandala-pattern.svg") 50% 0 / 600px 600px, radial-gradient(ellipse at 75% 45%, #e7dfca 0%, transparent 55%), var(--background); border-bottom: 1px solid var(--border); }
-.dark .mirath-hero { background: url("/images/mirath/mandala-pattern.svg") 50% 0 / 600px 600px, radial-gradient(ellipse at 75% 45%, #163b34 0%, transparent 55%), var(--background); }
+.mirath-hero { background: url("/images/mirath/mandala-pattern.svg?v=4") 50% 0 / 600px 600px, radial-gradient(ellipse at 75% 45%, #e7dfca 0%, transparent 55%), var(--background); border-bottom: 1px solid var(--border); }
+.dark .mirath-hero { background: url("/images/mirath/mandala-pattern.svg?v=4") 50% 0 / 600px 600px, radial-gradient(ellipse at 75% 45%, #163b34 0%, transparent 55%), var(--background); }
 .hero-arch { aspect-ratio: .89; border-radius: 48% 48% 1.5rem 1.5rem; box-shadow: 0 35px 70px -30px rgba(9,40,33,.45); }
 .hero-arch-outline { position: absolute; inset: -14px; border: 1px solid color-mix(in srgb,var(--accent) 60%,transparent); border-radius: 48% 48% 2rem 2rem; }
 .hero-photo { animation: hero-breathe 18s ease-in-out 2; }
