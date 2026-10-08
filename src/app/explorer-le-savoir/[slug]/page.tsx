@@ -17,6 +17,7 @@ const hubRoute: Record<string, string> = {
   hadith: "/hadith",
   "fiqh-malikite": "/fiqh/malikite",
   sira: "/sira",
+  "histoire-islamique": "/prophetes",
   compagnons: "/compagnons",
   "grandes-figures": "/compagnons",
 };

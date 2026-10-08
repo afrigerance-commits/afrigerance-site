@@ -34,9 +34,12 @@ export const siteConfig = {
     ],
     secondary: [
       { label: "Horaires de prière", href: "/#horaires-prieres" },
+    { label: "Ma routine", href: "/routine" },
       { label: "Explorer le savoir", href: "/explorer-le-savoir" },
       { label: "Fiqh malikite", href: "/fiqh/malikite" },
       { label: "Sîra", href: "/sira" },
+    { label: "Histoires des prophètes", href: "/prophetes" },
+    { label: "Compagnons et compagnonnes", href: "/compagnons" },
       { label: "Invocations", href: "/invocations" },
       { label: "Bibliothèque", href: "/bibliotheque" },
       { label: "Blog", href: "/blog" },
@@ -50,6 +53,7 @@ export const siteConfig = {
       ],
       ressources: [
         { label: "Horaires de prière", href: "/#horaires-prieres" },
+    { label: "Ma routine", href: "/routine" },
         { label: "Explorer le savoir", href: "/explorer-le-savoir" },
         { label: "Bibliothèque", href: "/bibliotheque" },
         { label: "Vidéothèque", href: "/videos" },
@@ -76,11 +80,14 @@ export const navigationGroups = [
     { label: "Parcours guidés", href: "/apprendre" },
     { label: "Fiqh malikite", href: "/fiqh/malikite" },
     { label: "Sîra", href: "/sira" },
+    { label: "Histoires des prophètes", href: "/prophetes" },
+    { label: "Compagnons et compagnonnes", href: "/compagnons" },
     { label: "Explorer le savoir", href: "/explorer-le-savoir" },
   ] },
   { label: "Au quotidien", description: "Écoute & pratique", links: [
     { label: "Vidéos", href: "/videos" },
     { label: "Horaires de prière", href: "/#horaires-prieres" },
+    { label: "Ma routine", href: "/routine" },
   ] },
 ] as const;
 

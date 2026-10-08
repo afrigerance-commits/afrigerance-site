@@ -86,6 +86,18 @@ export const books: Book[] = [
     referencesBibliographiques: "Registre bibliographique MIRÂTH ; exemplaire scanné, 746 pages indiquées dans le kit.",
     droits: "droits_non_verifies",
   },
+  {
+    slug: "histoires-prophetes-ibn-kathir",
+    titreOriginal: "Qisas al-Anbiyâ’",
+    titreFrancais: "Les Histoires des prophètes",
+    auteur: "Ibn Kathîr",
+    discipline: "Histoire des prophètes",
+    langue: "Français — traduction de l’arabe",
+    edition: "Éditions Maison d’Ennour ; traduction par l’équipe littéraire de l’éditeur",
+    presentation: "Ouvrage identifié dans le PDF fourni. Le récit historique doit être étudié avec ses références et en distinguant les passages coraniques, les hadiths et les autres traditions. Les fiches MIRÂTH sont des synthèses originales consultables dans Histoires des prophètes ; elles ne reproduisent pas cette traduction.",
+    droits: "droits_non_verifies",
+    referencesBibliographiques: "Notice établie à partir des premières pages du PDF fourni. Aucun droit de diffusion publique du fichier ou de la traduction moderne n’a été établi.",
+  },
 ];
 
 export function getBook(slug: string) {

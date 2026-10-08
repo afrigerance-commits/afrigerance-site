@@ -8,6 +8,7 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { PageTransition } from "@/components/motion/page-transition";
 import { siteConfig } from "@/lib/site-config";
 import { OfflineSupport } from "@/components/offline-support";
+import { PersistentQuranAudio } from "@/components/islamic/quran-audio-player";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -71,6 +72,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           }}
         />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <PersistentQuranAudio>
           <a href="#contenu-principal" className="skip-link">
             Aller au contenu principal
           </a>
@@ -80,6 +82,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </main>
           <Footer />
           <OfflineSupport />
+          </PersistentQuranAudio>
         </ThemeProvider>
       </body>
     </html>

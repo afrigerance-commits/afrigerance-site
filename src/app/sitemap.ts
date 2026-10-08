@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { siteConfig, disciplines } from "@/lib/site-config";
 import { getPublishedArticles } from "@/lib/data/published-articles";
 import { books } from "@/lib/data/books";
+import { prophets } from "@/lib/data/prophets";
 import { scholars } from "@/lib/data/scholars";
 import { siraEvents } from "@/lib/data/sira";
 import { fiqhCourses } from "@/lib/data/fiqh";
@@ -20,6 +21,8 @@ const staticRoutes = [
   "/invocations",
   "/invocations/dettes-difficultes-financieres",
   "/sira",
+  "/prophetes",
+  "/routine",
   "/compagnons",
   "/bibliotheque",
   "/videos",
@@ -42,6 +45,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: path === "" ? 1 : 0.7,
   }));
 
+  prophets.forEach(p => entries.push({ url: url(`/prophetes/${p.slug}`) }));
   disciplines.forEach((d) => entries.push({ url: url(`/explorer-le-savoir/${d.slug}`) }));
   getChapters().forEach((c) => entries.push({ url: url(`/coran/${c.number}`), changeFrequency: "yearly" }));
   (["juz", "hizb"] as const).forEach(type => getPartitions(type).forEach(p => entries.push({ url: url(`/coran/lecture/${type}/${p.number}`), changeFrequency: "yearly" })));

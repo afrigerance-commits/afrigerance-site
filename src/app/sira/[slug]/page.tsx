@@ -48,13 +48,13 @@ export default async function SiraEventPage({ params }: PageProps<"/sira/[slug]"
       </Reveal>
 
       <Reveal delay={0.1} className="mt-10 flex flex-col gap-6">
-        <p className="text-lg text-foreground/90">{event.presentation}</p>
+        <p className="text-xs font-medium uppercase tracking-widest text-accent-text">Synthèse originale — pas une citation littérale</p><p className="text-lg leading-8 text-foreground/90">{event.presentation}</p>
         <p className="text-foreground/90">{event.contexte}</p>
       </Reveal>
 
       {event.recits.length > 0 && (
         <section className="mt-10 flex flex-col gap-4">
-          <h2 className="font-display text-lg font-semibold">Récits</h2>
+          <h2 className="font-display text-lg font-semibold">Commentaire pédagogique</h2>
           {event.recits.map((recit, i) => (
             <div
               key={i}

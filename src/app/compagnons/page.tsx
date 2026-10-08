@@ -6,7 +6,7 @@ import { scholars } from "@/lib/data/scholars";
 
 export const metadata: Metadata = {
   title: "Compagnons et grandes figures",
-  description: "Une encyclopédie des compagnons, compagnonnes, tâbi’ûn, imams et savants de l’Islam.",
+  description: "Huit portraits introductifs de compagnons et compagnonnes, avec récits authentiques et références précises.",
   alternates: { canonical: "/compagnons" },
 };
 
@@ -15,9 +15,9 @@ export default function CompagnonsPage() {
     <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
       <Reveal className="flex flex-col gap-4 text-center">
         <span className="mx-auto text-sm font-medium text-accent-text">Compagnons et grandes figures</span>
-        <h1 className="font-display text-4xl font-semibold sm:text-5xl">Une encyclopédie vivante</h1>
+        <h1 className="font-display text-4xl font-semibold sm:text-5xl">Compagnons et compagnonnes</h1>
         <p className="mx-auto max-w-2xl text-muted">
-          Compagnons, compagnonnes, tâbi’ûn, imams et savants qui ont transmis et préservé le savoir islamique.
+          Huit portraits pour commencer à partir de récits authentiques. Chaque notice est une synthèse originale et une invitation à lire les sources, pas une biographie exhaustive.
         </p>
       </Reveal>
       <div className="mt-14 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">

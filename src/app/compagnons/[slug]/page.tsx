@@ -63,13 +63,13 @@ export default async function ScholarPage({ params }: PageProps<"/compagnons/[sl
       </Reveal>
 
       <section className="mt-12">
-        <h2 className="mb-4 font-display text-lg font-semibold">Chronologie</h2>
+        <h2 className="mb-4 font-display text-lg font-semibold">Repères de lecture — synthèse originale</h2>
         <ol className="flex flex-col gap-3 border-l border-border pl-6">
           {scholar.chronologie.map((item, i) => (
             <li key={i} className="relative">
               <span className="absolute -left-[1.65rem] top-1 h-2.5 w-2.5 rounded-full bg-accent" aria-hidden="true" />
               <p className="text-sm font-medium">{item.date}</p>
-              <p className="text-sm text-muted">{item.evenement}</p>
+              <p className="text-base leading-8 text-muted">{item.evenement}</p>
             </li>
           ))}
         </ol>

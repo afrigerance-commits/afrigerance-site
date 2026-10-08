@@ -68,6 +68,8 @@ export default async function BookPage({ params }: PageProps<"/bibliotheque/[slu
           </dl>
 
           <p className="text-foreground/90">{book.presentation}</p>
+          {book.slug === "histoires-prophetes-ibn-kathir" && <Link href="/prophetes" className="font-semibold text-primary underline">Lire les fiches originales : histoires des prophètes →</Link>}
+          {book.slug === "ar-rahiq-al-makhtum" && <Link href="/sira" className="font-semibold text-primary underline">Lire le parcours de Sîra sur MIRÂTH →</Link>}
 
           {access.mode === "read" && <a href={access.href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 w-fit items-center rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground">Lire l’ouvrage</a>}
           <p className="text-sm leading-7 text-muted">{access.mode === "notice" ? "Vous consultez une notice bibliographique. Le texte intégral de cette édition n’est pas disponible sur MIRÂTH." : "L’accès au texte est distinct de sa notice bibliographique."}</p>

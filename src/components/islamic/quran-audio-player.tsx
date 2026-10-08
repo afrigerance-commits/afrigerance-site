@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import Link from "next/link";
 import { ExternalLink, Headphones, LoaderCircle, Pause, Play, Repeat, Repeat1, SkipBack, SkipForward, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { reciters, defaultReciterId, loadRecitation, loadSectionRecitation, type VerseAudioRef } from "@/lib/quran/reciters";
@@ -25,8 +26,33 @@ interface QuranAudioState {
 }
 
 const QuranAudioContext = createContext<QuranAudioState | null>(null);
+type Session = { chapter: number; verses: VerseAudioRef[] };
+const SessionSetup = createContext<((session: Session) => void) | null>(null);
+
+/** Remains mounted while the visitor navigates between pages. */
+export function PersistentQuranAudio({ children }: { children: ReactNode }) {
+  const [session, setSession] = useState<Session>({ chapter: 1, verses: [] });
+  const configure = useCallback((next: Session) => setSession(current => current.chapter === next.chapter && JSON.stringify(current.verses) === JSON.stringify(next.verses) ? current : next), []);
+  return <SessionSetup.Provider value={configure}><QuranAudioEngine chapter={session.chapter} verses={session.verses}>{children}<PersistentMiniPlayer chapter={session.chapter} /></QuranAudioEngine></SessionSetup.Provider>;
+}
 
 export function QuranAudioProvider({ chapter, verses, children }: { chapter: number; verses: VerseAudioRef[]; children: ReactNode }) {
+  const configure = useContext(SessionSetup);
+  useEffect(() => { configure?.({ chapter, verses }); }, [configure, chapter, verses]);
+  return configure ? children : <QuranAudioEngine chapter={chapter} verses={verses}>{children}</QuranAudioEngine>;
+}
+
+function PersistentMiniPlayer({ chapter }: { chapter: number }) {
+  const player = useQuranAudioContext();
+  if (player.playingVerse === null && !player.playingSurah && !player.error) return null;
+  const active = reciters.find(r => r.id === player.reciterId)!;
+  const verse = player.verses.find(v => v.number === player.playingVerse);
+  const sourceChapter = verse?.sourceChapter ?? chapter;
+  const sourceVerse = verse?.sourceVerse ?? player.playingVerse;
+  return <aside aria-label="Mini-lecteur du Coran" className="fixed bottom-4 left-4 z-50 flex max-w-[calc(100%-2rem)] items-center gap-3 rounded-2xl border border-gold-500/40 bg-surface p-3 shadow-xl sm:bottom-6 sm:left-6"><div className="min-w-0 max-w-48"><Link href={`/coran/${sourceChapter}${sourceVerse ? `#verset-${sourceVerse}` : ""}`} className="block text-sm font-semibold text-primary">{active.nom}</Link><p aria-live="polite" className="text-xs text-muted">Sourate {sourceChapter}{sourceVerse ? ` · verset ${sourceVerse}` : ""}{player.paused ? " · en pause" : ""}</p>{player.error && <p role="alert" className="mt-1 text-xs text-red-700 dark:text-red-300">{player.error}</p>}</div>{(player.playingVerse !== null || player.playingSurah) && <button onClick={player.paused ? player.resume : player.pause} aria-label={player.paused ? "Reprendre la récitation" : "Mettre la récitation en pause"} className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary text-white">{player.loading ? <LoaderCircle className="size-5 animate-spin" /> : player.paused ? <Play className="size-5" /> : <Pause className="size-5" />}</button>}<button onClick={player.stop} aria-label="Arrêter la récitation" className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border"><Square className="size-4" /></button></aside>;
+}
+
+function QuranAudioEngine({ chapter, verses, children }: { chapter: number; verses: VerseAudioRef[]; children: ReactNode }) {
   const section = verses.some(v => v.sourceChapter !== undefined);
   const [reciterId, setReciterId] = useState(defaultReciterId);
   const [playingVerse, setPlayingVerse] = useState<number | null>(null);
@@ -48,6 +74,7 @@ export function QuranAudioProvider({ chapter, verses, children }: { chapter: num
   const watchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const startRef = useRef<(verse: number, urlIndex?: number) => void>(() => {});
   const failureRef = useRef<() => void>(() => {});
+  const preloadRef = useRef<HTMLAudioElement | null>(null);
 
   const clearWatchdog = useCallback(() => {
     if (watchdogRef.current) clearTimeout(watchdogRef.current);
@@ -59,6 +86,7 @@ export function QuranAudioProvider({ chapter, verses, children }: { chapter: num
     clearWatchdog();
     const audio = audioRef.current;
     if (audio) { audio.pause(); audio.removeAttribute("src"); audio.load(); }
+    if (preloadRef.current) { preloadRef.current.removeAttribute("src"); preloadRef.current.load(); }
     currentVerseRef.current = null;
     surahRef.current = false;
     sequenceRef.current = false;
@@ -66,6 +94,7 @@ export function QuranAudioProvider({ chapter, verses, children }: { chapter: num
     setPlayingSurah(false);
     setPaused(false);
     setLoading(false);
+    setError(null);
   }, [clearWatchdog]);
 
   const start = useCallback((verseNumber: number, urlIndex = 0) => {
@@ -84,8 +113,12 @@ export function QuranAudioProvider({ chapter, verses, children }: { chapter: num
     setLoading(true);
     const url = urls[urlIndex];
     audio.src = url;
-    audio.play().catch(() => {
-      if (audio.src === url && currentVerseRef.current === verseNumber) failureRef.current();
+    audio.play().catch((cause) => {
+      if (audio.src !== url || currentVerseRef.current !== verseNumber) return;
+      if (cause?.name === "NotAllowedError") {
+        clearWatchdog(); setPaused(true); setLoading(false);
+        setError("Votre navigateur a suspendu la lecture. Touchez Reprendre pour continuer.");
+      } else failureRef.current();
     });
     watchdogRef.current = setTimeout(() => {
       if (audio.src === url && audio.paused) failureRef.current();
@@ -109,10 +142,20 @@ export function QuranAudioProvider({ chapter, verses, children }: { chapter: num
   }, [start, handleFailure]);
 
   useEffect(() => {
+    const preload = new Audio();
+    preload.preload = "auto";
     const audio = new Audio();
-    audio.preload = "none";
+    audio.preload = "auto";
+    preloadRef.current = preload;
     audioRef.current = audio;
-    const onPlaying = () => { clearWatchdog(); setLoading(false); };
+    const onPlaying = () => {
+      clearWatchdog(); setLoading(false); setPaused(false); setError(null);
+      const index = verses.findIndex(v => v.number === currentVerseRef.current);
+      const next = verses[index + 1];
+      const url = next && sequenceRef.current ? catalogRef.current?.get(next.number)?.[0] : undefined;
+      if (url) { preload.src = url; preload.load(); }
+    };
+    const onPause = () => { if (currentVerseRef.current !== null || surahRef.current) { setPaused(true); setLoading(false); clearWatchdog(); } };
     const onEnded = () => {
       clearWatchdog();
       if (surahRef.current) {
@@ -135,13 +178,18 @@ export function QuranAudioProvider({ chapter, verses, children }: { chapter: num
     audio.addEventListener("playing", onPlaying);
     audio.addEventListener("ended", onEnded);
     audio.addEventListener("error", onError);
+    audio.addEventListener("pause", onPause);
     return () => {
       clearWatchdog();
       audio.pause();
       audio.removeEventListener("playing", onPlaying);
       audio.removeEventListener("ended", onEnded);
       audio.removeEventListener("error", onError);
+      audio.removeEventListener("pause", onPause);
+      preload.removeAttribute("src"); preload.load();
+      preloadRef.current = null;
       audioRef.current = null;
+      currentVerseRef.current = null; surahRef.current = false; sequenceRef.current = false;
     };
   }, [clearWatchdog, stop, verses]);
 
@@ -218,11 +266,37 @@ export function QuranAudioProvider({ chapter, verses, children }: { chapter: num
     if (!audio || (currentVerseRef.current === null && !surahRef.current)) return;
     setPaused(false);
     setLoading(true);
+    setError(null);
     audio.play().catch(() => {
       if (surahRef.current) { stop(); setError("Impossible de reprendre la sourate."); }
       else failureRef.current();
     });
   }, [stop]);
+
+  // Synchronize the external audio element when the requested reading session changes.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { stop(); catalogRef.current = null; }, [chapter, verses, stop]);
+
+  useEffect(() => {
+    if (!("mediaSession" in navigator)) return;
+    const session = navigator.mediaSession;
+    const actions: [MediaSessionAction, MediaSessionActionHandler][] = [
+      ["play", resume], ["pause", pause], ["stop", stop],
+      ["nexttrack", () => { const i = verses.findIndex(v => v.number === currentVerseRef.current); if (verses[i + 1]) void playVerse(verses[i + 1].number, true); }],
+      ["previoustrack", () => { const i = verses.findIndex(v => v.number === currentVerseRef.current); if (verses[i - 1]) void playVerse(verses[i - 1].number, true); }],
+      ["seekto", details => { const audio = audioRef.current; if (audio && Number.isFinite(details.seekTime) && Number.isFinite(audio.duration)) audio.currentTime = Math.max(0, Math.min(details.seekTime!, audio.duration)); }],
+    ];
+    for (const [action, handler] of actions) try { session.setActionHandler(action, handler); } catch { /* Browser support differs. */ }
+    return () => { for (const [action] of actions) try { session.setActionHandler(action, null); } catch {} };
+  }, [resume, pause, stop, playVerse, verses]);
+
+  useEffect(() => {
+    if (!("mediaSession" in navigator) || typeof MediaMetadata === "undefined") return;
+    const active = reciters.find(r => r.id === reciterId)!;
+    const verse = verses.find(v => v.number === playingVerse);
+    navigator.mediaSession.metadata = new MediaMetadata({ title: `Coran · sourate ${verse?.sourceChapter ?? chapter}${playingVerse ? ` · verset ${verse?.sourceVerse ?? playingVerse}` : ""}`, artist: active.nom, album: "MIRÂTH", artwork: [{ src: "/icon-512.png", sizes: "512x512", type: "image/png" }] });
+    navigator.mediaSession.playbackState = playingVerse === null && !playingSurah ? "none" : paused ? "paused" : "playing";
+  }, [chapter, verses, reciterId, playingVerse, playingSurah, paused]);
 
   return <QuranAudioContext.Provider value={{ section, verses, reciterId, chooseReciter, playingVerse, playingSurah, paused, loading, error, repeatMode, chooseRepeatMode, stop, pause, resume, playVerse, playSurah }}>
     {children}
