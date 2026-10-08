@@ -1,92 +1,28 @@
-# Application mobile Android / iOS
+# MIRÂTH Android
 
-## Approche retenue : Capacitor en coquille distante
+## État au 8 octobre 2026
 
-Bayt Al-'Ilm utilise des pages dynamiques côté serveur (authentification,
-recherche, pagination des hadiths, back-office) que l'export statique de
-Next.js ne supporte pas. Réécrire l'application en React Native dupliquerait
-tout le travail déjà fait et doublerait la maintenance.
+La base Capacitor Android existe. Le nom a été corrigé en MIRÂTH et la destination en https://miraath.netlify.app. L’identifiant existant com.baytalilm.app est conservé pour préserver la compatibilité d’une éventuelle installation antérieure. `npx cap sync android` réussit.
 
-La solution retenue : [Capacitor](https://capacitorjs.com) enveloppe le site
-déployé (Netlify) dans une coquille native. L'app mobile charge directement
-`https://<ton-domaine>` dans une WebView native — même contenu, même mises à
-jour instantanées (pas besoin de republier sur les stores à chaque
-changement de contenu), mais avec :
+Aucun APK ni AAB n’a été généré. La tentative `./android/gradlew -p android assembleDebug` échoue au téléchargement de Gradle 8.14.3 avec « Network is unreachable ». Le SDK Android est également absent et le Java présent est 17, tandis que la bibliothèque Capacitor installée utilise Java 21.
 
-- une icône et un écran de démarrage natifs,
-- une présence réelle sur le Google Play Store et l'Apple App Store,
-- des fonctionnalités natives ajoutables plus tard (notifications push,
-  partage natif, etc.) via les plugins Capacitor.
+## Produire une version de test
 
-Les dossiers `android/` et `ios/` ont déjà été générés
-(`npx cap add android`, `npx cap add ios`) et sont commités dans le repo.
-
-## Avant de compiler : mettre à jour l'URL
-
-Dans `capacitor.config.ts`, remplacer :
-
-```ts
-server: {
-  url: "https://afrigerance-site.netlify.app",
-  ...
-}
-```
-
-par l'URL définitive du site une fois le domaine personnalisé configuré
-(voir `docs/DEPLOYMENT.md`). Puis resynchroniser :
+Sur une machine équipée d’Android Studio 2025.2.1 ou plus récent, du SDK Android 36 et de Java 21 :
 
 ```bash
-npm run cap:sync
+npm ci
+npx cap sync android
+cd android
+./gradlew assembleDebug
 ```
 
-## Android — ce qu'il reste à faire (nécessite Android Studio)
+Le fichier de test sera `android/app/build/outputs/apk/debug/app-debug.apk`. Vérifier sur un téléphone les liens externes, connexion, copie/partage, lecture du Coran, rotation, bouton retour et interruption audio. Ne pas présenter ce fichier de test comme une version de production.
 
-Cet environnement cloud n'a pas le SDK Android installé, donc la
-compilation réelle (`.apk`/`.aab`) ne peut pas se faire ici.
+## Version publique
 
-1. Installer [Android Studio](https://developer.android.com/studio) sur ton
-   ordinateur.
-2. `npm run cap:android` → ouvre le projet `android/` dans Android Studio.
-3. Dans Android Studio : **Build → Generate Signed Bundle / APK**, créer une
-   clé de signature (à conserver précieusement, impossible à régénérer).
-4. Créer un compte développeur Google Play (frais unique d'environ 25 $) sur
-   [play.google.com/console](https://play.google.com/console).
-5. Créer une fiche d'application, uploader le `.aab`, remplir la fiche store
-   (captures d'écran, description, politique de confidentialité — le site a
-   déjà une page `/confidentialite`), soumettre à la revue.
+Personnaliser les icônes et l’écran de lancement avant livraison. Produire un APK signé pour la distribution directe ou un AAB signé pour Google Play ; conserver la clé de signature. La création du compte Google Play et la soumission ne sont pas réalisées.
 
-## iOS — ce qu'il reste à faire (nécessite un Mac + Xcode)
+Cette première approche ouvre le site MIRÂTH dans une WebView. Elle requiert une connexion au démarrage ; elle ne garantit ni le fonctionnement entièrement hors ligne, ni l’audio lorsque l’application est fermée. Ces fonctions exigent une intégration native et des essais Android supplémentaires.
 
-Contrainte incontournable d'Apple : la compilation d'une app iOS nécessite
-Xcode, qui ne tourne que sur macOS. Aucun environnement cloud Linux ne peut
-contourner ça.
-
-1. Un Mac (le tien, ou un service de location cloud type MacStadium/Scaleway
-   Mac mini si tu n'en as pas).
-2. [Xcode](https://developer.apple.com/xcode/) installé.
-3. Un compte [Apple Developer Program](https://developer.apple.com/programs/)
-   (99 $/an).
-4. `npm run cap:ios` → ouvre le projet `ios/` dans Xcode.
-5. Dans Xcode : configurer la signature (Signing & Capabilities), puis
-   **Product → Archive** pour générer le build.
-6. Soumission via [App Store Connect](https://appstoreconnect.apple.com).
-
-## Alternative sans matériel Apple : service de build cloud
-
-Si tu n'as pas de Mac, des services comme
-[Codemagic](https://codemagic.io) ou [EAS Build](https://expo.dev/eas) (pour
-projets Capacitor aussi) compilent l'app iOS dans le cloud à partir du repo
-GitHub, sans que tu aies besoin de matériel Apple — seul le compte
-développeur Apple (99 $/an) reste obligatoire côté Apple, c'est une
-condition de leur programme, pas de l'outil de build.
-
-## Ce qui n'est PAS encore fait
-
-- Icônes et écran de démarrage personnalisés (actuellement les valeurs par
-  défaut de Capacitor) — à remplacer par les assets `/icon-192.png` et
-  `/icon-512.png` du site, redimensionnés aux formats requis par chaque
-  plateforme (`npx @capacitor/assets generate` peut automatiser ça).
-- Comptes développeur Google Play et Apple Developer Program (à créer par
-  toi, ce sont des engagements financiers et légaux que je ne peux pas
-  prendre à ta place).
-- Signature et publication effective sur les deux stores.
+Documentation : https://capacitorjs.com/docs/getting-started/environment-setup

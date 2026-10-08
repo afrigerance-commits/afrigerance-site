@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Bayt Al-\'Ilm</string>
-    <string name="title_activity_main">Bayt Al-\'Ilm</string>
+    <string name="app_name">MIRÂTH</string>
+    <string name="title_activity_main">MIRÂTH</string>
     <string name="package_name">com.baytalilm.app</string>
     <string name="custom_url_scheme">com.baytalilm.app</string>
 </resources>
