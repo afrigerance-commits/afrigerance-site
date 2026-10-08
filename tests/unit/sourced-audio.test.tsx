@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import { afterEach, expect, test, vi } from "vitest";
-import { SourcedAudio, InvocationAudio } from "@/components/islamic/sourced-audio";
+import { SourcedAudio, InvocationAudiobook } from "@/components/islamic/sourced-audio";
 
 afterEach(cleanup);
 
@@ -27,8 +27,9 @@ test("learning controls change playback speed and opt into looping", () => {
   expect(screen.getByRole("alert")).toHaveTextContent("Audio indisponible");
 });
 
-test("an unverified formula never gets a fabricated audio URL", () => {
-  render(<InvocationAudio id="muslim-2721a" />);
-  expect(screen.getByText(/en attente d’un enregistrement vérifié/)).toBeInTheDocument();
-  expect(document.querySelector("audio")).toBeNull();
+test("audiobook chapters are clearly separated and never advertised as exact card recordings", () => {
+  render(<InvocationAudiobook />);
+  expect(screen.getAllByText(/— chapitre complet/)).toHaveLength(4);
+  expect(screen.getAllByText(/Ce fichier ne correspond pas à une seule fiche/)).toHaveLength(4);
+  document.querySelectorAll("audio").forEach(audio => expect(audio.preload).toBe("none"));
 });

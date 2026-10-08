@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { siteConfig, disciplines } from "@/lib/site-config";
 import { getPublishedArticles } from "@/lib/data/published-articles";
+import { invocationTopics } from "@/lib/data/invocation-topics";
 import { books } from "@/lib/data/books";
 import { prophets } from "@/lib/data/prophets";
 import { scholars } from "@/lib/data/scholars";
@@ -45,6 +46,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: path === "" ? 1 : 0.7,
   }));
 
+  invocationTopics.forEach(topic => entries.push({ url: url(`/invocations/${topic.slug}`), changeFrequency: "monthly" }));
   prophets.forEach(p => entries.push({ url: url(`/prophetes/${p.slug}`) }));
   disciplines.forEach((d) => entries.push({ url: url(`/explorer-le-savoir/${d.slug}`) }));
   getChapters().forEach((c) => entries.push({ url: url(`/coran/${c.number}`), changeFrequency: "yearly" }));

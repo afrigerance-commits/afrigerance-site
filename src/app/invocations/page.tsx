@@ -4,7 +4,9 @@ import Link from "next/link";
 import { ArrowRight, HandCoins } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Reveal } from "@/components/motion/reveal";
-import { invocationCollection } from "@/lib/data/invocations";
+import { InvocationAudiobook } from "@/components/islamic/sourced-audio";
+import { invocationTopics, thematicInvocationCount } from "@/lib/data/invocation-topics";
+import { invocationCollection, debtInvocations } from "@/lib/data/invocations";
 
 export const metadata: Metadata = {
   title: "Invocations",
@@ -21,6 +23,7 @@ export default function InvocationsPage() {
         description="Des invocations documentées, présentées avec leur contexte, leur référence et leur statut d’authenticité."
         divider
       />
+      <p className="mb-8 text-sm font-semibold text-accent-text">{thematicInvocationCount + debtInvocations.length} invocations et rappels · {invocationTopics.length + 1} collections</p>
       <Reveal>
         <Link
           href={`/invocations/${invocationCollection.slug}`}
@@ -43,7 +46,7 @@ export default function InvocationsPage() {
             <h2 className="mt-3 font-display text-3xl sm:text-4xl">{invocationCollection.title}</h2>
             <p className="mt-4 max-w-2xl leading-7 text-muted">{invocationCollection.description}</p>
             <div className="mt-7 flex items-center justify-between gap-4 border-t border-border pt-5">
-              <span className="text-sm text-muted">{invocationCollection.itemCount} fiches documentées</span>
+              <span className="text-sm text-muted">6 invocations · 14 hadiths documentés</span>
               <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
                 Explorer <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
               </span>
@@ -51,6 +54,16 @@ export default function InvocationsPage() {
           </div>
         </Link>
       </Reveal>
+      <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{invocationTopics.map((topic, index) => <Reveal key={topic.slug} delay={Math.min(index * .025, .12)}>
+        <Link href={`/invocations/${topic.slug}`} className="group flex h-full flex-col rounded-[1.5rem] border border-gold-500/30 bg-surface p-6 shadow-[var(--shadow-editorial)] transition-all duration-300 hover:-translate-y-1 hover:border-gold-500/70">
+          <p className="eyebrow">{topic.items.length} invocations et rappels</p><h2 className="mt-3 font-display text-2xl">{topic.title}</h2><p className="mt-3 flex-1 text-sm leading-7 text-muted">{topic.description}</p><span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary">Explorer <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" /></span>
+        </Link>
+      </Reveal>)}</div>
+      <section id="livre-audio" className="mt-14 scroll-mt-28 rounded-[1.75rem] border border-gold-500/30 bg-surface-muted p-6 sm:p-9" aria-labelledby="livre-audio-title">
+        <p className="eyebrow">Écoute séparée des fiches</p><h2 id="livre-audio-title" className="mt-3 font-display text-3xl">Livre audio — chapitres complets</h2>
+        <p className="mt-4 max-w-3xl leading-7 text-muted">Ces enregistrements contiennent des chapitres entiers, avec plusieurs formules, parfois des versets et leurs références. Ils sont plus longs que les textes d’une fiche. Les lectures limitées à chaque invocation restent en attente d’un enregistrement vérifié.</p>
+        <InvocationAudiobook />
+      </section>
     </div>
   );
 }

@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, BookOpenCheck, HandCoins, HeartHandshake, ShieldCheck } from "lucide-react";
 import { ArabicText } from "@/components/islamic/arabic-text";
-import { InvocationAudio } from "@/components/islamic/sourced-audio";
 import { InvocationActions } from "@/components/islamic/invocation-actions";
 import { PageHeader } from "@/components/layout/page-header";
 import { Reveal } from "@/components/motion/reveal";
@@ -106,6 +105,8 @@ export default function DebtInvocationsPage() {
           ))}
         </div>
 
+        <p className="mb-8 rounded-2xl border border-gold-500/30 bg-surface p-5 text-sm leading-7 text-muted">Les chapitres audio complets sont désormais séparés des fiches : ils comprennent plusieurs textes et ne correspondent pas mot pour mot à une seule invocation. <Link href="/invocations#livre-audio" className="font-semibold text-primary underline">Écouter le livre audio</Link>. Les pistes individuelles restent en attente de vérification.</p>
+
         <section id="invocations" className="scroll-mt-28">
           <PageHeader
             level={2}
@@ -133,7 +134,6 @@ export default function DebtInvocationsPage() {
                           </div>
                         )}
                       </div>
-                      <InvocationAudio id={item.id} />
                       <div className="mt-6">
                         <InvocationActions
                           title={item.title}

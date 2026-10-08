@@ -11,11 +11,12 @@ export function SourcedAudio({ src, title, credit, sourceUrl, note }: { src: str
   const [speed, setSpeed] = useState("1");
   const [repeat, setRepeat] = useState(false);
   useEffect(() => {
+    const audio = ref.current;
     const focus = (event: Event) => {
       if ((event as CustomEvent).detail !== ref.current) ref.current?.pause();
     };
     window.addEventListener(AUDIO_FOCUS_EVENT, focus);
-    return () => { window.removeEventListener(AUDIO_FOCUS_EVENT, focus); ref.current?.pause(); };
+    return () => { window.removeEventListener(AUDIO_FOCUS_EVENT, focus); audio?.pause(); };
   }, []);
   return <div className="mt-4 min-w-0 rounded-2xl border border-gold-500/30 bg-background p-4">
     <p className="text-sm font-semibold text-primary">{title}</p>
@@ -33,16 +34,16 @@ export function SourcedAudio({ src, title, credit, sourceUrl, note }: { src: str
 }
 
 const base = "https://d1.islamhouse.com/data/ar/ih_sounds/chain_01/Hisn_Almuslim/Hisn_Almuslim_AlShwehi/";
-const chapters: Record<string, { number: string; title: string }> = {
-  "tirmidhi-3563": { number: "042", title: "Chapitre : invocations pour le remboursement des dettes" },
-  "bukhari-6369": { number: "042", title: "Chapitre : invocations pour le remboursement des dettes" },
-  "muslim-2713a": { number: "030", title: "Chapitre : invocations du coucher" },
-  "bukhari-832": { number: "026", title: "Chapitre : invocations avant le salut final" },
-  "abudawud-5090": { number: "029", title: "Chapitre : invocations du matin et du soir" },
-};
+const chapters = [
+  { number: "042", title: "Invocations pour le remboursement des dettes" },
+  { number: "030", title: "Invocations du coucher" },
+  { number: "029", title: "Invocations du matin et du soir" },
+  { number: "026", title: "Invocations avant le salut final" },
+];
 
-export function InvocationAudio({ id }: { id: string }) {
-  const chapter = chapters[id];
-  if (!chapter) return <p className="mt-4 text-sm leading-6 text-muted">Lecture audio de cette formule : en attente d’un enregistrement vérifié.</p>;
-  return <SourcedAudio src={`${base}ar_${chapter.number}_Hisn_Almuslim_Alshwehi.mp3`} title={chapter.title} credit="Sulaymân ash-Shuwayhî · IslamHouse" sourceUrl="https://islamhouse.com/ar/audios/2799103/" note="Lecture humaine du chapitre complet de la Citadelle du musulman, avec plusieurs formules et leurs références. Le fichier n’est pas limité au texte de cette fiche. La vitesse est un outil d’apprentissage, sans nombre de répétitions prescrit." />;
+export function InvocationAudiobook() {
+  return <div className="mt-6 grid gap-4">{chapters.map(chapter => <details key={chapter.number} className="rounded-2xl border border-gold-500/30 bg-surface p-5">
+    <summary className="cursor-pointer font-semibold text-primary">{chapter.title} — chapitre complet</summary>
+    <SourcedAudio src={`${base}ar_${chapter.number}_Hisn_Almuslim_Alshwehi.mp3`} title={`Chapitre complet : ${chapter.title}`} credit="Sulaymân ash-Shuwayhî · IslamHouse" sourceUrl="https://islamhouse.com/ar/audios/2799103/" note="Lecture humaine du chapitre complet de la Citadelle du musulman. Plusieurs formules, versets ou références peuvent être récités. Ce fichier ne correspond pas à une seule fiche. La boucle est un outil personnel d’apprentissage, sans nombre de répétitions prescrit." />
+  </details>)}</div>;
 }

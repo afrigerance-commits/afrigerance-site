@@ -16,6 +16,6 @@
 - Attachment titles and URLs obtained from publisher's full attachment list, not guessed: 026 final tashahhud supplications; 029 morning/evening; 030 bedtime; 042 debt supplications.
 - Files streamed unmodified from publisher; HTTP 200 and MP3 decoding verified with ffprobe. No cross-origin offline caching.
 - Deliberately label these as complete chapters, not exact recordings of individual cards: they contain other supplications, commentary/references and may use different transmitted variants. No isolated clip or verse-level alignment claimed.
-- Muslim 2721a: no suitable verified exact recording found; pending.
+- All individual card recordings are pending exact text and permission verification. Chapter recordings have been removed from individual cards and moved to `/invocations#livre-audio` after a reader reported additional verses and formulas.
 - Repeat is a visitor's learning control, not an attributed Sunnah repetition count.
 - Audio focus pauses other MIRÂTH recording players and Quran audio rather than mixing voices.
