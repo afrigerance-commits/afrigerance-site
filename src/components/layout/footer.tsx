@@ -33,6 +33,7 @@ export function Footer() {
           <div className="flex flex-col gap-4 lg:col-span-2">
             <Logo />
             <p className="max-w-sm text-sm text-muted">{siteConfig.description}</p>
+            <Link href="/hors-ligne" className="text-sm font-medium text-primary underline underline-offset-4">Mes lectures hors ligne</Link>
             {siteConfig.social.youtube && (
               <Link
                 href={siteConfig.social.youtube}

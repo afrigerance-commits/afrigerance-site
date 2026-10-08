@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/footer";
 import { JsonLd } from "@/components/seo/json-ld";
 import { PageTransition } from "@/components/motion/page-transition";
 import { siteConfig } from "@/lib/site-config";
+import { OfflineSupport } from "@/components/offline-support";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -78,6 +79,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <PageTransition>{children}</PageTransition>
           </main>
           <Footer />
+          <OfflineSupport />
         </ThemeProvider>
       </body>
     </html>

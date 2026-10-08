@@ -1,19 +1,11 @@
 import Link from "next/link";
-import { ArabicText } from "@/components/islamic/arabic-text";
-import { siteConfig } from "@/lib/site-config";
+import Image from "next/image";
 
 export function Logo({ className }: { className?: string }) {
   return (
-    <Link href="/" className={`group flex items-center gap-3 ${className ?? ""}`}>
-      <span
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-gold-500/60 font-display text-lg text-gold-700 transition-colors group-hover:bg-gold-500/10 dark:text-gold-500"
-        aria-hidden="true"
-      >
-        ع
-      </span>
-      <span className="flex flex-col leading-tight">
-        <span className="font-display text-lg font-semibold text-foreground">{siteConfig.name}</span>
-        <ArabicText className="text-xs text-muted">{siteConfig.nameArabic}</ArabicText>
+    <Link href="/" aria-label="MIRÂTH — Accueil" className={`group flex shrink-0 items-center ${className ?? ""}`}>
+      <span className="rounded-lg px-1.5 py-1 dark:bg-[#F8F5EE]">
+        <Image src="/brand/mirath-logo.webp" alt="MIRÂTH — ميراث" width={800} height={320} unoptimized priority className="h-auto w-36 transition-transform duration-300 group-hover:scale-[1.02] motion-reduce:transform-none sm:w-44" />
       </span>
     </Link>
   );
