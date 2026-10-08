@@ -6,6 +6,7 @@ import { scholars } from "@/lib/data/scholars";
 import { siraEvents } from "@/lib/data/sira";
 import { fiqhCourses } from "@/lib/data/fiqh";
 import { learningPaths } from "@/lib/data/learning-paths";
+import { getPartitions } from "@/lib/quran/partitions";
 import { getChapters } from "@/lib/quran/data";
 import { hadithCollections, getBooks } from "@/lib/hadith/data";
 
@@ -43,6 +44,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   disciplines.forEach((d) => entries.push({ url: url(`/explorer-le-savoir/${d.slug}`) }));
   getChapters().forEach((c) => entries.push({ url: url(`/coran/${c.number}`), changeFrequency: "yearly" }));
+  (["juz", "hizb"] as const).forEach(type => getPartitions(type).forEach(p => entries.push({ url: url(`/coran/lecture/${type}/${p.number}`), changeFrequency: "yearly" })));
   hadithCollections.forEach((c) => {
     entries.push({ url: url(`/hadith/${c.slug}`) });
     getBooks(c.slug).forEach((b) => entries.push({ url: url(`/hadith/${c.slug}/${b.number}`), changeFrequency: "yearly" }));

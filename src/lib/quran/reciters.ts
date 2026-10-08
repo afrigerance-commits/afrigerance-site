@@ -1,3 +1,4 @@
+import chapters from "../../../data/quran/chapters-meta.json";
 /** Éditions audio vérifiées dans le catalogue Al Quran Cloud (Hafs). */
 export interface Reciter {
   id: string;
@@ -23,7 +24,7 @@ export const reciters: Reciter[] = [
 
 export const defaultReciterId = reciters[0].id;
 
-export interface VerseAudioRef { number: number; globalNumber: number }
+export interface VerseAudioRef { number: number; globalNumber: number; sourceChapter?: number; sourceVerse?: number }
 
 /**
  * L'API attribue les véritables URL et débits à chaque ayah. Construire une
@@ -68,5 +69,24 @@ export async function loadRecitation(chapter: number, reciterId: string, verses:
     }
     result.set(verse.number, urls);
   }
+  return result;
+}
+
+/** A section may cross surahs. Validate each complete surah catalog, then select
+ * only the requested verses and retain their unique sequence positions. */
+export async function loadSectionRecitation(reciterId: string, verses: VerseAudioRef[]) {
+  const chapterNumbers = [...new Set(verses.map(v => v.sourceChapter!))];
+  const result = new Map<number, string[]>();
+  await Promise.all(chapterNumbers.map(async chapter => {
+    const meta = chapters.find(c => c.number === chapter);
+    if (!meta) throw new Error("Sourate inconnue.");
+    const offset = chapters.filter(c => c.number < chapter).reduce((n, c) => n + c.versesCount, 0);
+    const full = Array.from({ length: meta.versesCount }, (_, i) => ({ number: i + 1, globalNumber: offset + i + 1 }));
+    const catalog = await loadRecitation(chapter, reciterId, full);
+    for (const verse of verses.filter(v => v.sourceChapter === chapter)) {
+      if (!verse.sourceVerse || verse.globalNumber !== offset + verse.sourceVerse || !catalog.has(verse.sourceVerse)) throw new Error("Verset de portion incohérent.");
+      result.set(verse.number, catalog.get(verse.sourceVerse)!);
+    }
+  }));
   return result;
 }

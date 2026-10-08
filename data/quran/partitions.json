@@ -1,0 +1,369 @@
+{
+  "source": "https://tanzil.net/res/text/metadata/quran-data.xml",
+  "copyright": "(C) 2008-2009 Tanzil.info",
+  "license": "cc-by",
+  "juz": [
+    {
+      "chapter": 1,
+      "verse": 1
+    },
+    {
+      "chapter": 2,
+      "verse": 142
+    },
+    {
+      "chapter": 2,
+      "verse": 253
+    },
+    {
+      "chapter": 3,
+      "verse": 93
+    },
+    {
+      "chapter": 4,
+      "verse": 24
+    },
+    {
+      "chapter": 4,
+      "verse": 148
+    },
+    {
+      "chapter": 5,
+      "verse": 82
+    },
+    {
+      "chapter": 6,
+      "verse": 111
+    },
+    {
+      "chapter": 7,
+      "verse": 88
+    },
+    {
+      "chapter": 8,
+      "verse": 41
+    },
+    {
+      "chapter": 9,
+      "verse": 93
+    },
+    {
+      "chapter": 11,
+      "verse": 6
+    },
+    {
+      "chapter": 12,
+      "verse": 53
+    },
+    {
+      "chapter": 15,
+      "verse": 1
+    },
+    {
+      "chapter": 17,
+      "verse": 1
+    },
+    {
+      "chapter": 18,
+      "verse": 75
+    },
+    {
+      "chapter": 21,
+      "verse": 1
+    },
+    {
+      "chapter": 23,
+      "verse": 1
+    },
+    {
+      "chapter": 25,
+      "verse": 21
+    },
+    {
+      "chapter": 27,
+      "verse": 56
+    },
+    {
+      "chapter": 29,
+      "verse": 46
+    },
+    {
+      "chapter": 33,
+      "verse": 31
+    },
+    {
+      "chapter": 36,
+      "verse": 28
+    },
+    {
+      "chapter": 39,
+      "verse": 32
+    },
+    {
+      "chapter": 41,
+      "verse": 47
+    },
+    {
+      "chapter": 46,
+      "verse": 1
+    },
+    {
+      "chapter": 51,
+      "verse": 31
+    },
+    {
+      "chapter": 58,
+      "verse": 1
+    },
+    {
+      "chapter": 67,
+      "verse": 1
+    },
+    {
+      "chapter": 78,
+      "verse": 1
+    }
+  ],
+  "hizb": [
+    {
+      "chapter": 1,
+      "verse": 1
+    },
+    {
+      "chapter": 2,
+      "verse": 75
+    },
+    {
+      "chapter": 2,
+      "verse": 142
+    },
+    {
+      "chapter": 2,
+      "verse": 203
+    },
+    {
+      "chapter": 2,
+      "verse": 253
+    },
+    {
+      "chapter": 3,
+      "verse": 15
+    },
+    {
+      "chapter": 3,
+      "verse": 93
+    },
+    {
+      "chapter": 3,
+      "verse": 171
+    },
+    {
+      "chapter": 4,
+      "verse": 24
+    },
+    {
+      "chapter": 4,
+      "verse": 88
+    },
+    {
+      "chapter": 4,
+      "verse": 148
+    },
+    {
+      "chapter": 5,
+      "verse": 27
+    },
+    {
+      "chapter": 5,
+      "verse": 82
+    },
+    {
+      "chapter": 6,
+      "verse": 36
+    },
+    {
+      "chapter": 6,
+      "verse": 111
+    },
+    {
+      "chapter": 7,
+      "verse": 1
+    },
+    {
+      "chapter": 7,
+      "verse": 88
+    },
+    {
+      "chapter": 7,
+      "verse": 171
+    },
+    {
+      "chapter": 8,
+      "verse": 41
+    },
+    {
+      "chapter": 9,
+      "verse": 34
+    },
+    {
+      "chapter": 9,
+      "verse": 93
+    },
+    {
+      "chapter": 10,
+      "verse": 26
+    },
+    {
+      "chapter": 11,
+      "verse": 6
+    },
+    {
+      "chapter": 11,
+      "verse": 84
+    },
+    {
+      "chapter": 12,
+      "verse": 53
+    },
+    {
+      "chapter": 13,
+      "verse": 19
+    },
+    {
+      "chapter": 15,
+      "verse": 1
+    },
+    {
+      "chapter": 16,
+      "verse": 51
+    },
+    {
+      "chapter": 17,
+      "verse": 1
+    },
+    {
+      "chapter": 17,
+      "verse": 99
+    },
+    {
+      "chapter": 18,
+      "verse": 75
+    },
+    {
+      "chapter": 20,
+      "verse": 1
+    },
+    {
+      "chapter": 21,
+      "verse": 1
+    },
+    {
+      "chapter": 22,
+      "verse": 1
+    },
+    {
+      "chapter": 23,
+      "verse": 1
+    },
+    {
+      "chapter": 24,
+      "verse": 21
+    },
+    {
+      "chapter": 25,
+      "verse": 21
+    },
+    {
+      "chapter": 26,
+      "verse": 111
+    },
+    {
+      "chapter": 27,
+      "verse": 56
+    },
+    {
+      "chapter": 28,
+      "verse": 51
+    },
+    {
+      "chapter": 29,
+      "verse": 46
+    },
+    {
+      "chapter": 31,
+      "verse": 22
+    },
+    {
+      "chapter": 33,
+      "verse": 31
+    },
+    {
+      "chapter": 34,
+      "verse": 24
+    },
+    {
+      "chapter": 36,
+      "verse": 28
+    },
+    {
+      "chapter": 37,
+      "verse": 145
+    },
+    {
+      "chapter": 39,
+      "verse": 32
+    },
+    {
+      "chapter": 40,
+      "verse": 41
+    },
+    {
+      "chapter": 41,
+      "verse": 47
+    },
+    {
+      "chapter": 43,
+      "verse": 24
+    },
+    {
+      "chapter": 46,
+      "verse": 1
+    },
+    {
+      "chapter": 48,
+      "verse": 18
+    },
+    {
+      "chapter": 51,
+      "verse": 31
+    },
+    {
+      "chapter": 55,
+      "verse": 1
+    },
+    {
+      "chapter": 58,
+      "verse": 1
+    },
+    {
+      "chapter": 62,
+      "verse": 1
+    },
+    {
+      "chapter": 67,
+      "verse": 1
+    },
+    {
+      "chapter": 72,
+      "verse": 1
+    },
+    {
+      "chapter": 78,
+      "verse": 1
+    },
+    {
+      "chapter": 87,
+      "verse": 1
+    }
+  ]
+}

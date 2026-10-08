@@ -7,6 +7,7 @@ import { ArabicText } from "@/components/islamic/arabic-text";
 import { ReaderFocus } from "@/components/islamic/reader-focus";
 import { Separator } from "@/components/ui/separator";
 import { getChapters, getChapterMeta, getChapterVerses } from "@/lib/quran/data";
+import { partitionAt } from "@/lib/quran/partitions";
 import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/lib/site-config";
 import { ReadingProgress } from "@/components/content/reading-progress";
@@ -77,9 +78,10 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
 
       <QuranAudioProvider chapter={number} verses={verses.map((v) => ({ number: v.number, globalNumber: v.globalNumber! }))}>
         <ReadingPositionTracker chapter={number} verseCount={verses.length} />
+        <nav className="reader-secondary mt-5 flex flex-wrap gap-3 text-sm" aria-label="Portions de cette sourate"><Link className="mushaf-controls rounded-xl border border-gold-600/25 px-4 py-3" href={`/coran/lecture/juz/${partitionAt(number, 1, "juz").number}`}>Lire le juz {partitionAt(number, 1, "juz").number}</Link><Link className="mushaf-controls rounded-xl border border-gold-600/25 px-4 py-3" href={`/coran/lecture/hizb/${partitionAt(number, 1, "hizb").number}`}>Lire le hizb {partitionAt(number, 1, "hizb").number}</Link></nav>
         <QuranAudioToolbar chapter={number} />
         <QuranReadingTools chapter={number}>
-        <div className="mt-5 flex flex-col gap-1 rounded-[1.5rem] border border-gold-600/20 bg-[#fffcf5] px-2 py-2 shadow-sm dark:bg-emerald-950/20 sm:px-4">
+        <div className="mushaf-sheet mt-5 flex flex-col gap-1 rounded-[1.5rem] border border-gold-600/20 bg-[#fffcf5] px-2 py-2 shadow-sm dark:bg-emerald-950/20 sm:px-4">
           {verses.map((v, i) => (
             <Reveal key={v.number} delay={Math.min(i * 0.015, 0.3)}>
               <QuranVerseRow verseNumber={v.number}>
