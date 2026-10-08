@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
+import { AUDIO_FOCUS_EVENT } from "./sourced-audio";
 import { ExternalLink, Headphones, LoaderCircle, Pause, Play, Repeat, Repeat1, SkipBack, SkipForward, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { reciters, defaultReciterId, loadRecitation, loadSectionRecitation, type VerseAudioRef } from "@/lib/quran/reciters";
@@ -149,6 +150,7 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
     preloadRef.current = preload;
     audioRef.current = audio;
     const onPlaying = () => {
+      window.dispatchEvent(new CustomEvent(AUDIO_FOCUS_EVENT, { detail: audio }));
       clearWatchdog(); setLoading(false); setPaused(false); setError(null);
       const index = verses.findIndex(v => v.number === currentVerseRef.current);
       const next = verses[index + 1];
@@ -175,6 +177,8 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
       if (surahRef.current) { stop(); setError("La récitation intégrale est momentanément indisponible."); }
       else failureRef.current();
     };
+    const onAudioFocus = (event: Event) => { if ((event as CustomEvent).detail !== audio) audio.pause(); };
+    window.addEventListener(AUDIO_FOCUS_EVENT, onAudioFocus);
     audio.addEventListener("playing", onPlaying);
     audio.addEventListener("ended", onEnded);
     audio.addEventListener("error", onError);
@@ -182,6 +186,7 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
     return () => {
       clearWatchdog();
       audio.pause();
+      window.removeEventListener(AUDIO_FOCUS_EVENT, onAudioFocus);
       audio.removeEventListener("playing", onPlaying);
       audio.removeEventListener("ended", onEnded);
       audio.removeEventListener("error", onError);

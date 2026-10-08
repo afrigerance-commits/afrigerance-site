@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { AdhanSettings } from "./adhan-settings";
 import { Reveal } from "@/components/motion/reveal";
 import { LocateFixed, MapPin, Moon, Pause, Play, RefreshCw, SlidersHorizontal, Sun, Sunrise, Sunset } from "lucide-react";
 import { localDateKey, prayerCities, prayerDefinitions, prayerMethods, prayerState, type PrayerSchedule } from "@/lib/prayer-times";
@@ -67,6 +68,7 @@ export function PrayerClock(){
       {settingsOpen&&<div className="prayer-preferences" id="prayer-preferences">
         <div className="prayer-preferences-heading"><strong>{dateLabel}</strong><span>{schedule?.today.timezone??"Heure locale"}</span></div>
         <div className="prayer-preferences-controls"><label><span>Ville</span><select value={place.id} onChange={event=>{const city=prayerCities.find(item=>item.id===event.target.value);if(city){setPlace(city);setLocationMessage("")}}}>{place.id==="position"&&<option value="position">Ma position</option>}{prayerCities.map(city=><option key={city.id} value={city.id}>{city.name}</option>)}</select></label><label><span>Méthode de calcul</span><select value={method} onChange={event=>setMethod(Number(event.target.value))}>{prayerMethods.map(item=><option key={item.id} value={item.id}>{item.name}</option>)}</select></label><button onClick={locate} disabled={locating}><LocateFixed size={17}/>{locating?"Localisation…":"Me localiser"}</button></div>
+        <AdhanSettings />
         {locationMessage&&<p role="status">{locationMessage}</p>}{error&&<p role="alert">{error}</p>}
         <p>Calcul de ‘Asr : ombre simple. Vérifiez les ajustements de votre mosquée ; ces horaires n’indiquent pas l’iqâma. <a href="https://aladhan.com/calculation-methods" target="_blank" rel="noopener noreferrer">Source : AlAdhan</a></p>
       </div>}

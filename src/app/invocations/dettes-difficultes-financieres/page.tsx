@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, BookOpenCheck, HandCoins, HeartHandshake, ShieldCheck } from "lucide-react";
 import { ArabicText } from "@/components/islamic/arabic-text";
+import { InvocationAudio } from "@/components/islamic/sourced-audio";
 import { InvocationActions } from "@/components/islamic/invocation-actions";
 import { PageHeader } from "@/components/layout/page-header";
 import { Reveal } from "@/components/motion/reveal";
@@ -132,6 +133,7 @@ export default function DebtInvocationsPage() {
                           </div>
                         )}
                       </div>
+                      <InvocationAudio id={item.id} />
                       <div className="mt-6">
                         <InvocationActions
                           title={item.title}
