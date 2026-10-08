@@ -53,6 +53,7 @@ jobs:
           disable-animations: true
           script: |
             (cd android && ./gradlew --no-daemon :app:connectedDebugAndroidTest)
+            adb install -r android-delivery/MIRATH-Android-test.apk
             adb shell am start -n com.baytalilm.app/.MainActivity
             sleep 8
             adb shell screencap -p /sdcard/mirath-android.png
