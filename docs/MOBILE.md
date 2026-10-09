@@ -20,6 +20,23 @@ l’installation, l’adhan écran éteint, la navigation, le menu Plus et la pr
 française sur émulateur. Résultats de cette nouvelle exécution à consigner après
 compilation ; un essai physique et l’écoute réelle restent nécessaires.
 
+Résultats finaux du 9 octobre 2026 : workflow 37896468074 entièrement réussi,
+source b09b8bb4cc4d62c3caeeb6c3897c054e5ffee205. Trois tests instrumentés
+réussis sur Android 15 (zéro échec, erreur ou test ignoré) : adhan écran éteint,
+navigation et préférence française, lecture/arabe des invocations. Compilation,
+lint et signature v2 réussis. Le certificat de l’APK a été comparé à la clé de
+test : SHA256 106f6e6781b824308b1729feb65434c785f31fa82d4a6c0ade6f00891874c596.
+La capture effectuée après relancement montre un écran vide pendant le chargement
+et ne constitue pas une preuve visuelle du rendu mobile ; les assertions de
+navigation et de dimensions du menu ont réussi dans les tests.
+
+APK 1.2 livré : MIRATH-Android-1.2.apk, 11 516 369 octets,
+SHA256 3d1eb9a4bb867fd0b76e0f3139035c2d8171f9d9b460822af3fcb1e3222cbeb3.
+Netlify : changements web du commit 4e9db3e8d45513662ce0f52c37cca78d3735a19d
+vérifiés en production ; alternance arabe/français observée jusqu’au verset 3
+dans le navigateur, pause fonctionnelle. La correction de signature et cette
+documentation sont marquées pour ne pas relancer Netlify.
+
 ## Version 1.1 — correction de l’adhan automatique
 
 La version 1.0 ne proposait que la lecture manuelle. La version 1.1 ajoute des alarmes Android exactes, un service audio de premier plan avec bouton Arrêter, et le MP3 de La Mecque intégré (source/licence : docs/audio-sources.md). Après activation, la lecture ne dépend ni des minuteurs JavaScript ni d’Internet. Le volume utilisé est celui des alarmes ; le mode Ne pas déranger reste respecté.
