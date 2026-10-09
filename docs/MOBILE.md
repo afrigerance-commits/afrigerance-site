@@ -3,7 +3,11 @@
 ## Version 1.2 — navigation et français après chaque verset
 
 Publication autorisée par l’utilisateur le 9 octobre 2026. Version Android 1.2
-(versionCode 3), même identifiant et même signature de test stable que la 1.1.
+(versionCode 3), même identifiant. La signature est désormais explicitement
+liée au fichier de test et son certificat contrôlé après compilation.
+La vérification des APK livrées a révélé que la 1.1 utilisait encore un certificat
+éphémère, malgré la copie de la clé dans CI. Si Android refuse la mise à jour,
+désinstaller la 1.1 avant la 1.2 ; cela peut effacer les données locales.
 Ajoute au site chargé par l’application l’option Qari arabe → Youssouf Leclerc
 (sens en français) → verset suivant, ainsi que cinq onglets inférieurs. Les
 pistes arabes doivent être découpées par verset ; l’option est indisponible
@@ -24,7 +28,7 @@ L’activation exige notifications et accès « Alarmes et rappels ». Le calend
 
 Dans les réglages des horaires : « Activer l’adhan », puis « Tester écran verrouillé » (15 secondes). Renouveler les alarmes avant la date affichée, après un changement de ville/méthode ou un arrêt forcé Android. Les restrictions du fabricant, un téléphone éteint, un volume nul et Ne pas déranger peuvent empêcher l’écoute. Pas de garantie sans essai sur téléphone physique.
 
-La version 1.1 utilise une identité de signature de test stable, publique, dans android/test-signing/debug.keystore. Elle n’est PAS adaptée au Play Store. La version 1.0 était signée avec une clé CI éphémère : désinstaller une fois cette ancienne version avant d’installer la 1.1 si Android refuse la mise à jour. Les données locales peuvent être effacées ; les contenus en ligne restent accessibles. Les prochaines APK de test conserveront la nouvelle identité.
+Correction du 9 octobre : la 1.1 avait été annoncée avec une signature stable, mais le certificat de son APK livrée diffère de la clé publique `android/test-signing/debug.keystore`. Le chemin par défaut de la signature n’était pas explicitement fixé. La 1.2 fixe ce chemin dans Gradle et CI compare le certificat réel à la clé prévue. Cette clé publique de test n’est PAS adaptée au Play Store. Les anciennes versions peuvent nécessiter une désinstallation, qui efface les données locales ; les contenus en ligne restent accessibles.
 
 ## Vérification
 

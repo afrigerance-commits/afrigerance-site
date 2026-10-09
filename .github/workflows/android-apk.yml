@@ -36,7 +36,15 @@ jobs:
           mkdir -p android-delivery
           cp android/app/build/outputs/apk/debug/app-debug.apk android-delivery/MIRATH-Android-test.apk
           sha256sum android-delivery/MIRATH-Android-test.apk > android-delivery/SHA256SUMS.txt
-          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose android-delivery/MIRATH-Android-test.apk > android-delivery/signature.txt
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs android-delivery/MIRATH-Android-test.apk > android-delivery/signature.txt
+          python3 - <<'PY'
+          import hashlib, pathlib, re, subprocess
+          certificate = subprocess.check_output(['keytool', '-exportcert', '-keystore', 'android/test-signing/debug.keystore', '-storepass', 'android', '-alias', 'androiddebugkey'])
+          expected = hashlib.sha256(certificate).hexdigest()
+          actual = re.search(r'Signer #1 certificate SHA-256 digest: ([0-9a-f]+)', pathlib.Path('android-delivery/signature.txt').read_text()).group(1)
+          assert actual == expected, 'APK signing certificate differs from stable test identity'
+          print('Stable APK signing certificate verified:', actual)
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: MIRATH-Android-APK
