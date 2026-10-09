@@ -1,5 +1,21 @@
 # MIRÂTH Android — APK de test
 
+## Version 1.2 — navigation et français après chaque verset
+
+Publication autorisée par l’utilisateur le 9 octobre 2026. Version Android 1.2
+(versionCode 3), même identifiant et même signature de test stable que la 1.1.
+Ajoute au site chargé par l’application l’option Qari arabe → Youssouf Leclerc
+(sens en français) → verset suivant, ainsi que cinq onglets inférieurs. Les
+pistes arabes doivent être découpées par verset ; l’option est indisponible
+pour les enregistrements de sourate entière. La reconnaissance vocale reste
+une étude, sans microphone actif. La diffusion du Coran nécessite Internet.
+
+Les vérifications web précédentes sont réussies (59 tests, TypeScript et build).
+Le workflow Android compile, vérifie le lint et la signature, puis teste
+l’installation, l’adhan écran éteint, la navigation, le menu Plus et la préférence
+française sur émulateur. Résultats de cette nouvelle exécution à consigner après
+compilation ; un essai physique et l’écoute réelle restent nécessaires.
+
 ## Version 1.1 — correction de l’adhan automatique
 
 La version 1.0 ne proposait que la lecture manuelle. La version 1.1 ajoute des alarmes Android exactes, un service audio de premier plan avec bouton Arrêter, et le MP3 de La Mecque intégré (source/licence : docs/audio-sources.md). Après activation, la lecture ne dépend ni des minuteurs JavaScript ni d’Internet. Le volume utilisé est celui des alarmes ; le mode Ne pas déranger reste respecté.

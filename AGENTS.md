@@ -7,3 +7,17 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Publication en attente — consigne utilisateur du 9 octobre 2026
+
+Préparer les changements et effectuer les vérifications localement. Ne publier
+aucune modification et ne lancer aucun déploiement Netlify avant un signal
+explicite de l’utilisateur. Ne pas pousser vers la branche de production ni
+vers une branche susceptible de déclencher une compilation Netlify. L’APK
+actuel charge le site publié : les changements du lecteur web ne deviennent
+donc visibles dans cette APK qu’après publication autorisée. Cette consigne
+remplace les autorisations antérieures de publication automatique.
+
+Signal reçu pour cette livraison : « Publie sur netlify et met à jour le apk ».
+La publication des changements préparés et la compilation APK 1.2 sont donc
+autorisées. Les futures modifications restent soumises à un nouveau signal.

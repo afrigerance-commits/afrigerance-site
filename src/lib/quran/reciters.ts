@@ -43,6 +43,11 @@ export async function loadRecitation(chapter: number, reciterId: string, verses:
       [`https://everyayah.com/data/${reciter.everyAyahFolder}/${String(chapter).padStart(3, "0")}${String(verse.number).padStart(3, "0")}.mp3`],
     ]));
   }
+  return loadAudioEdition(chapter, reciterId, verses);
+}
+
+/** Strict edition and global-ayah validation is shared by Arabic and French. */
+async function loadAudioEdition(chapter: number, reciterId: string, verses: VerseAudioRef[]): Promise<Map<number, string[]>> {
   const response = await fetch(`https://api.alquran.cloud/v1/surah/${chapter}/${reciterId}`);
   if (!response.ok) throw new Error("Le service audio est temporairement indisponible.");
   const payload = await response.json() as {
@@ -86,6 +91,35 @@ export async function loadSectionRecitation(reciterId: string, verses: VerseAudi
     for (const verse of verses.filter(v => v.sourceChapter === chapter)) {
       if (!verse.sourceVerse || verse.globalNumber !== offset + verse.sourceVerse || !catalog.has(verse.sourceVerse)) throw new Error("Verset de portion incohérent.");
       result.set(verse.number, catalog.get(verse.sourceVerse)!);
+    }
+  }));
+  return result;
+}
+
+
+export const frenchAudioEdition = {
+  id: "fr.leclerc",
+  name: "Youssouf Leclerc",
+  translation: "Muhammad Hamidullah, revue et corrigée par le complexe du roi Fahd",
+  source: "https://www.lenoblecoran.fr/audio/",
+  terms: "https://alquran.cloud/terms-and-conditions",
+} as const;
+
+/** Validate complete catalogs before selecting a juz/hizb's source verses. */
+export async function loadFrenchRecitation(chapter: number, verses: VerseAudioRef[]): Promise<Map<number, string[]>> {
+  if (!verses.length) throw new Error("Portion vide.");
+  const result = new Map<number, string[]>();
+  const numbers = [...new Set(verses.map(v => v.sourceChapter ?? chapter))];
+  await Promise.all(numbers.map(async number => {
+    const meta = chapters.find(c => c.number === number);
+    if (!meta) throw new Error("Sourate inconnue.");
+    const offset = chapters.filter(c => c.number < number).reduce((sum, c) => sum + c.versesCount, 0);
+    const full = Array.from({ length: meta.versesCount }, (_, i) => ({ number: i + 1, globalNumber: offset + i + 1 }));
+    const catalog = await loadAudioEdition(number, frenchAudioEdition.id, full);
+    for (const verse of verses.filter(v => (v.sourceChapter ?? chapter) === number)) {
+      const sourceVerse = verse.sourceVerse ?? verse.number;
+      if (!Number.isInteger(sourceVerse) || verse.globalNumber !== offset + sourceVerse || !catalog.has(sourceVerse)) throw new Error("Traduction audio incohérente pour ce verset.");
+      result.set(verse.number, catalog.get(sourceVerse)!);
     }
   }));
   return result;

@@ -9,6 +9,7 @@ import { PageTransition } from "@/components/motion/page-transition";
 import { siteConfig } from "@/lib/site-config";
 import { OfflineSupport } from "@/components/offline-support";
 import { PersistentQuranAudio } from "@/components/islamic/quran-audio-player";
+import { MobileBottomNavigation } from "@/components/layout/mobile-bottom-navigation";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -82,6 +83,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </main>
           <Footer />
           <OfflineSupport />
+          <MobileBottomNavigation />
           </PersistentQuranAudio>
         </ThemeProvider>
       </body>

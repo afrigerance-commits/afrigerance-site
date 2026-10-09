@@ -122,7 +122,7 @@ export function QuranVerseContent({ chapter, number, arabic, french, audioNumber
       <button type="button" disabled={player.reciterId === "tvquran.hady-toure"} aria-label={`Écouter à partir de ${chapter}:${number}`} onClick={() => player.playVerse(audioNumber, true)} lang="ar" dir="rtl" className="quran-quote min-w-0 flex-1 rounded-xl px-2 py-1 focus-visible:outline-2 focus-visible:outline-gold-600 text-right text-emerald-950 dark:text-ivory-50" style={{ fontSize: reading.fontSize }}>{annotated ? annotated.map((part, index) => part.rule ? <span key={index} title={tajweedRules[part.rule].label} style={{ color: tajweedRules[part.rule].color }}>{part.text}</span> : part.text) : <WaqfText text={arabic} />} <span className="ayah-seal" aria-hidden="true">﴿{number.toLocaleString("ar")}﴾</span></button>
       <VersePlayButton verseNumber={audioNumber} />
     </div>
-    {reading.showFrench && <p lang="fr" className="mt-5 max-w-[68ch] border-l-2 border-gold-600/35 pl-4 text-base leading-8 text-foreground/85 sm:ml-3">{french}</p>}
+    {reading.showFrench && <p lang="fr" className={`mt-5 max-w-[68ch] border-l-2 pl-4 text-base leading-8 text-foreground/85 sm:ml-3 ${player.playingVerse === audioNumber && player.phase === "french" ? "border-gold-600 bg-gold-600/10" : "border-gold-600/35"}`}>{french}</p>}
     <QuranTafsir chapter={chapter} verse={number} />
     <a href={`/coran/${chapter}#verset-${number}`} className="sr-only">Lien vers le verset {number}</a>
   </div>;
