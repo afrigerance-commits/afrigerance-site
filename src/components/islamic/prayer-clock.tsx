@@ -9,6 +9,17 @@ const iconFor=(icon:string)=>icon==="dawn"?Sunrise:icon==="sunset"?Sunset:icon==
 export function PrayerClock(){
   const [place,setPlace]=useState<Place>(prayerCities[0]);
   const [method,setMethod]=useState(3);
+  const [preferencesReady,setPreferencesReady]=useState(false);
+  useEffect(()=>{queueMicrotask(()=>{
+    try {
+      const saved=JSON.parse(localStorage.getItem("mirath-prayer-place")||"null");
+      if(saved && typeof saved.name==="string" && typeof saved.id==="string" && Number.isFinite(saved.latitude) && Math.abs(saved.latitude)<=90 && Number.isFinite(saved.longitude) && Math.abs(saved.longitude)<=180) setPlace(saved);
+      const savedMethod=Number(localStorage.getItem("mirath-prayer-method"));
+      if(prayerMethods.some(item=>item.id===savedMethod)) setMethod(savedMethod);
+    } catch {}
+    setPreferencesReady(true);
+  })},[]);
+  useEffect(()=>{if(preferencesReady){try{localStorage.setItem("mirath-prayer-place",JSON.stringify(place));localStorage.setItem("mirath-prayer-method",String(method))}catch{}}},[place,method,preferencesReady]);
   const [schedule,setSchedule]=useState<PrayerSchedule|null>(null);
   const [now,setNow]=useState<number|null>(null);
   const [loading,setLoading]=useState(true);
@@ -23,6 +34,7 @@ export function PrayerClock(){
   const dayKey=now&&schedule?localDateKey(now,schedule.today.timezone):"";
   useEffect(()=>{setNow(Date.now());const timer=window.setInterval(()=>setNow(Date.now()),1000);return()=>window.clearInterval(timer)},[]);
   useEffect(()=>{
+    if(!preferencesReady)return;
     const controller=new AbortController();setLoading(true);setError("");setSchedule(null);
     const params=new URLSearchParams({latitude:String(place.latitude),longitude:String(place.longitude),method:String(method)});
     fetch(`/api/prayer-times?${params}`,{signal:controller.signal,cache:"no-store"}).then(async response=>{
@@ -31,7 +43,7 @@ export function PrayerClock(){
       if(!controller.signal.aborted){setSchedule(data);setNow(Date.now());setLoading(false)}
     }).catch((issue:Error)=>{if(!controller.signal.aborted){setError(issue.message);setLoading(false)}});
     return()=>controller.abort();
-  },[place,method,refresh]);
+  },[place,method,refresh,preferencesReady]);
   useEffect(()=>{if(schedule&&dayKey&&dayKey!==schedule.today.date)setRefresh(value=>value+1)},[dayKey,schedule]);
   useEffect(()=>{const resume=()=>{if(document.visibilityState==="visible"){setNow(Date.now());setRefresh(value=>value+1)}};document.addEventListener("visibilitychange",resume);return()=>document.removeEventListener("visibilitychange",resume)},[]);
   function locate(){
@@ -68,7 +80,7 @@ export function PrayerClock(){
       {settingsOpen&&<div className="prayer-preferences" id="prayer-preferences">
         <div className="prayer-preferences-heading"><strong>{dateLabel}</strong><span>{schedule?.today.timezone??"Heure locale"}</span></div>
         <div className="prayer-preferences-controls"><label><span>Ville</span><select value={place.id} onChange={event=>{const city=prayerCities.find(item=>item.id===event.target.value);if(city){setPlace(city);setLocationMessage("")}}}>{place.id==="position"&&<option value="position">Ma position</option>}{prayerCities.map(city=><option key={city.id} value={city.id}>{city.name}</option>)}</select></label><label><span>Méthode de calcul</span><select value={method} onChange={event=>setMethod(Number(event.target.value))}>{prayerMethods.map(item=><option key={item.id} value={item.id}>{item.name}</option>)}</select></label><button onClick={locate} disabled={locating}><LocateFixed size={17}/>{locating?"Localisation…":"Me localiser"}</button></div>
-        <AdhanSettings />
+        <AdhanSettings latitude={place.latitude} longitude={place.longitude} name={place.name} method={method} />
         {locationMessage&&<p role="status">{locationMessage}</p>}{error&&<p role="alert">{error}</p>}
         <p>Calcul de ‘Asr : ombre simple. Vérifiez les ajustements de votre mosquée ; ces horaires n’indiquent pas l’iqâma. <a href="https://aladhan.com/calculation-methods" target="_blank" rel="noopener noreferrer">Source : AlAdhan</a></p>
       </div>}

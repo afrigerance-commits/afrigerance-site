@@ -2,7 +2,7 @@ import type { CapacitorConfig } from "@capacitor/cli";
 
 /** Android loads the deployed MIRÂTH site, including its server-rendered pages.
  * Keep the existing application ID to preserve any prior installation identity.
- * Native background audio and bundled offline content require separate work.
+ * Prayer alarms use native Android playback; Quran audio/offline bundling remain separate.
  */
 const config: CapacitorConfig = {
   appId: "com.baytalilm.app",

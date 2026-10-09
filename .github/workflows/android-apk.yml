@@ -22,6 +22,10 @@ jobs:
           java-version: '21'
       - run: npm ci
       - run: npx cap sync android
+      - name: Stable test signing identity (not a production key)
+        run: |
+          mkdir -p "$HOME/.android"
+          cp android/test-signing/debug.keystore "$HOME/.android/debug.keystore"
       - name: Compile APK and Android checks
         working-directory: android
         run: |
