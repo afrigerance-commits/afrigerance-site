@@ -12,7 +12,9 @@ La version 1.1 utilise une identité de signature de test stable, publique, dans
 
 ## Vérification
 
-Le workflow .github/workflows/android-apk.yml compile l’APK, vérifie la signature, exécute le lint Android puis les tests instrumentés sur Android 15. AdhanAlarmTest programme une alarme réelle, met l’application en arrière-plan et l’écran en veille, vérifie le démarrage du MediaPlayer, l’alarme suivante, l’arrêt et la désactivation. Un broadcast de boot ne doit pas démarrer l’audio. Ce contrôle logiciel ne prouve pas l’écoute sur un haut-parleur physique. Les résultats de la nouvelle compilation sont à consigner après exécution.
+Le workflow .github/workflows/android-apk.yml compile l’APK, vérifie la signature, exécute le lint Android puis les tests instrumentés sur Android 15. AdhanAlarmTest programme une alarme réelle, met l’application en arrière-plan et l’écran en veille, vérifie le démarrage du MediaPlayer, l’alarme suivante, l’arrêt et la désactivation. Un broadcast de boot ne doit pas démarrer l’audio. Ce contrôle logiciel ne prouve pas l’écoute sur un haut-parleur physique. Résultats du 9 octobre 2026 : exécution GitHub Actions 37891745397 entièrement réussie (commit 3586588c1d361a64028db9e1e8f3f605391498b9). Compilation, lint Android, signature APK v2 et deux tests instrumentés réussis, sans échec ni test ignoré. AdhanAlarmTest vérifie le démarrage audio écran éteint, la prière suivante et l’arrêt ; MirathLaunchTest vérifie navigation/arabe/absence de débordement. Le test natif ne couvre pas tous les réglages de l’interface ni les restrictions des fabricants. Web : 52 tests réussis, lint ciblé sans erreur, compilation webpack et TypeScript réussis. Calendrier publié vérifié : 264 événements futurs pour Dakar ; paramètres invalides refusés (400). Ville mémorisée après rechargement dans le navigateur.
+
+APK livré : MIRATH-Android-1.1.apk, 11 516 365 octets. SHA256 : 2d134085f29d7f8e268ab96a8180f8fb146600ed8c98d033a74d51503558e8fb. Version de test signée, non publiée sur Google Play. Essai physique sur le téléphone de l’utilisateur toujours à effectuer.
 
 ## Livraison précédente — 8 octobre 2026
 
