@@ -12,7 +12,7 @@ vi.mock("@/lib/quran/reciters", async original => ({
 }));
 let audio: FakeAudio;
 class FakeAudio extends EventTarget {
-  src = ""; paused = true; preload = ""; currentTime = 0;
+  src = ""; paused = true; preload = ""; currentTime = 0; duration = 20;
   play = vi.fn(async () => { this.paused = false; this.dispatchEvent(new Event("playing")); });
   pause() { this.paused = true; this.dispatchEvent(new Event("pause")); }
   removeAttribute() { this.src = ""; }
@@ -36,6 +36,10 @@ function Controls() {
     <button onClick={() => { p.configureMemorization({ from: 1, to: 2, repetitions: 2, delay: 1 }); p.playVerse(1, true); }}>Mémoriser</button>
     <button onClick={p.pause}>Pause</button><button onClick={p.resume}>Reprendre</button>
     <button onClick={p.stop}>Stop</button>
+    <button onClick={()=>p.seek(99)}>Chercher</button>
+    <button onClick={()=>p.setSleep(5)}>Minuterie</button>
+    <button onClick={()=>p.setSleep(0)}>Annuler minuterie</button>
+    <output data-testid="time">{p.elapsed}:{p.duration}</output>
     <output data-testid="position">{p.playingVerse ?? "stop"}:{p.phase}</output>
     {p.error && <p role="alert">{p.error}</p>}
   </>;
@@ -127,5 +131,31 @@ it("repeats the selected Arabic/French pair with a silence and cancels the silen
     expect(screen.getByTestId("position")).toHaveTextContent("stop:arabic");
     act(() => vi.advanceTimersByTime(3000));
     expect(audio.src).toBe("");
+  } finally { vi.useRealTimers(); }
+});
+
+it("bounds seeking to the real track and stops at the sleep deadline", async () => {
+  await start();
+  act(()=>audio.dispatchEvent(new Event("loadedmetadata")));
+  fireEvent.click(screen.getByText("Chercher"));
+  expect(audio.currentTime).toBe(20);
+  expect(screen.getByTestId("time")).toHaveTextContent("20:20");
+  vi.useFakeTimers();
+  try {
+    fireEvent.click(screen.getByText("Minuterie"));
+    act(()=>vi.advanceTimersByTime(299000));
+    expect(screen.getByTestId("position")).toHaveTextContent("1:arabic");
+    act(()=>vi.advanceTimersByTime(1000));
+    expect(screen.getByTestId("position")).toHaveTextContent("stop:arabic");
+    expect(audio.src).toBe("");
+  } finally { vi.useRealTimers(); }
+});
+it("cancels the sleep deadline while keeping playback active", async () => {
+  await start(); vi.useFakeTimers();
+  try {
+    fireEvent.click(screen.getByText("Minuterie"));
+    fireEvent.click(screen.getByText("Annuler minuterie"));
+    act(()=>vi.advanceTimersByTime(301000));
+    expect(screen.getByTestId("position")).toHaveTextContent("1:arabic");
   } finally { vi.useRealTimers(); }
 });

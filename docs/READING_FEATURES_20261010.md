@@ -2,6 +2,11 @@
 
 Publication autorisée le 10 octobre 2026 par le signal « Top signal lancé » : lot regroupant ces outils, la confirmation d’e-mail et les repères de Juz. La réussite du déploiement sera vérifiée sur le site public. Aucun changement natif ni nouvelle compilation APK : l’APK 1.2 charge ce site.
 
+Publication effective vérifiée le 10 octobre 2026 à 15:24 UTC sur https://miraath.netlify.app/.
+Commit de production : `55c81aa8ef500d29b03731e4f87d8ff28d686746` ; arbre identique à la préparation locale `51cde91118924217f371102e6ff6e46fb19c9d35`. Un seul déplacement de branche de production a regroupé les changements.
+Contrôles HTTP publics : suivi, notes, recherche 2:255 et sourate 2 répondent 200 ; repères Juz et arabe présents ; nouveau worker audio présent ; relais audio Alafasy répond 200 audio/mpeg (146 830 octets) ; source privée refusée 400 ; compte/admin restent protégés ; callback sans code redirige vers l’erreur de confirmation. Ces contrôles ne remplacent pas l’essai physique dans l’application ni la réception réelle des e-mails.
+Ce compte rendu est conservé localement après vérification, sans second push ni déploiement Netlify.
+
 ## Intégrations
 
 - `/mon-suivi` : objectif quotidien en versets, Hizb ou Juz ; validation manuelle ; historique par date locale. Le défilement et l’audio ne valident pas une lecture.

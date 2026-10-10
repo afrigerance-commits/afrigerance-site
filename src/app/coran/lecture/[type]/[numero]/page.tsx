@@ -44,9 +44,7 @@ export default async function PortionPage({ params }: { params: Promise<{ type: 
     <h1 className="mt-5 font-display text-3xl font-semibold text-primary">{label} {p.number}</h1>
     <p className="mt-3 text-base text-muted">{p.start.chapter}:{p.start.verse} — {p.end.chapter}:{p.end.verse} · {p.count} versets</p>
     <QuranAudioProvider chapter={p.start.chapter} verses={audio}>
-      <QuranAudioToolbar chapter={p.start.chapter} />
-      <MemorizationPanel />
-      <QuranDownloadPanel chapter={p.start.chapter} />
+      <details className="reader-settings reader-secondary mt-5 rounded-2xl border border-accent/30 bg-surface p-4"><summary className="min-h-11 cursor-pointer py-2 font-semibold text-primary">Réglages · audio, mémorisation et téléchargements</summary><QuranAudioToolbar chapter={p.start.chapter} /><MemorizationPanel /><QuranDownloadPanel chapter={p.start.chapter} /></details>
       <p className="mt-4 text-sm text-muted">Cliquez sur le texte d’un verset pour écouter à partir de celui-ci. La récitation poursuit la portion, y compris au changement de sourate, puis s’arrête à sa fin.</p>
       <QuranPositionRail locations={locations}>
       {parts.map(part => <section key={part.chapter} className="mt-8">

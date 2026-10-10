@@ -6,10 +6,16 @@ import { offlineCatalog } from "@/lib/quran/offline-audio";
 import { memorizationNext, validMemorization, type MemorizationSettings } from "@/lib/quran/memorization";
 import { AUDIO_FOCUS_EVENT } from "./sourced-audio";
 import { ExternalLink, Headphones, LoaderCircle, Pause, Play, Repeat, Repeat1, SkipBack, SkipForward, Square } from "lucide-react";
+import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { reciters, defaultReciterId, frenchAudioEdition, type VerseAudioRef } from "@/lib/quran/reciters";
 
 interface QuranAudioState {
+  elapsed: number;
+  duration: number;
+  seek: (seconds: number) => void;
+  sleepUntil: number;
+  setSleep: (minutes: number) => void;
   memorization: MemorizationSettings | null;
   configureMemorization: (settings: MemorizationSettings | null) => void;
   section: boolean;
@@ -58,10 +64,29 @@ function PersistentMiniPlayer({ chapter }: { chapter: number }) {
   const verse = player.verses.find(v => v.number === player.playingVerse);
   const sourceChapter = verse?.sourceChapter ?? chapter;
   const sourceVerse = verse?.sourceVerse ?? player.playingVerse;
-  return <aside aria-label="Mini-lecteur du Coran" className="quran-floating-player fixed left-4 z-40 flex max-w-[calc(100%-2rem)] items-center gap-3 rounded-2xl border border-gold-500/40 bg-surface p-3 shadow-xl sm:left-6"><div className="min-w-0 max-w-48"><Link href={`/coran/${sourceChapter}${sourceVerse ? `#verset-${sourceVerse}` : ""}`} className="block truncate text-sm font-semibold text-primary">{player.phase === "french" ? frenchAudioEdition.name : active.nom}</Link><p aria-live="polite" className="text-xs text-muted">Sourate {sourceChapter}{sourceVerse ? ` · verset ${sourceVerse}` : ""}{player.paused ? " · en pause" : ""}</p>{player.error && <p role="alert" className="mt-1 text-xs text-red-700 dark:text-red-300">{player.error}</p>}</div>{(player.playingVerse !== null || player.playingSurah) && <button onClick={player.paused ? player.resume : player.pause} aria-label={player.paused ? "Reprendre la récitation" : "Mettre la récitation en pause"} className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary text-white">{player.loading ? <LoaderCircle className="size-5 animate-spin" /> : player.paused ? <Play className="size-5" /> : <Pause className="size-5" />}</button>}<button onClick={player.stop} aria-label="Arrêter la récitation" className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border"><Square className="size-4" /></button></aside>;
+  return <Sheet><aside aria-label="Mini-lecteur du Coran" className="quran-floating-player fixed left-4 z-40 flex max-w-[calc(100%-2rem)] items-center gap-3 rounded-2xl border border-gold-500/40 bg-surface p-3 shadow-xl sm:left-6"><div className="app-mini-info min-w-0 max-w-48"><Link href={`/coran/${sourceChapter}${sourceVerse ? `#verset-${sourceVerse}` : ""}`} className="block truncate text-sm font-semibold text-primary">{player.phase === "french" ? frenchAudioEdition.name : active.nom}</Link><p aria-live="polite" className="text-xs text-muted">Sourate {sourceChapter}{sourceVerse ? ` · verset ${sourceVerse}` : ""}{player.paused ? " · en pause" : ""}</p>{player.error && <p role="alert" className="mt-1 text-xs text-red-700 dark:text-red-300">{player.error}</p>}</div><SheetTrigger asChild><button type="button" aria-label="Ouvrir le lecteur complet" className="min-h-11 rounded-xl px-3 text-sm font-semibold text-primary">Lecteur</button></SheetTrigger>{(player.playingVerse !== null || player.playingSurah) && <button onClick={player.paused ? player.resume : player.pause} aria-label={player.paused ? "Reprendre la récitation" : "Mettre la récitation en pause"} className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary text-white">{player.loading ? <LoaderCircle className="size-5 animate-spin" /> : player.paused ? <Play className="size-5" /> : <Pause className="size-5" />}</button>}<button onClick={player.stop} aria-label="Arrêter la récitation" className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border"><Square className="size-4" /></button></aside><SheetContent className="app-player-sheet" aria-describedby="full-player-description"><SheetHeader><SheetTitle>Votre écoute</SheetTitle><p id="full-player-description" className="text-sm text-muted">{player.phase === "french" ? frenchAudioEdition.name : active.nom} · sourate {sourceChapter}{sourceVerse ? ` · verset ${sourceVerse}` : ""}</p></SheetHeader><FullPlayerControls/><Link href={`/coran/${sourceChapter}${sourceVerse ? `#verset-${sourceVerse}` : ""}`} className="mt-5 inline-block min-h-11 py-3 text-sm font-semibold text-primary underline">Retrouver ce verset</Link></SheetContent></Sheet>;
+}
+
+function FullPlayerControls() {
+  const p = useQuranAudioContext();
+  const i = p.verses.findIndex(v => v.number === p.playingVerse);
+  const format = (n: number) => `${Math.floor(n/60)}:${String(Math.floor(n%60)).padStart(2,"0")}`;
+  return <div className="space-y-5">
+    <div><label className="text-sm font-medium">Progression de la piste<input aria-label="Position dans la piste audio" type="range" min={0} max={Math.max(1,p.duration)} step={.1} value={Math.min(p.elapsed,p.duration)} disabled={!p.duration} onChange={e=>p.seek(Number(e.target.value))} className="mt-3 w-full accent-[var(--primary)]"/></label><div className="mt-2 flex justify-between text-xs text-muted"><span>{format(p.elapsed)}</span><span>{format(p.duration)}</span></div></div>
+    <div className="flex items-center justify-center gap-5"><button type="button" aria-label="Verset précédent" disabled={p.playingSurah || i <= 0} onClick={()=>p.playVerse(p.verses[i-1].number,true)} className="flex size-12 items-center justify-center rounded-full border border-border disabled:opacity-35"><SkipBack/></button><button type="button" aria-label={p.paused ? "Reprendre la récitation" : "Mettre la récitation en pause"} onClick={p.paused?p.resume:p.pause} className="flex size-16 items-center justify-center rounded-full bg-primary text-primary-foreground">{p.loading?<LoaderCircle className="animate-spin"/>:p.paused?<Play/>:<Pause/>}</button><button type="button" aria-label="Verset suivant" disabled={p.playingSurah || i < 0 || i >= p.verses.length-1} onClick={()=>p.playVerse(p.verses[i+1].number,true)} className="flex size-12 items-center justify-center rounded-full border border-border disabled:opacity-35"><SkipForward/></button></div>
+    <label className="flex min-h-11 items-center justify-between gap-3 text-sm">Répétition<select aria-label="Répétition dans le lecteur complet" value={p.repeatMode} onChange={e=>p.chooseRepeatMode(e.target.value as "off"|"verse"|"surah")} className="rounded-xl border border-border bg-background p-3"><option value="off">Aucune</option>{!p.playingSurah&&<option value="verse">Ce verset</option>}<option value="surah">Cette lecture</option></select></label>
+    <label className="flex min-h-11 items-center justify-between gap-3 text-sm">Arrêt automatique<select aria-label="Minuterie d’arrêt" value="" onChange={e=>p.setSleep(Number(e.target.value))} className="rounded-xl border border-border bg-background p-3"><option value="" disabled>Choisir</option><option value="0">Désactiver</option>{[5,15,30,60].map(n=><option key={n} value={n}>{n} minutes</option>)}</select></label>
+    <p role="status" className="text-xs leading-6 text-muted">{p.sleepUntil ? `Arrêt prévu à ${new Date(p.sleepUntil).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}.` : "Minuterie désactivée."} La minuterie nécessite que l’application reste en fonctionnement.</p>
+    {p.error && <p role="alert" className="rounded-xl border border-border p-3 text-sm">{p.error}</p>}
+  </div>;
 }
 
 function QuranAudioEngine({ chapter, verses, children }: { chapter: number; verses: VerseAudioRef[]; children: ReactNode }) {
+  const [elapsed,setElapsed] = useState(0);
+  const [duration,setDuration] = useState(0);
+  const [sleepUntil,setSleepUntil] = useState(0);
+  const setSleep = (minutes: number) => { if ([0,5,15,30,60].includes(minutes)) setSleepUntil(minutes ? Date.now()+minutes*60000 : 0); };
+  const seek = (seconds: number) => { const audio = audioRef.current; if (audio && Number.isFinite(seconds) && Number.isFinite(audio.duration) && audio.duration > 0) { audio.currentTime=Math.max(0,Math.min(seconds,audio.duration)); setElapsed(audio.currentTime); } };
   const [memorization, setMemorization] = useState<MemorizationSettings | null>(null);
   const memorizationRef = useRef<MemorizationSettings | null>(null);
   const completedRepetitions = useRef(0);
@@ -113,6 +138,7 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
   }, []);
 
   const stop = useCallback(() => {
+    setSleepUntil(0); setElapsed(0); setDuration(0);
     requestRef.current++;
     if (silenceTimer.current) clearTimeout(silenceTimer.current);
     silenceTimer.current = null; silenceNext.current = null; completedRepetitions.current = 0;
@@ -147,6 +173,7 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
     setPaused(false);
     setLoading(true);
     const url = urls[urlIndex];
+    setElapsed(0); setDuration(0);
     audio.src = url;
     audio.play().catch((cause) => {
       if (audio.src !== url || currentVerseRef.current !== verseNumber || phaseRef.current !== phase) return;
@@ -184,6 +211,8 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
     audio.preload = "auto";
     preloadRef.current = preload;
     audioRef.current = audio;
+    const onTime = () => { setElapsed(Number.isFinite(audio.currentTime)?audio.currentTime:0); setDuration(Number.isFinite(audio.duration)?audio.duration:0); };
+    audio.addEventListener("timeupdate",onTime); audio.addEventListener("loadedmetadata",onTime);
     const onPlaying = () => {
       window.dispatchEvent(new CustomEvent(AUDIO_FOCUS_EVENT, { detail: audio }));
       clearWatchdog(); setLoading(false); setPaused(false); setError(null);
@@ -240,6 +269,7 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
       silenceNext.current = null; silenceTimer.current = null;
       audio.pause();
       window.removeEventListener(AUDIO_FOCUS_EVENT, onAudioFocus);
+      audio.removeEventListener("timeupdate",onTime); audio.removeEventListener("loadedmetadata",onTime);
       audio.removeEventListener("playing", onPlaying);
       audio.removeEventListener("ended", onEnded);
       audio.removeEventListener("error", onError);
@@ -385,7 +415,15 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
     navigator.mediaSession.playbackState = playingVerse === null && !playingSurah ? "none" : paused ? "paused" : "playing";
   }, [chapter, verses, reciterId, playingVerse, playingSurah, paused, phase]);
 
-  return <QuranAudioContext.Provider value={{ memorization, configureMemorization, section, verses, translationEnabled, phase, chooseTranslation, reciterId, chooseReciter, playingVerse, playingSurah, paused, loading, error, repeatMode, chooseRepeatMode, stop, pause, resume, playVerse, playSurah }}>
+  useEffect(() => {
+    if (!sleepUntil) return;
+    const check = () => { if (Date.now() >= sleepUntil) stop(); };
+    const timer = window.setInterval(check,1000);
+    document.addEventListener("visibilitychange",check);
+    return () => { window.clearInterval(timer); document.removeEventListener("visibilitychange",check); };
+  },[sleepUntil,stop]);
+
+  return <QuranAudioContext.Provider value={{ elapsed, duration, seek, sleepUntil, setSleep, memorization, configureMemorization, section, verses, translationEnabled, phase, chooseTranslation, reciterId, chooseReciter, playingVerse, playingSurah, paused, loading, error, repeatMode, chooseRepeatMode, stop, pause, resume, playVerse, playSurah }}>
     {children}
   </QuranAudioContext.Provider>;
 }

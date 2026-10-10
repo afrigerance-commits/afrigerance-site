@@ -10,6 +10,7 @@ import { siteConfig } from "@/lib/site-config";
 import { OfflineSupport } from "@/components/offline-support";
 import { PersistentQuranAudio } from "@/components/islamic/quran-audio-player";
 import { MobileBottomNavigation } from "@/components/layout/mobile-bottom-navigation";
+import { AppHeader } from "@/components/mobile/app-header";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -77,11 +78,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <a href="#contenu-principal" className="skip-link">
             Aller au contenu principal
           </a>
-          <Header authSlot={<HeaderAuth />} />
+          <div className="app-desktop-header"><Header authSlot={<HeaderAuth />} /></div>
+          <AppHeader />
           <main id="contenu-principal" className="flex-1">
             <PageTransition>{children}</PageTransition>
           </main>
-          <Footer />
+          <div className="app-desktop-footer"><Footer /></div>
           <OfflineSupport />
           <MobileBottomNavigation />
           </PersistentQuranAudio>

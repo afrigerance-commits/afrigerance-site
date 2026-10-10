@@ -27,3 +27,8 @@ La publication du lot préparé (connexion, repères Juz et outils de lecture)
 est autorisée sur Netlify. Ce lot ne modifie pas le code natif Android ;
 l’APK 1.2 existante charge les nouveaux contenus web après publication.
 Les modifications ultérieures restent soumises à un nouveau signal.
+
+Signal suivant reçu le 10 octobre 2026 : « Signal donné ».
+La publication du lot des trois modes Coran et de l’interface mobile premium
+est autorisée. Aucun changement natif Android dans ce lot ; l’APK actuelle
+charge la version web publiée. Les futures publications exigent un nouveau signal.

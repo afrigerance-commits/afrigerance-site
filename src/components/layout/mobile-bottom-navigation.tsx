@@ -41,9 +41,11 @@ export function MobileBottomNavigation() {
               <div className="grid grid-cols-2 gap-2">{group.links.map(item => <SheetClose key={item.href} asChild><Link href={item.href} aria-current={active(item.href) ? "page" : undefined} className="flex min-h-12 items-center rounded-xl border border-border bg-background px-3 py-3 text-sm font-medium transition-colors hover:border-accent hover:text-primary">{item.label}</Link></SheetClose>)}</div>
             </section>)}
             <div className="mb-2 flex flex-wrap gap-2 border-t border-border pt-4">
+              <SheetClose asChild><Link href="/ma-bibliotheque" className="min-h-11 rounded-xl border border-accent/40 px-4 py-3 text-sm font-semibold">Ma bibliothèque</Link></SheetClose>
               <SheetClose asChild><Link href="/compte" className="min-h-11 rounded-xl border border-border px-4 py-3 text-sm font-semibold">Mon compte</Link></SheetClose>
               <SheetClose asChild><Link href="/hors-ligne" className="min-h-11 rounded-xl border border-border px-4 py-3 text-sm font-semibold">Lectures hors ligne</Link></SheetClose>
             </div>
+            <div className="flex flex-wrap gap-x-4 gap-y-2 pb-4 text-xs text-muted">{[{href:"/a-propos",label:"À propos"},{href:"/confidentialite",label:"Confidentialité"},{href:"/conditions-utilisation",label:"Conditions"}].map(item=><SheetClose key={item.href} asChild><Link href={item.href} className="min-h-11 py-3 underline">{item.label}</Link></SheetClose>)}</div>
           </div>
         </SheetContent>
       </Sheet>

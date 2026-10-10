@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BookOpen, Check, Library } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/reveal";
+import { MobileHome } from "@/components/mobile/home";
 import { HomeHero } from "@/components/home/hero";
 import { PrayerClock } from "@/components/islamic/prayer-clock";
 import { ReadingResume } from "@/components/islamic/reading-resume";
@@ -18,8 +19,9 @@ export default async function HomePage() {
   const [articles, videos] = await Promise.all([getPublishedArticles(), getPublishedVideos()]);
   const verse = getChapterVerses(1)[1];
   return <>
-    <HomeHero />
-    <PrayerClock />
+    <div className="app-desktop-home"><HomeHero /></div>
+    <MobileHome><PrayerClock /></MobileHome>
+    <div className="app-desktop-home">
     <div className="premium-container"><ReadingResume chapters={getChapters()} /></div>
     <section id="lecture-decouverte" className="premium-container scroll-mt-24 py-10 sm:py-14">
       <Reveal className="reading-discovery grid gap-8 rounded-3xl border border-accent/30 bg-surface p-6 sm:p-10 lg:grid-cols-[.65fr_1.35fr] lg:gap-14">
@@ -39,5 +41,6 @@ export default async function HomePage() {
     </div></section>}
     <section className="premium-container py-12 sm:py-16"><Reveal className="section-heading"><div><p className="eyebrow flex items-center gap-2"><Library className="size-4" aria-hidden="true" /> La bibliothèque</p><h2 className="section-title mt-3">Comprendre les ouvrages.</h2><p className="mt-4 max-w-xl leading-7 text-muted">Des notices pour identifier un auteur, une édition et un domaine d’étude. La disponibilité de chaque texte est indiquée.</p></div><Link href="/bibliotheque" className="editorial-link py-3 text-sm font-semibold text-primary">Toutes les notices</Link></Reveal><div className="mt-8 grid gap-5 sm:grid-cols-3">{[books[0], books[3], books[6]].map(book => <BookCard key={book.slug} book={book} compact />)}</div></section>
     <section className="bg-emerald-900 py-12 text-ivory-50 sm:py-16"><div className="premium-container grid gap-8 lg:grid-cols-[1fr_1fr] lg:gap-16"><Reveal><p className="eyebrow text-gold-500">Notre méthode</p><h2 className="mt-4 font-display text-3xl leading-tight sm:text-4xl">La confiance<br />se documente.</h2><p className="mt-5 max-w-lg text-base leading-8 text-ivory-50/85">Texte original, traduction du sens et commentaire ont chacun leur place. Vous pouvez retrouver les références et consulter la méthode éditoriale.</p></Reveal><Reveal className="flex flex-col justify-center"><ul className="space-y-4 text-base">{["Sources et éditions identifiées", "Attributions incertaines signalées", "Fiqh présenté dans le référentiel malikite"].map(label => <li key={label} className="flex gap-3"><Check className="mt-1 size-5 shrink-0 text-gold-500" aria-hidden="true" />{label}</li>)}</ul><div className="mt-7 flex flex-wrap gap-5 text-sm font-semibold text-gold-500"><Link href="/a-propos/politique-editoriale" className="editorial-link py-3">Notre politique éditoriale</Link><Link href="/a-propos" className="editorial-link py-3">À propos de MIRÂTH</Link></div></Reveal></div></section>
+    </div>
   </>;
 }

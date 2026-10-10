@@ -36,6 +36,7 @@ export const siteConfig = {
       { label: "Horaires de prière", href: "/#horaires-prieres" },
     { label: "Ma routine", href: "/routine" },
     { label: "Mon suivi", href: "/mon-suivi" },
+    { label: "Ma bibliothèque", href: "/ma-bibliotheque" },
     { label: "Mes notes", href: "/mes-notes" },
       { label: "Explorer le savoir", href: "/explorer-le-savoir" },
       { label: "Fiqh malikite", href: "/fiqh/malikite" },
@@ -57,6 +58,7 @@ export const siteConfig = {
         { label: "Horaires de prière", href: "/#horaires-prieres" },
     { label: "Ma routine", href: "/routine" },
     { label: "Mon suivi", href: "/mon-suivi" },
+    { label: "Ma bibliothèque", href: "/ma-bibliotheque" },
     { label: "Mes notes", href: "/mes-notes" },
         { label: "Explorer le savoir", href: "/explorer-le-savoir" },
         { label: "Bibliothèque", href: "/bibliotheque" },
@@ -93,6 +95,7 @@ export const navigationGroups = [
     { label: "Horaires de prière", href: "/#horaires-prieres" },
     { label: "Ma routine", href: "/routine" },
     { label: "Mon suivi", href: "/mon-suivi" },
+    { label: "Ma bibliothèque", href: "/ma-bibliotheque" },
     { label: "Mes notes", href: "/mes-notes" },
   ] },
 ] as const;

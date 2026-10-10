@@ -16,3 +16,18 @@ it("hides the verse and its translation, reveals it on request and can hide it a
   fireEvent.click(screen.getByRole("button",{ name:"Masquer à nouveau ce verset" }));
   expect(screen.queryByText(/Texte arabe test/)).toBeNull();
 });
+it("switches between original Arabic, French meaning and both without losing verse controls", () => {
+  render(<QuranReadingTools chapter={1}><QuranVerseContent chapter={1} number={1} arabic="Texte arabe test" french="Traduction test" /></QuranReadingTools>);
+  fireEvent.click(screen.getByRole("button", { name: "Français seulement" }));
+  expect(screen.queryByText(/Texte arabe test/)).toBeNull();
+  expect(screen.getByText("Traduction test")).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: /Tajwîd/ })).toBeNull();
+  expect(screen.getByRole("button", { name: "Écouter à partir de 1:1" })).toBeInTheDocument();
+  expect(localStorage.getItem("mirath:quran:language")).toBe('"french"');
+  fireEvent.click(screen.getByRole("button", { name: "Arabe seulement" }));
+  expect(screen.getByText(/Texte arabe test/)).toBeInTheDocument();
+  expect(screen.queryByText("Traduction test")).toBeNull();
+  fireEvent.click(screen.getByRole("button", { name: "Arabe et français" }));
+  expect(screen.getByText(/Texte arabe test/)).toBeInTheDocument();
+  expect(screen.getByText("Traduction test")).toBeInTheDocument();
+});

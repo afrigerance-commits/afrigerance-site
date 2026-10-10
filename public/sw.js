@@ -4,7 +4,7 @@
 const VERSION = "mirath-offline-v1";
 const PAGES = `${VERSION}-pages`;
 const ASSETS = `${VERSION}-assets`;
-const PUBLIC_PAGE = /^\/(?:$|coran(?:\/|$)|hadith(?:\/|$)|invocations(?:\/|$)|fiqh(?:\/|$)|sira(?:\/|$)|compagnons(?:\/|$)|prophetes(?:\/|$)|routine$|blog(?:\/|$)|apprendre(?:\/|$)|hors-ligne$|mon-suivi$|mes-notes$)/;
+const PUBLIC_PAGE = /^\/(?:$|coran(?:\/|$)|hadith(?:\/|$)|invocations(?:\/|$)|fiqh(?:\/|$)|sira(?:\/|$)|compagnons(?:\/|$)|prophetes(?:\/|$)|routine$|blog(?:\/|$)|apprendre(?:\/|$)|hors-ligne$|mon-suivi$|mes-notes$|ma-bibliotheque$)/;
 function isPublicPage(url) {
   return url.origin === self.location.origin && !url.search && PUBLIC_PAGE.test(url.pathname) && !url.pathname.endsWith(".xml");
 }

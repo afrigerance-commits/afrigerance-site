@@ -7,7 +7,10 @@ import { VerseNoteEditor } from "@/components/quran/verse-note";
 import { QuranTafsir } from "@/components/islamic/quran-tafsir";
 import { parseTajweed, tajweedRules, type TajweedSegment } from "@/lib/quran/tajweed";
 
+import { QuranLanguageSelector, useQuranLanguage, type QuranLanguage } from "@/components/islamic/quran-language-selector";
+
 interface ReadingState {
+  language: QuranLanguage;
   bookmarked: number | null;
   setBookmark: (verse: number) => void;
   hideVersion: number;
@@ -24,7 +27,8 @@ export function QuranReadingTools({ chapter, children }: { chapter: number; chil
   const [bookmarked, setBookmarked] = useState<number | null>(null);
   const [hideArabic, setHideArabic] = useState(false);
   const [hideVersion, setHideVersion] = useState(0);
-  const [showFrench, setShowFrench] = useState(true);
+  const language = useQuranLanguage();
+  const showFrench = language.value !== "arabic";
   const [fontSize, setFontSize] = useState(32);
   const [tajweedEnabled, setTajweedEnabled] = useState(false);
   const [tajweed, setTajweed] = useState<Map<number, TajweedSegment[]> | null>(null);
@@ -56,12 +60,10 @@ export function QuranReadingTools({ chapter, children }: { chapter: number; chil
     let cancelled = false;
     try {
       const saved = Number(localStorage.getItem(`mirath:quran:bookmark:${chapter}`));
-      const french = localStorage.getItem("mirath:quran:french") !== "false";
       const size = Number(localStorage.getItem("mirath:quran:font-size"));
       queueMicrotask(() => {
         if (cancelled) return;
         setBookmarked(Number.isInteger(saved) && saved > 0 ? saved : null);
-        setShowFrench(french);
         if (size >= 26 && size <= 46) setFontSize(size);
       });
     } catch { /* La lecture fonctionne aussi sans stockage local. */ }
@@ -84,27 +86,20 @@ export function QuranReadingTools({ chapter, children }: { chapter: number; chil
     try { localStorage.setItem("mirath:quran:font-size", String(size)); } catch { /* Stockage désactivé. */ }
   }
 
-  function toggleFrench() {
-    setShowFrench((current) => {
-      try { localStorage.setItem("mirath:quran:french", String(!current)); } catch { /* Stockage désactivé. */ }
-      return !current;
-    });
-  }
-
-  return <ReadingContext.Provider value={{ bookmarked, setBookmark, hideArabic, hideVersion, showFrench, fontSize, tajweed: tajweedEnabled ? tajweed : null }}>
+  return <ReadingContext.Provider value={{ language: language.value, bookmarked, setBookmark, hideArabic, hideVersion, showFrench, fontSize, tajweed: tajweedEnabled ? tajweed : null }}>
     <div className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-gold-600/25 bg-[#f8f4e9] p-3 text-sm dark:bg-emerald-900/15 sm:p-4" aria-label="Options de lecture">
       <span className="mr-auto font-semibold text-emerald-950 dark:text-ivory-50">Ma lecture</span>
       {bookmarked && <a href={`#verset-${audioPlayer.section ? `${chapter}-` : ""}${bookmarked}`} className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-emerald-800 underline underline-offset-4 hover:bg-emerald-900/10 dark:text-gold-500"><BookmarkCheck className="size-4" /> Reprendre au verset {bookmarked}</a>}
       <button type="button" aria-pressed={hideArabic} onClick={() => { setHideArabic(!hideArabic); setHideVersion(v => v + 1); }} className="min-h-11 rounded-lg border border-border bg-white/70 px-3 py-2 font-medium dark:bg-white/5">{hideArabic ? "Afficher le texte" : "Masquer le texte"}</button>
-      <button type="button" aria-pressed={showFrench} onClick={toggleFrench} className="rounded-lg border border-border bg-white/70 min-h-11 px-3 py-2 font-medium hover:border-emerald-700 dark:bg-white/5">Traduction {showFrench ? "visible" : "masquée"}</button>
-      <button type="button" aria-pressed={tajweedEnabled} onClick={() => setTajweedEnabled((current) => !current)} className="rounded-lg border border-border bg-white/70 min-h-11 px-3 py-2 font-medium hover:border-emerald-700 dark:bg-white/5">Tajwîd {tajweedEnabled ? "activé" : "désactivé"}</button>
-      <div className="flex items-center rounded-lg border border-border bg-white/70 dark:bg-white/5" aria-label="Taille du texte arabe">
+      <QuranLanguageSelector compact />
+      {language.value !== "french" && <button type="button" aria-pressed={tajweedEnabled} onClick={() => setTajweedEnabled((current) => !current)} className="rounded-lg border border-border bg-white/70 min-h-11 px-3 py-2 font-medium hover:border-emerald-700 dark:bg-white/5">Tajwîd {tajweedEnabled ? "activé" : "désactivé"}</button>}
+      {language.value !== "french" && <div className="flex items-center rounded-lg border border-border bg-white/70 dark:bg-white/5" aria-label="Taille du texte arabe">
         <button type="button" aria-label="Réduire le texte arabe" disabled={fontSize <= 26} onClick={() => changeFont(-4)} className="flex size-11 items-center justify-center disabled:opacity-40"><Minus className="size-4" /></button>
         <span className="px-1 text-xs" aria-hidden="true">Aa</span>
         <button type="button" aria-label="Agrandir le texte arabe" disabled={fontSize >= 46} onClick={() => changeFont(4)} className="flex size-11 items-center justify-center disabled:opacity-40"><Plus className="size-4" /></button>
-      </div>
+      </div>}
     </div>
-    {tajweedEnabled && <div className="mt-2 rounded-xl border border-gold-600/20 bg-[#fffcf5] px-4 py-3 text-xs leading-6 text-muted dark:bg-emerald-950/20" role="status">
+    {tajweedEnabled && language.value !== "french" && <div className="mt-2 rounded-xl border border-gold-600/20 bg-[#fffcf5] px-4 py-3 text-xs leading-6 text-muted dark:bg-emerald-950/20" role="status">
       {tajweedError ? "Les annotations de tajwîd ne sont pas disponibles pour cette sourate ; le texte habituel reste affiché." : !tajweed ? "Chargement des annotations de tajwîd…" : <><span className="font-semibold text-foreground">Code couleur :</span> {Object.entries(tajweedRules).filter(([key]) => ["n", "q", "f", "i", "a", "g"].includes(key)).map(([key, rule]) => <span key={key} className="mr-3 inline-flex items-center gap-1"><span className="size-2.5 rounded-full" style={{ backgroundColor: rule.color }} />{rule.label}</span>)}<span className="block">Graphie annotée distincte de l’édition habituelle ; les signes de pause du texte original restent accessibles en désactivant l’option. Source : Al Quran Cloud.</span></>}
     </div>}
     {children}
@@ -128,11 +123,11 @@ export function QuranVerseContent({ chapter, number, arabic, french, audioNumber
       </button>
     </div>
     <div className="flex items-start gap-2 sm:gap-5">
-      {hidden ? <button type="button" onClick={() => setRevealed(reading.hideVersion)} className="min-h-20 flex-1 rounded-xl border border-dashed border-accent/40 bg-accent/5 p-5 text-sm font-semibold text-primary">Révéler le verset {number}</button> : <button type="button" disabled={player.reciterId === "tvquran.hady-toure"} aria-label={`Écouter à partir de ${chapter}:${number}`} onClick={() => player.playVerse(audioNumber, true)} lang="ar" dir="rtl" className="quran-quote min-w-0 flex-1 rounded-xl px-2 py-1 focus-visible:outline-2 focus-visible:outline-gold-600 text-right text-emerald-950 dark:text-ivory-50" style={{ fontSize: reading.fontSize }}>{annotated ? annotated.map((part, index) => part.rule ? <span key={index} title={tajweedRules[part.rule].label} style={{ color: tajweedRules[part.rule].color }}>{part.text}</span> : part.text) : <WaqfText text={arabic} />} <span className="ayah-seal" aria-hidden="true">﴿{number.toLocaleString("ar")}﴾</span></button>}
+      {hidden ? <button type="button" onClick={() => setRevealed(reading.hideVersion)} className="min-h-20 flex-1 rounded-xl border border-dashed border-accent/40 bg-accent/5 p-5 text-sm font-semibold text-primary">Révéler le verset {number}</button> : reading.language !== "french" ? <button type="button" disabled={player.reciterId === "tvquran.hady-toure"} aria-label={`Écouter à partir de ${chapter}:${number}`} onClick={() => player.playVerse(audioNumber, true)} lang="ar" dir="rtl" className="quran-quote min-w-0 flex-1 rounded-xl px-2 py-1 focus-visible:outline-2 focus-visible:outline-gold-600 text-right text-emerald-950 dark:text-ivory-50" style={{ fontSize: reading.fontSize }}>{annotated ? annotated.map((part, index) => part.rule ? <span key={index} title={tajweedRules[part.rule].label} style={{ color: tajweedRules[part.rule].color }}>{part.text}</span> : part.text) : <WaqfText text={arabic} />} <span className="ayah-seal" aria-hidden="true">﴿{number.toLocaleString("ar")}﴾</span></button> : <button type="button" disabled={player.reciterId === "tvquran.hady-toure"} aria-label={`Écouter à partir de ${chapter}:${number}`} onClick={() => player.playVerse(audioNumber, true)} lang="fr" className="min-w-0 flex-1 rounded-xl border-l-2 border-gold-600/35 px-4 py-2 text-left text-lg leading-9 focus-visible:outline-2 focus-visible:outline-gold-600">{french}</button>}
       <VersePlayButton verseNumber={audioNumber} />
     </div>
-    {reading.showFrench && !hidden && <p lang="fr" className={`mt-5 max-w-[68ch] border-l-2 pl-4 text-base leading-8 text-foreground/85 sm:ml-3 ${player.playingVerse === audioNumber && player.phase === "french" ? "border-gold-600 bg-gold-600/10" : "border-gold-600/35"}`}>{french}</p>}
-    {!hidden && <QuranTafsir chapter={chapter} verse={number} />}
+    {reading.language === "both" && reading.showFrench && !hidden && <p lang="fr" className={`mt-5 max-w-[68ch] border-l-2 pl-4 text-base leading-8 text-foreground/85 sm:ml-3 ${player.playingVerse === audioNumber && player.phase === "french" ? "border-gold-600 bg-gold-600/10" : "border-gold-600/35"}`}>{french}</p>}
+    {!hidden && reading.language !== "french" && <QuranTafsir chapter={chapter} verse={number} />}
     {reading.hideArabic && !hidden && <button type="button" onClick={() => setRevealed(-1)} className="mt-3 min-h-11 text-sm text-primary underline">Masquer à nouveau ce verset</button>}
     <VerseNoteEditor chapter={chapter} verse={number} />
     <a href={`/coran/${chapter}#verset-${number}`} className="sr-only">Lien vers le verset {number}</a>

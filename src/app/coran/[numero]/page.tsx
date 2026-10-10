@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
+import { QuranArabicOnly } from "@/components/islamic/quran-language-selector";
 import { ArabicText } from "@/components/islamic/arabic-text";
 import { MemorizationPanel } from "@/components/quran/memorization-panel";
 import { QuranDownloadPanel } from "@/components/quran/audio-downloads";
@@ -70,24 +71,22 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
       </Link>
 
       <Reveal className="flex flex-col gap-4 border-b border-accent/30 pb-6 pt-4 sm:flex-row sm:items-center sm:justify-between">
-        <div><p className="text-xs font-semibold uppercase tracking-wider text-accent-text">Sourate {chapter.number} · {chapter.revelation === "Mecca" ? "Mecquoise" : "Médinoise"} · {chapter.versesCount} versets</p><h1 className="mt-3 font-display text-3xl font-semibold tracking-tight text-primary sm:text-4xl">{chapter.nameFrench}</h1><ArabicText as="p" variant="quran" className="mt-2 text-2xl text-accent-text">{chapter.nameArabic}</ArabicText></div>
+        <div><p className="text-xs font-semibold uppercase tracking-wider text-accent-text">Sourate {chapter.number} · {chapter.revelation === "Mecca" ? "Mecquoise" : "Médinoise"} · {chapter.versesCount} versets</p><h1 className="mt-3 font-display text-3xl font-semibold tracking-tight text-primary sm:text-4xl">{chapter.nameFrench}</h1><QuranArabicOnly><ArabicText as="p" variant="quran" className="mt-2 text-2xl text-accent-text">{chapter.nameArabic}</ArabicText></QuranArabicOnly></div>
         <div className="reader-secondary w-full sm:max-w-64"><SourateSwitcher chapters={chapters} current={chapter.number} /></div>
       </Reveal>
 
       {isBismillahImplicit && (
-        <Reveal delay={0.05} className="mt-8 text-center">
+        <QuranArabicOnly><Reveal delay={0.05} className="mt-8 text-center">
           <ArabicText as="p" variant="quran" className="quran-quote text-xl">
             بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
           </ArabicText>
-        </Reveal>
+        </Reveal></QuranArabicOnly>
       )}
 
       <QuranAudioProvider chapter={number} verses={verses.map((v) => ({ number: v.number, globalNumber: v.globalNumber! }))}>
         <ReadingPositionTracker chapter={number} verseCount={verses.length} />
         <nav className="reader-secondary mt-5 flex flex-wrap gap-3 text-sm" aria-label="Portions de cette sourate"><Link className="mushaf-controls rounded-xl border border-gold-600/25 px-4 py-3" href={`/coran/lecture/juz/${partitionAt(number, 1, "juz").number}`}>Lire le juz {partitionAt(number, 1, "juz").number}</Link><Link className="mushaf-controls rounded-xl border border-gold-600/25 px-4 py-3" href={`/coran/lecture/hizb/${partitionAt(number, 1, "hizb").number}`}>Lire le hizb {partitionAt(number, 1, "hizb").number}</Link></nav>
-        <QuranAudioToolbar chapter={number} />
-        <MemorizationPanel />
-        <QuranDownloadPanel chapter={number} />
+        <details className="reader-settings reader-secondary mt-5 rounded-2xl border border-accent/30 bg-surface p-4"><summary className="min-h-11 cursor-pointer py-2 font-semibold text-primary">Réglages · audio, mémorisation et téléchargements</summary><QuranAudioToolbar chapter={number} /><MemorizationPanel /><QuranDownloadPanel chapter={number} /></details>
         <QuranReadingTools chapter={number}>
         <QuranPositionRail locations={locations}>
         <div className="mushaf-sheet mt-5 flex flex-col gap-1 rounded-[1.5rem] border border-gold-600/20 bg-[#fffcf5] px-2 py-2 shadow-sm dark:bg-emerald-950/20 sm:px-4">
