@@ -2,7 +2,7 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { allowedAudioUrl, AUDIO_CACHE, downloadAudioPack, offlineCatalog, readAudioPacks, removeAudioPack } from "@/lib/quran/offline-audio";
 const url = "https://everyayah.com/data/Ghamadi_40kbps/001001.mp3";
 vi.mock("@/lib/quran/reciters", async original => ({ ...await original<Record<string, unknown>>(), loadRecitation: vi.fn(async () => new Map([[1,[url]]])), loadSectionRecitation: vi.fn(), loadFrenchRecitation: vi.fn() }));
-import { loadRecitation } from "@/lib/quran/reciters";
+import { loadRecitation, loadFrenchRecitation } from "@/lib/quran/reciters";
 const refs = [{ number: 1, globalNumber: 1 }];
 let stores: Map<string, Map<string, Response>>;
 beforeEach(() => {
@@ -44,4 +44,15 @@ it("restricts audio cache requests to the known recording paths", () => {
   expect(allowedAudioUrl("https://cdn.islamic.network/quran/audio/128/ar.alafasy/1.mp3")).toBe(true);
   expect(allowedAudioUrl("https://evil.test/file.mp3")).toBe(false);
   expect(allowedAudioUrl(url+"?tracking=1")).toBe(false);
+});
+
+it("downloads only the French voice when French-only audio is selected", async () => {
+  const frenchUrl="https://cdn.islamic.network/quran/audio/128/fr.leclerc/1.mp3";
+  vi.mocked(loadRecitation).mockClear();
+  vi.mocked(loadFrenchRecitation).mockResolvedValueOnce(new Map([[1,[frenchUrl]]]));
+  const pack=await downloadAudioPack(1,"everyayah.ghamdi",refs,"french",new AbortController().signal,vi.fn());
+  expect(loadRecitation).not.toHaveBeenCalled();
+  expect(pack.urls).toEqual([frenchUrl]);
+  expect(pack.audioMode).toBe("french");
+  expect(pack.complete).toBe(true);
 });

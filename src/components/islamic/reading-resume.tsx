@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { chapterName } from "@/lib/quran/chapter-name";
 import Link from "next/link";
 import { ArrowUpRight, Bookmark } from "lucide-react";
 import { parseReadingPosition, readingPositionKey, type ReadingPosition } from "@/lib/quran/reading-position";
@@ -14,7 +15,7 @@ export function ReadingResume({ chapters }: { chapters: QuranChapterMeta[] }) {
   }, [chapters]);
   if (!position) return null;
   const chapter = chapters.find((c) => c.number === position.chapter)!;
-  return <Link href={`/coran/${position.chapter}#verset-${position.verse}`} className="resume-panel my-6 flex flex-wrap items-center gap-4 rounded-2xl border border-accent/35 bg-surface px-5 py-4 transition-colors hover:border-primary"><Bookmark className="size-5 text-primary" /><div className="flex-1"><span className="block text-[10px] font-semibold uppercase tracking-widest text-accent-text">Reprendre ma lecture</span><span className="mt-1 block text-sm font-medium">{chapter.nameFrench} · verset {position.verse}</span></div><span className="hidden text-xs text-muted sm:block">Enregistré sur cet appareil</span><ArrowUpRight className="size-4 text-primary" /></Link>;
+  return <Link href={`/coran/${position.chapter}#verset-${position.verse}`} className="resume-panel my-6 flex flex-wrap items-center gap-4 rounded-2xl border border-accent/35 bg-surface px-5 py-4 transition-colors hover:border-primary"><Bookmark className="size-5 text-primary" /><div className="flex-1"><span className="block text-[10px] font-semibold uppercase tracking-widest text-accent-text">Reprendre ma lecture</span><span className="mt-1 block text-sm font-medium">{chapterName(chapter)} · verset {position.verse}</span></div><span className="hidden text-xs text-muted sm:block">Enregistré sur cet appareil</span><ArrowUpRight className="size-4 text-primary" /></Link>;
 }
 
 export function ReadingPositionTracker({ chapter, verseCount }: { chapter: number; verseCount: number }) {

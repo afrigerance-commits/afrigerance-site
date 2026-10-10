@@ -81,6 +81,7 @@ export interface Hadith {
 
 const arCache = new Map<string, RawEdition>();
 const frCache = new Map<string, RawEdition>();
+const frByNumberCache = new Map<string, Map<number, RawHadith>>();
 const sectionsFrCache = new Map<string, Record<string, string>>();
 
 function readJson<T>(dir: string, file: string): T {
@@ -127,7 +128,8 @@ export function getHadithsForBook(collectionSlug: string, bookNumber: number): H
   const ar = loadAr(collection.dir);
   const fr = loadFr(collection.dir);
 
-  const frByNumber = new Map(fr.hadiths.map((h) => [h.hadithnumber, h]));
+  if (!frByNumberCache.has(collection.dir)) frByNumberCache.set(collection.dir,new Map(fr.hadiths.map((h) => [h.hadithnumber, h])));
+  const frByNumber = frByNumberCache.get(collection.dir)!;
 
   return ar.hadiths
     .filter((h) => h.reference.book === bookNumber)

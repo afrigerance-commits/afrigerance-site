@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { chapterName } from "@/lib/quran/chapter-name";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
@@ -71,7 +72,7 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
       </Link>
 
       <Reveal className="flex flex-col gap-4 border-b border-accent/30 pb-6 pt-4 sm:flex-row sm:items-center sm:justify-between">
-        <div><p className="text-xs font-semibold uppercase tracking-wider text-accent-text">Sourate {chapter.number} · {chapter.revelation === "Mecca" ? "Mecquoise" : "Médinoise"} · {chapter.versesCount} versets</p><h1 className="mt-3 font-display text-3xl font-semibold tracking-tight text-primary sm:text-4xl">{chapter.nameFrench}</h1><QuranArabicOnly><ArabicText as="p" variant="quran" className="mt-2 text-2xl text-accent-text">{chapter.nameArabic}</ArabicText></QuranArabicOnly></div>
+        <div><p className="text-xs font-semibold uppercase tracking-wider text-accent-text">Sourate {chapter.number} · {chapter.revelation === "Mecca" ? "Mecquoise" : "Médinoise"} · {chapter.versesCount} versets</p><h1 className="mt-3 font-display text-3xl font-semibold tracking-tight text-primary sm:text-4xl">{chapterName(chapter)}</h1><p className="mt-2 text-sm text-muted">{chapter.nameFrench}</p><QuranArabicOnly><ArabicText as="p" variant="quran" className="mt-2 text-2xl text-accent-text">{chapter.nameArabic}</ArabicText></QuranArabicOnly></div>
         <div className="reader-secondary w-full sm:max-w-64"><SourateSwitcher chapters={chapters} current={chapter.number} /></div>
       </Reveal>
 
@@ -125,14 +126,14 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
       <div className="reader-secondary mt-8 flex items-center justify-between gap-4 border-t border-border pt-6 text-sm">
         {prev ? (
           <Link href={`/coran/${prev.number}`} className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline">
-            <ArrowLeft className="h-4 w-4" /> {prev.nameFrench}
+            <ArrowLeft className="h-4 w-4" /> {chapterName(prev)}
           </Link>
         ) : (
           <span />
         )}
         {next && (
           <Link href={`/coran/${next.number}`} className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline">
-            {next.nameFrench} <ArrowRight className="h-4 w-4" />
+            {chapterName(next)} <ArrowRight className="h-4 w-4" />
           </Link>
         )}
       </div>

@@ -1,3 +1,4 @@
+import { chapterName } from "./chapter-name";
 import { getPartitions } from "./partitions";
 import { verseReference } from "./reading-plan";
 import chapters from "../../../data/quran/chapters-meta.json";
@@ -8,8 +9,8 @@ export function audioPackLocation(pack: { chapter: number; first: number; last: 
       if (part) return { label: `${type === "juz" ? "Juz" : "Hizb"} ${part.number}`, href: `/coran/lecture/${type}/${part.number}` };
     }
     const start = verseReference(pack.first);
-    return { label: `${chapters[start.chapter - 1].nameFrench} · depuis le verset ${start.verse}`, href: `/coran/${start.chapter}#verset-${start.verse}` };
+    return { label: `${chapterName(chapters[start.chapter - 1])} · depuis le verset ${start.verse}`, href: `/coran/${start.chapter}#verset-${start.verse}` };
   }
   const chapter = chapters.find(c => c.number === pack.chapter) ?? chapters[0];
-  return { label: chapter.nameFrench, href: `/coran/${chapter.number}` };
+  return { label: chapterName(chapter), href: `/coran/${chapter.number}` };
 }

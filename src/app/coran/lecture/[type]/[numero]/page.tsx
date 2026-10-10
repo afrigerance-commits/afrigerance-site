@@ -1,3 +1,4 @@
+import { chapterName } from "@/lib/quran/chapter-name";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -48,7 +49,7 @@ export default async function PortionPage({ params }: { params: Promise<{ type: 
       <p className="mt-4 text-sm text-muted">Cliquez sur le texte d’un verset pour écouter à partir de celui-ci. La récitation poursuit la portion, y compris au changement de sourate, puis s’arrête à sa fin.</p>
       <QuranPositionRail locations={locations}>
       {parts.map(part => <section key={part.chapter} className="mt-8">
-        <h2 className="mb-4 font-display text-xl text-primary"><Link href={`/coran/${part.chapter}`}>{part.chapter}. {part.meta.nameFrench}</Link></h2>
+        <h2 className="mb-4 font-display text-xl text-primary"><Link href={`/coran/${part.chapter}`}>{part.chapter}. {chapterName(part.meta)} · {part.meta.nameFrench}</Link></h2>
         <QuranReadingTools chapter={part.chapter}><div className="mushaf-sheet mt-5 rounded-3xl border border-gold-600/25 px-2 py-2 sm:px-4">{part.verses.map(v => <div key={v.number}>
           {(locations[v.position - 1].startsJuz || v.position === 1) && <QuranJuzMarker number={locations[v.position - 1].juz} kind={locations[v.position - 1].startsJuz ? "start" : "continued"} />}
           <QuranVerseRow verseNumber={v.position}><QuranVerseContent chapter={part.chapter} number={v.number} audioNumber={v.position} arabic={v.arabic} french={v.french} /></QuranVerseRow>

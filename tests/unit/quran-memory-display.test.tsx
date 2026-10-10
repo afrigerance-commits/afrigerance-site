@@ -1,6 +1,6 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
-vi.mock("@/components/islamic/quran-audio-player", () => ({ useQuranAudioContext: () => ({ reciterId:"ar.alafasy", section:false, playingVerse:null, playVerse:vi.fn() }), VersePlayButton: () => <button>Écouter</button> }));
+vi.mock("@/components/islamic/quran-audio-player", () => ({ useQuranAudioContext: () => ({ reciterId:"ar.alafasy", section:false, playingVerse:null, playVerse:vi.fn() }), QuranAudioModeSelector: () => <span>Choix audio</span>, VersePlayButton: () => <button>Écouter</button> }));
 vi.mock("@/components/islamic/quran-tafsir", () => ({ QuranTafsir: () => <div>Commentaire</div> }));
 import { QuranReadingTools, QuranVerseContent } from "@/components/islamic/quran-reading-tools";
 afterEach(() => { cleanup(); localStorage.clear(); });

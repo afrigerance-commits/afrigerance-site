@@ -1,7 +1,7 @@
 import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { QuranAudioProvider, useQuranAudioContext } from "@/components/islamic/quran-audio-player";
-import { loadFrenchRecitation } from "@/lib/quran/reciters";
+import { loadFrenchRecitation, loadSectionRecitation } from "@/lib/quran/reciters";
 
 const arabic = new Map([[1, ["https://example.com/ar-7.mp3"]], [2, ["https://example.com/ar-8.mp3"]]]);
 const french = new Map([[1, ["https://example.com/fr-7.mp3"]], [2, ["https://example.com/fr-8.mp3"]]]);
@@ -28,6 +28,8 @@ const verses = [{ number: 1, globalNumber: 7, sourceChapter: 1, sourceVerse: 7 }
 function Controls() {
   const p = useQuranAudioContext();
   return <>
+    <button onClick={()=>p.chooseAudioMode("french")}>Français seul</button>
+    <button onClick={()=>p.chooseAudioMode("arabic")}>Arabe seul</button>
     <button onClick={() => p.chooseTranslation(!p.translationEnabled)}>Traduction</button>
     <button onClick={() => p.playVerse(1, true)}>Lire</button>
     <button onClick={() => p.playVerse(2, true)}>Suivant</button>
@@ -46,6 +48,7 @@ function Controls() {
 }
 beforeEach(() => {
   localStorage.clear();
+  vi.mocked(loadSectionRecitation).mockClear();
   vi.stubGlobal("Audio", FakeAudio);
   vi.mocked(loadFrenchRecitation).mockResolvedValue(french);
 });
@@ -158,4 +161,27 @@ it("cancels the sleep deadline while keeping playback active", async () => {
     act(()=>vi.advanceTimersByTime(301000));
     expect(screen.getByTestId("position")).toHaveTextContent("1:arabic");
   } finally { vi.useRealTimers(); }
+});
+
+it("plays French alone across chapter boundaries without loading the Arabic catalog", async () => {
+  setup(); await act(async()=>{});
+  fireEvent.click(screen.getByText("Français seul"));
+  fireEvent.click(screen.getByText("Lire"));
+  await waitFor(()=>expect(audio.src).toBe("https://example.com/fr-7.mp3"));
+  expect(screen.getByTestId("position")).toHaveTextContent("1:french");
+  end(); expect(audio.src).toBe("https://example.com/fr-8.mp3");
+  end(); expect(screen.getByTestId("position")).toHaveTextContent("stop:arabic");
+  expect(localStorage.getItem("mirath:quran:audio-mode")).toBe("french");
+  expect(loadSectionRecitation).not.toHaveBeenCalled();
+});
+it("repeats French alone and returns to Arabic-only mode when selected", async () => {
+  setup(); await act(async()=>{});
+  fireEvent.click(screen.getByText("Français seul")); fireEvent.click(screen.getByText("Lire"));
+  await waitFor(()=>expect(audio.src).toBe("https://example.com/fr-7.mp3"));
+  fireEvent.click(screen.getByText("Répéter")); end();
+  expect(audio.src).toBe("https://example.com/fr-7.mp3");
+  fireEvent.click(screen.getByText("Arabe seul")); expect(audio.src).toBe("");
+  fireEvent.click(screen.getByText("Lire"));
+  await waitFor(()=>expect(audio.src).toBe("https://example.com/ar-7.mp3"));
+  end(); expect(audio.src).toBe("https://example.com/ar-7.mp3");
 });

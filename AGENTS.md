@@ -32,3 +32,8 @@ Signal suivant reçu le 10 octobre 2026 : « Signal donné ».
 La publication du lot des trois modes Coran et de l’interface mobile premium
 est autorisée. Aucun changement natif Android dans ce lot ; l’APK actuelle
 charge la version web publiée. Les futures publications exigent un nouveau signal.
+
+Signal « Publie les » reçu le 10 octobre 2026 : publication autorisée du lot
+des 114 noms translittérés, recherche documentaire des hadiths et trois modes
+audio indépendants. Pas de changement natif Android. Les lots suivants restent
+soumis à un nouveau signal utilisateur.

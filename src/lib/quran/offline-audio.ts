@@ -1,8 +1,9 @@
+import { parseAudioMode, type QuranAudioMode } from "./audio-mode";
 import { reciters, loadFrenchRecitation, loadRecitation, loadSectionRecitation, type VerseAudioRef } from "./reciters";
 export const AUDIO_CACHE = "mirath-quran-audio-v1";
 export const CATALOG_CACHE = "mirath-quran-catalog-v1";
 const PACKS_KEY = "mirath:quran:audio-packs:v1";
-export interface AudioPack { id: string; chapter: number; reciter: string; first: number; last: number; total: number; urls: string[]; bytes: number; complete: boolean }
+export interface AudioPack { audioMode?: QuranAudioMode; id: string; chapter: number; reciter: string; first: number; last: number; total: number; urls: string[]; bytes: number; complete: boolean }
 export function allowedAudioUrl(value: string) {
   try { const u = new URL(value); return u.protocol === "https:" && !u.username && !u.password && !u.port && !u.search && !u.hash && ((u.hostname === "everyayah.com" && /^\/data\/[\w-]+\/\d{6}\.mp3$/.test(u.pathname)) || (u.hostname === "cdn.islamic.network" && /^\/quran\/audio\/\d+\/[\w.-]+\/\d+\.mp3$/.test(u.pathname))); } catch { return false; }
 }
@@ -42,14 +43,15 @@ function writePack(pack: AudioPack) {
   localStorage.setItem(PACKS_KEY, JSON.stringify([...all, pack]));
   window.dispatchEvent(new Event("mirath-audio-downloads"));
 }
-export async function downloadAudioPack(chapter: number, reciter: string, verses: VerseAudioRef[], includeFrench: boolean, signal: AbortSignal, progress: (done: number, total: number) => void) {
+export async function downloadAudioPack(chapter: number, reciter: string, verses: VerseAudioRef[], includeFrench: boolean | QuranAudioMode, signal: AbortSignal, progress: (done: number, total: number) => void) {
   if (typeof caches === "undefined") throw new Error("Le stockage audio hors ligne n’est pas disponible sur cet appareil.");
-  const arabic = await offlineCatalog(chapter, reciter, verses);
-  const french = includeFrench ? await offlineCatalog(chapter, reciter, verses, true) : null;
-  const urls = [...new Set([...arabic.values(), ...(french ? [...french.values()] : [])].map(u => u[0]))];
+  const mode = typeof includeFrench === "boolean" ? (includeFrench ? "both" : "arabic") : parseAudioMode(includeFrench);
+  const arabic = mode !== "french" ? await offlineCatalog(chapter, reciter, verses) : null;
+  const french = mode !== "arabic" ? await offlineCatalog(chapter, reciter, verses, true) : null;
+  const urls = [...new Set([...(arabic ? [...arabic.values()] : []), ...(french ? [...french.values()] : [])].map(u => u[0]))];
   if (!urls.length || urls.some(u => !allowedAudioUrl(u))) throw new Error("Cette source ne permet pas ce téléchargement.");
   const cache = await caches.open(AUDIO_CACHE);
-  const pack: AudioPack = { id: `${chapter}:${reciter}:${verses[0].globalNumber}:${verses.at(-1)?.globalNumber}:${includeFrench}`, chapter, reciter, first: verses[0].globalNumber, last: verses.at(-1)!.globalNumber, total: urls.length, urls: [], bytes: 0, complete: false };
+  const pack: AudioPack = { audioMode: mode, id: `${chapter}:${mode === "french" ? "fr.leclerc" : reciter}:${verses[0].globalNumber}:${verses.at(-1)?.globalNumber}:${mode === "french" ? "french" : mode === "both"}`, chapter, reciter, first: verses[0].globalNumber, last: verses.at(-1)!.globalNumber, total: urls.length, urls: [], bytes: 0, complete: false };
   const previous = readAudioPacks().find(p => p.id === pack.id);
   if (previous) { pack.urls = previous.urls.filter(url => urls.includes(url)); pack.bytes = previous.bytes; }
   writePack(pack);

@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
+import { parseAudioMode, type QuranAudioMode } from "@/lib/quran/audio-mode";
 import { offlineCatalog } from "@/lib/quran/offline-audio";
 import { memorizationNext, validMemorization, type MemorizationSettings } from "@/lib/quran/memorization";
 import { AUDIO_FOCUS_EVENT } from "./sourced-audio";
@@ -11,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { reciters, defaultReciterId, frenchAudioEdition, type VerseAudioRef } from "@/lib/quran/reciters";
 
 interface QuranAudioState {
+  audioMode: QuranAudioMode;
+  chooseAudioMode: (mode: QuranAudioMode) => void;
   elapsed: number;
   duration: number;
   seek: (seconds: number) => void;
@@ -72,6 +75,7 @@ function FullPlayerControls() {
   const i = p.verses.findIndex(v => v.number === p.playingVerse);
   const format = (n: number) => `${Math.floor(n/60)}:${String(Math.floor(n%60)).padStart(2,"0")}`;
   return <div className="space-y-5">
+    <QuranAudioModeSelector />
     <div><label className="text-sm font-medium">Progression de la piste<input aria-label="Position dans la piste audio" type="range" min={0} max={Math.max(1,p.duration)} step={.1} value={Math.min(p.elapsed,p.duration)} disabled={!p.duration} onChange={e=>p.seek(Number(e.target.value))} className="mt-3 w-full accent-[var(--primary)]"/></label><div className="mt-2 flex justify-between text-xs text-muted"><span>{format(p.elapsed)}</span><span>{format(p.duration)}</span></div></div>
     <div className="flex items-center justify-center gap-5"><button type="button" aria-label="Verset précédent" disabled={p.playingSurah || i <= 0} onClick={()=>p.playVerse(p.verses[i-1].number,true)} className="flex size-12 items-center justify-center rounded-full border border-border disabled:opacity-35"><SkipBack/></button><button type="button" aria-label={p.paused ? "Reprendre la récitation" : "Mettre la récitation en pause"} onClick={p.paused?p.resume:p.pause} className="flex size-16 items-center justify-center rounded-full bg-primary text-primary-foreground">{p.loading?<LoaderCircle className="animate-spin"/>:p.paused?<Play/>:<Pause/>}</button><button type="button" aria-label="Verset suivant" disabled={p.playingSurah || i < 0 || i >= p.verses.length-1} onClick={()=>p.playVerse(p.verses[i+1].number,true)} className="flex size-12 items-center justify-center rounded-full border border-border disabled:opacity-35"><SkipForward/></button></div>
     <label className="flex min-h-11 items-center justify-between gap-3 text-sm">Répétition<select aria-label="Répétition dans le lecteur complet" value={p.repeatMode} onChange={e=>p.chooseRepeatMode(e.target.value as "off"|"verse"|"surah")} className="rounded-xl border border-border bg-background p-3"><option value="off">Aucune</option>{!p.playingSurah&&<option value="verse">Ce verset</option>}<option value="surah">Cette lecture</option></select></label>
@@ -99,6 +103,8 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
   const [paused, setPaused] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [audioMode,setAudioMode] = useState<QuranAudioMode>("arabic");
+  const audioModeRef = useRef<QuranAudioMode>("arabic");
   const [translationEnabled, setTranslationEnabled] = useState(false);
   const translationRef = useRef(false);
   const [phase, setPhase] = useState<AudioPhase>("arabic");
@@ -110,8 +116,9 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
     queueMicrotask(() => {
       if (cancelled) return;
       try {
-        const saved = localStorage.getItem("mirath:quran:french-audio") === "true";
-        translationRef.current = saved; setTranslationEnabled(saved);
+        const mode = parseAudioMode(localStorage.getItem("mirath:quran:audio-mode"),localStorage.getItem("mirath:quran:french-audio") === "true");
+        audioModeRef.current = mode; setAudioMode(mode);
+        translationRef.current = mode === "both"; setTranslationEnabled(mode === "both");
       } catch { /* Optional device preferences. */ }
     });
     return () => { cancelled = true; };
@@ -157,7 +164,7 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
     setError(null);
   }, [clearWatchdog]);
 
-  const start = useCallback((verseNumber: number, urlIndex = 0, phase: AudioPhase = "arabic") => {
+  const start = useCallback((verseNumber: number, urlIndex = 0, phase: AudioPhase = audioModeRef.current === "french" ? "french" : "arabic") => {
     const urls = (phase === "french" ? frenchCatalogRef : catalogRef).current?.get(verseNumber);
     const audio = audioRef.current;
     if (!urls?.[urlIndex] || !audio) {
@@ -221,7 +228,7 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
       const next = repeatModeRef.current === "verse" ? verses[index] : verses[index + 1] ?? (repeatModeRef.current === "surah" ? verses[0] : undefined);
       const url = phaseRef.current === "arabic" && translationRef.current && current !== null
         ? frenchCatalogRef.current?.get(current)?.[0]
-        : next && (sequenceRef.current || repeatModeRef.current !== "off") ? catalogRef.current?.get(next.number)?.[0] : undefined;
+        : next && (sequenceRef.current || repeatModeRef.current !== "off") ? (audioModeRef.current === "french" ? frenchCatalogRef : catalogRef).current?.get(next.number)?.[0] : undefined;
       if (url) { preload.src = url; preload.load(); }
     };
     const onPause = () => { if (currentVerseRef.current !== null || surahRef.current) { setPaused(true); setLoading(false); clearWatchdog(); } };
@@ -282,7 +289,7 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
   }, [clearWatchdog, stop, verses]);
 
   const configureMemorization = useCallback((settings: MemorizationSettings | null) => {
-    if (settings && (reciterRef.current === "tvquran.hady-toure" || !validMemorization(settings, verses.map(v => v.number)))) return;
+    if (settings && ((reciterRef.current === "tvquran.hady-toure" && audioModeRef.current !== "french") || !validMemorization(settings, verses.map(v => v.number)))) return;
     stop();
     memorizationRef.current = settings; setMemorization(settings);
     repeatModeRef.current = "off"; setRepeatMode("off");
@@ -296,21 +303,27 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
     catalogRef.current = null;
     setReciterId(id);
     setError(null);
+    if (id === "tvquran.hady-toure" && audioModeRef.current === "both") {
+      audioModeRef.current = "arabic"; setAudioMode("arabic"); translationRef.current = false; setTranslationEnabled(false);
+      try { localStorage.setItem("mirath:quran:audio-mode","arabic"); localStorage.setItem("mirath:quran:french-audio","false"); } catch {}
+    }
     if (id === "tvquran.hady-toure" && repeatModeRef.current === "verse") {
       repeatModeRef.current = "off";
       setRepeatMode("off");
     }
   }, [stop, section]);
 
-  const chooseTranslation = useCallback((enabled: boolean) => {
-    if (enabled && reciterRef.current === "tvquran.hady-toure") return;
+  const chooseAudioMode = useCallback((mode: QuranAudioMode) => {
+    if (!["arabic","french","both"].includes(mode) || (mode === "both" && reciterRef.current === "tvquran.hady-toure")) return;
     stop();
-    translationRef.current = enabled; setTranslationEnabled(enabled);
-    try { localStorage.setItem("mirath:quran:french-audio", String(enabled)); } catch { /* Optional preferences. */ }
-  }, [stop]);
+    audioModeRef.current = mode; setAudioMode(mode);
+    translationRef.current = mode === "both"; setTranslationEnabled(mode === "both");
+    try { localStorage.setItem("mirath:quran:audio-mode",mode); localStorage.setItem("mirath:quran:french-audio", String(mode === "both")); } catch { /* Optional device preferences. */ }
+  },[stop]);
+  const chooseTranslation = useCallback((enabled: boolean) => chooseAudioMode(enabled ? "both" : "arabic"),[chooseAudioMode]);
 
   const chooseRepeatMode = useCallback((mode: "off" | "verse" | "surah") => {
-    if (mode === "verse" && reciterRef.current === "tvquran.hady-toure") return;
+    if (mode === "verse" && reciterRef.current === "tvquran.hady-toure" && audioModeRef.current !== "french") return;
     if (memorizationRef.current) { stop(); memorizationRef.current = null; setMemorization(null); }
     const next = repeatModeRef.current === mode ? "off" : mode;
     repeatModeRef.current = next;
@@ -318,22 +331,23 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
   }, [stop]);
 
   const playVerse = useCallback(async (verseNumber: number, continueSequence = false) => {
-    if (reciterRef.current === "tvquran.hady-toure" || !verses.some((verse) => verse.number === verseNumber)) return;
+    if ((reciterRef.current === "tvquran.hady-toure" && audioModeRef.current !== "french") || !verses.some((verse) => verse.number === verseNumber)) return;
     stop();
     setError(null);
     setLoading(true);
     const request = requestRef.current;
     const id = reciterRef.current;
     const key = `${chapter}/${id}/${verses[0].globalNumber}/${verses.at(-1)?.globalNumber}`;
-    let pending = catalogCacheRef.current.get(key);
-    if (!pending) {
+    const mode = audioModeRef.current;
+    let pending = mode !== "french" ? catalogCacheRef.current.get(key) : undefined;
+    if (!pending && mode !== "french") {
       pending = offlineCatalog(chapter, id, verses);
       catalogCacheRef.current.set(key, pending);
     }
     try {
       const frenchKey = `${chapter}/${verses[0].globalNumber}/${verses.at(-1)?.globalNumber}`;
       let frenchPending: Promise<Map<number, string[]>> | undefined;
-      if (translationRef.current) {
+      if (mode !== "arabic") {
         frenchPending = frenchCacheRef.current.get(frenchKey);
         if (!frenchPending) {
           frenchPending = offlineCatalog(chapter, id, verses, true);
@@ -342,7 +356,7 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
       }
       const [catalog, french] = await Promise.all([pending, frenchPending]);
       if (request !== requestRef.current) return;
-      catalogRef.current = catalog;
+      catalogRef.current = catalog ?? null;
       frenchCatalogRef.current = french ?? null;
       sequenceRef.current = continueSequence;
       startRef.current(verseNumber);
@@ -356,7 +370,7 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
   }, [chapter, stop, verses]);
 
   const playSurah = useCallback(() => {
-    if (reciterRef.current !== "tvquran.hady-toure" || !Number.isInteger(chapter) || chapter < 1 || chapter > 114) return;
+    if (audioModeRef.current !== "arabic" || reciterRef.current !== "tvquran.hady-toure" || !Number.isInteger(chapter) || chapter < 1 || chapter > 114) return;
     stop();
     const audio = audioRef.current;
     if (!audio) return;
@@ -423,7 +437,7 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
     return () => { window.clearInterval(timer); document.removeEventListener("visibilitychange",check); };
   },[sleepUntil,stop]);
 
-  return <QuranAudioContext.Provider value={{ elapsed, duration, seek, sleepUntil, setSleep, memorization, configureMemorization, section, verses, translationEnabled, phase, chooseTranslation, reciterId, chooseReciter, playingVerse, playingSurah, paused, loading, error, repeatMode, chooseRepeatMode, stop, pause, resume, playVerse, playSurah }}>
+  return <QuranAudioContext.Provider value={{ audioMode, chooseAudioMode, elapsed, duration, seek, sleepUntil, setSleep, memorization, configureMemorization, section, verses, translationEnabled, phase, chooseTranslation, reciterId, chooseReciter, playingVerse, playingSurah, paused, loading, error, repeatMode, chooseRepeatMode, stop, pause, resume, playVerse, playSurah }}>
     {children}
   </QuranAudioContext.Provider>;
 }
@@ -457,7 +471,7 @@ export function QuranAudioToolbar({ chapter }: { chapter: number }) {
       </div>
       </details>
       <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-4">
-        {active.mode === "surah" ? (!player.playingSurah ? <Button onClick={player.playSurah} disabled={player.loading} className="bg-emerald-900 text-ivory-50 hover:bg-emerald-700"><Play className="size-4" /> Écouter Muhammad Hady Touré</Button> : <><Button variant="outline" onClick={player.paused ? player.resume : player.pause}>{player.paused ? <Play className="size-4" /> : <Pause className="size-4" />}{player.paused ? "Reprendre" : "Pause"}</Button><Button variant="ghost" onClick={player.stop}><Square className="size-4" /> Arrêter</Button></>) : player.playingVerse === null ? <Button onClick={() => player.playVerse(player.verses[0].number, true)} disabled={player.loading} className="bg-emerald-900 text-ivory-50 hover:bg-emerald-700">
+        {active.mode === "surah" && player.audioMode !== "french" ? (!player.playingSurah ? <Button onClick={player.playSurah} disabled={player.loading} className="bg-emerald-900 text-ivory-50 hover:bg-emerald-700"><Play className="size-4" /> Écouter Muhammad Hady Touré</Button> : <><Button variant="outline" onClick={player.paused ? player.resume : player.pause}>{player.paused ? <Play className="size-4" /> : <Pause className="size-4" />}{player.paused ? "Reprendre" : "Pause"}</Button><Button variant="ghost" onClick={player.stop}><Square className="size-4" /> Arrêter</Button></>) : player.playingVerse === null ? <Button onClick={() => player.playVerse(player.verses[0].number, true)} disabled={player.loading} className="bg-emerald-900 text-ivory-50 hover:bg-emerald-700">
           {player.loading ? <LoaderCircle className="size-4 animate-spin" /> : <Play className="size-4" />} {player.loading ? "Chargement…" : (player.section ? "Écouter la portion" : "Écouter la sourate")}
         </Button> : <>
           <Button variant="outline" size="icon" aria-label="Verset précédent" disabled={!previous} onClick={() => player.playVerse(previous.number, true)}><SkipBack className="size-4" /></Button>
@@ -468,20 +482,13 @@ export function QuranAudioToolbar({ chapter }: { chapter: number }) {
           <Button variant="ghost" size="sm" onClick={player.stop}><Square className="size-4" /> Arrêter</Button>
         </>}
         <span aria-live="polite" className="ml-auto text-xs font-medium text-emerald-900 dark:text-gold-500">
-          {player.playingVerse !== null ? `${player.phase === "french" ? frenchAudioEdition.name : active.nom} · verset ${player.playingVerse}/${player.verses.length}${player.paused ? " · en pause" : ""}` : active.nom}
+          {player.playingVerse !== null ? `${player.phase === "french" ? frenchAudioEdition.name : active.nom} · verset ${player.playingVerse}/${player.verses.length}${player.paused ? " · en pause" : ""}` : player.audioMode === "french" ? frenchAudioEdition.name : active.nom}
         </span>
       </div>
-      <div className="mt-4 rounded-xl border border-gold-600/25 bg-surface p-4">
-        <label className="flex min-h-11 cursor-pointer items-center gap-3 text-sm font-semibold">
-          <input type="checkbox" checked={player.translationEnabled && active.mode !== "surah"} disabled={active.mode === "surah"} onChange={event => player.chooseTranslation(event.target.checked)} className="size-5 accent-emerald-800" />
-          Français après chaque verset · {frenchAudioEdition.name}
-        </label>
-        <p className="mt-1 text-sm leading-6 text-muted">{active.mode === "surah" ? "Choisissez un récitateur disponible verset par verset pour utiliser cette option." : "Récitation arabe, traduction du sens en français, puis verset suivant. Changer cette option arrête la lecture en cours."}</p>
-        {player.translationEnabled && active.mode !== "surah" && <p aria-live="polite" className="mt-2 text-sm font-medium text-primary">{player.playingVerse === null ? "Alternance activée" : player.phase === "french" ? "Lecture française du sens" : "Récitation arabe"}</p>}
-      </div>
+      <div className="mt-4 rounded-xl border border-gold-600/25 bg-surface p-4"><QuranAudioModeSelector /></div>
       <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-4" role="group" aria-label="Répétition audio">
         <span className="mr-1 text-xs font-semibold text-muted">Répétition</span>
-        {active.mode !== "surah" && <button type="button" onClick={() => player.chooseRepeatMode("verse")} aria-pressed={player.repeatMode === "verse"}
+        {(active.mode !== "surah" || player.audioMode === "french") && <button type="button" onClick={() => player.chooseRepeatMode("verse")} aria-pressed={player.repeatMode === "verse"}
           className={`inline-flex items-center gap-1.5 rounded-lg border min-h-11 px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-gold-500 ${player.repeatMode === "verse" ? "border-emerald-800 bg-emerald-900 text-white" : "border-border hover:border-emerald-800"}`}>
           <Repeat1 className="size-4" /> Répéter le verset
         </button>}
@@ -546,11 +553,16 @@ export function QuranMiniPlayer() {
 
 export function VersePlayButton({ verseNumber }: { verseNumber: number }) {
   const player = useQuranAudioContext();
-  if (player.reciterId === "tvquran.hady-toure") return null;
+  if (player.reciterId === "tvquran.hady-toure" && player.audioMode !== "french") return null;
   const selected = player.playingVerse === verseNumber;
   return <button type="button" onClick={() => selected ? (player.paused ? player.resume() : player.pause()) : player.playVerse(verseNumber, true)}
     aria-label={selected ? (player.paused ? `Reprendre le verset ${verseNumber}` : `Mettre en pause le verset ${verseNumber}`) : `Écouter le verset ${verseNumber}`}
     className={`mt-1 flex size-9 shrink-0 items-center justify-center rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 ${selected ? "border-emerald-900 bg-emerald-900 text-white" : "border-border text-emerald-900 hover:border-emerald-900 hover:bg-emerald-900/10 dark:text-gold-500"}`}>
     {selected && !player.paused ? <Pause className="size-4" /> : <Play className="size-4" />}
   </button>;
+}
+
+export function QuranAudioModeSelector() {
+  const p = useQuranAudioContext();
+  return <div><label className="flex flex-wrap items-center justify-between gap-3 text-sm font-semibold">Langue de l’audio<select aria-label="Langue de l’audio" value={p.audioMode} onChange={e=>p.chooseAudioMode(e.target.value as QuranAudioMode)} className="min-h-11 max-w-full rounded-xl border border-border bg-background p-3"><option value="arabic">Arabe seul · Qari choisi</option><option value="french">Français seul · Yusuf Leclerc</option><option value="both" disabled={p.reciterId === "tvquran.hady-toure"}>Arabe puis français · chaque verset</option></select></label><p className="mt-2 text-xs leading-6 text-muted">Indépendant du texte affiché. Les deux voix sont enchaînées par verset. Changer de mode arrête l’écoute en cours.</p>{p.reciterId === "tvquran.hady-toure" && <p className="mt-2 text-xs leading-6 text-muted">Ce Qari est disponible en sourate entière : choisissez un autre Qari pour l’alternance arabe/français. Le français seul reste disponible.</p>}</div>;
 }

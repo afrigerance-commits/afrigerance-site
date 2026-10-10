@@ -34,6 +34,7 @@ export default async function HadithCollectionPage({ params }: PageProps<"/hadit
       </Link>
       <PageHeader eyebrow={collection.auteur} title={collection.nom} description={collection.description} />
 
+      <form action="/recherche" className="mb-6 flex flex-wrap gap-3"><input type="hidden" name="collection" value={slug} /><input name="q" aria-label="Rechercher dans les hadiths" placeholder="Fajr, prière, jeûne…" required minLength={2} maxLength={120} className="min-h-12 min-w-0 flex-1 rounded-xl border border-border bg-surface px-4" /><button className="min-h-12 rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground">Rechercher</button></form>
       <ol className="flex flex-col gap-2">
         {books.map((book, i) => (
           <Reveal key={book.number} delay={Math.min(i * 0.02, 0.4)}>

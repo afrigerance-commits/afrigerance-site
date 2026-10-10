@@ -1,5 +1,6 @@
 "use client";
 
+import { chapterName } from "@/lib/quran/chapter-name";
 import { useRouter } from "next/navigation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { QuranChapterMeta } from "@/lib/quran/data";
@@ -15,7 +16,7 @@ export function SourateSwitcher({ chapters, current }: { chapters: QuranChapterM
       <SelectContent className="max-h-80">
         {chapters.map((c) => (
           <SelectItem key={c.number} value={String(c.number)}>
-            {c.number}. {c.nameFrench} ({c.nameTransliteration})
+            {c.number}. {chapterName(c)} · {c.nameFrench}
           </SelectItem>
         ))}
       </SelectContent>

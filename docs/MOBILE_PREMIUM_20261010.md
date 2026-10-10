@@ -2,6 +2,10 @@
 
 Préparation locale autorisée le 10 octobre 2026. Aucun push, aucune publication Netlify et aucune nouvelle compilation APK : attendre un nouveau signal. Les trois modes de langue du Coran préparés précédemment sont conservés.
 
+Signal « Signal donné » reçu ensuite le 10 octobre 2026 : lot effectivement publié et vérifié à 19:30 UTC sur https://miraath.netlify.app/. Commit de production `32b6e136d8f551b68ca727da7bc60e8aec38506f`, arbre `5e57e80e5ee11717aaf0306bc4cc0feff1abf293` identique à la préparation locale. Un seul déplacement de la branche de production, sans nouvelle compilation APK.
+
+Contrôles HTTP : accueil mobile et objectif présents ; trois modes présents sur `/coran` ; `/ma-bibliotheque` répond 200 avec Favoris et Téléchargements ; réglages regroupés présents sur les lecteurs sourate et Juz ; worker publié autorisant la bibliothèque personnelle. Les limites de contrôle visuel et d’essai physique ci-dessous restent applicables. Ce compte rendu est conservé localement sans second push ni déploiement.
+
 ## Changements
 
 - Accueil des écrans de moins de 1 024 px : reprise de lecture, accès Coran, horaires existants (une seule instance), objectif personnel déclaré, invocations, bibliothèque, routine et leçon. L’accueil éditorial complet reste sur grand écran.
