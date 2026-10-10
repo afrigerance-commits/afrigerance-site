@@ -8,5 +8,5 @@ export function parseReadingPosition(raw: string | null, chapters: readonly { nu
   } catch { return null; }
 }
 export function normalizeSearch(value: string) {
-  return value.normalize("NFD").replace(/[\u0300-\u036f\u064b-\u065f\u0670]/g, "").toLocaleLowerCase("fr").trim();
+  return value.normalize("NFD").replace(/[\u0300-\u036f\u064b-\u065f\u0670\u06d6-\u06ed\u0640]/g, "").replace(/[أإآٱ]/g, "ا").toLocaleLowerCase("fr").trim();
 }

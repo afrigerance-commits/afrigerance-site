@@ -33,6 +33,7 @@ function Controls() {
     <button onClick={() => p.playVerse(2, true)}>Suivant</button>
     <button onClick={() => p.chooseRepeatMode("verse")}>Répéter</button>
     <button onClick={() => p.chooseRepeatMode("surah")}>Boucler</button>
+    <button onClick={() => { p.configureMemorization({ from: 1, to: 2, repetitions: 2, delay: 1 }); p.playVerse(1, true); }}>Mémoriser</button>
     <button onClick={p.pause}>Pause</button><button onClick={p.resume}>Reprendre</button>
     <button onClick={p.stop}>Stop</button>
     <output data-testid="position">{p.playingVerse ?? "stop"}:{p.phase}</output>
@@ -99,4 +100,32 @@ it("cancels a pending catalog when translation is disabled, and keeps Arabic-onl
   fireEvent.click(screen.getByText("Lire"));
   await waitFor(() => expect(audio.src).toBe("https://example.com/ar-7.mp3"));
   end(); expect(audio.src).toBe("https://example.com/ar-8.mp3");
+});
+
+it("repeats the selected Arabic/French pair with a silence and cancels the silence on stop", async () => {
+  await start();
+  fireEvent.click(screen.getByText("Mémoriser"));
+  await waitFor(() => expect(audio.src).toBe("https://example.com/ar-7.mp3"));
+  vi.useFakeTimers();
+  try {
+    end(); expect(audio.src).toBe("https://example.com/fr-7.mp3");
+    end();
+    act(() => vi.advanceTimersByTime(999));
+    expect(audio.src).toBe("https://example.com/fr-7.mp3");
+    act(() => vi.advanceTimersByTime(1));
+    expect(audio.src).toBe("https://example.com/ar-7.mp3");
+    end(); end();
+    act(() => vi.advanceTimersByTime(1000));
+    expect(audio.src).toBe("https://example.com/ar-8.mp3");
+    end(); end();
+    fireEvent.click(screen.getByText("Pause"));
+    act(() => vi.advanceTimersByTime(3000));
+    expect(audio.src).toBe("https://example.com/fr-8.mp3");
+    fireEvent.click(screen.getByText("Reprendre"));
+    expect(audio.src).toBe("https://example.com/ar-8.mp3");
+    end(); end();
+    expect(screen.getByTestId("position")).toHaveTextContent("stop:arabic");
+    act(() => vi.advanceTimersByTime(3000));
+    expect(audio.src).toBe("");
+  } finally { vi.useRealTimers(); }
 });

@@ -16,7 +16,7 @@ export function SignupForm() {
     <form action={formAction} className="flex flex-col gap-5">
       <div className="flex flex-col gap-2">
         <Label htmlFor="displayName">Nom affiché</Label>
-        <Input id="displayName" name="displayName" required autoComplete="name" />
+        <Input id="displayName" name="displayName" required maxLength={100} autoComplete="name" />
       </div>
       <div className="flex flex-col gap-2">
         <Label htmlFor="email">E-mail</Label>
@@ -27,7 +27,8 @@ export function SignupForm() {
         <Input id="password" name="password" type="password" required minLength={8} autoComplete="new-password" />
         <p className="text-xs text-muted">8 caractères minimum.</p>
       </div>
-      {state.error && <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>}
+      {state.error && <p role="alert" className="text-sm text-red-600 dark:text-red-400">{state.error}</p>}
+      {state.message && <p role="status" className="rounded-xl border border-accent/30 bg-accent/10 p-4 text-sm leading-relaxed">{state.message}</p>}
       <Button type="submit" variant="accent" disabled={pending}>
         <UserPlus className="h-4 w-4" /> {pending ? "Création…" : "Créer mon compte"}
       </Button>

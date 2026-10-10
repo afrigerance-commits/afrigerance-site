@@ -350,3 +350,6 @@ body:has(.quran-floating-player) { padding-bottom:calc(var(--app-dock-space) + 7
 @media(max-width:1023px) { .mobile-app-dock { display:block; } body:has(.mobile-app-dock) { --app-dock-space:calc(5rem + env(safe-area-inset-bottom)); padding-bottom:var(--app-dock-space); } body:has(.quran-floating-player) { padding-bottom:calc(var(--app-dock-space) + 7rem); } }
 @media(hover:hover) { .mobile-app-tab:hover .mobile-app-tab-icon { transform:translateY(-2px); background:color-mix(in srgb,var(--accent) 14%,transparent); } }
 @media(prefers-reduced-motion:reduce) { .mobile-app-tab-icon { transition:none; } .mobile-app-tab:hover .mobile-app-tab-icon { transform:none; } .mobile-navigation-sheet[data-state] { animation:none; } }
+
+/* Keep the position rail below the reading controls when the header is hidden. */
+.reader-focused .quran-position-rail { top: 5rem; }

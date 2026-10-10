@@ -2,12 +2,16 @@
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
+import { offlineCatalog } from "@/lib/quran/offline-audio";
+import { memorizationNext, validMemorization, type MemorizationSettings } from "@/lib/quran/memorization";
 import { AUDIO_FOCUS_EVENT } from "./sourced-audio";
 import { ExternalLink, Headphones, LoaderCircle, Pause, Play, Repeat, Repeat1, SkipBack, SkipForward, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { reciters, defaultReciterId, loadRecitation, loadSectionRecitation, loadFrenchRecitation, frenchAudioEdition, type VerseAudioRef } from "@/lib/quran/reciters";
+import { reciters, defaultReciterId, frenchAudioEdition, type VerseAudioRef } from "@/lib/quran/reciters";
 
 interface QuranAudioState {
+  memorization: MemorizationSettings | null;
+  configureMemorization: (settings: MemorizationSettings | null) => void;
   section: boolean;
   verses: VerseAudioRef[];
   reciterId: string;
@@ -58,6 +62,11 @@ function PersistentMiniPlayer({ chapter }: { chapter: number }) {
 }
 
 function QuranAudioEngine({ chapter, verses, children }: { chapter: number; verses: VerseAudioRef[]; children: ReactNode }) {
+  const [memorization, setMemorization] = useState<MemorizationSettings | null>(null);
+  const memorizationRef = useRef<MemorizationSettings | null>(null);
+  const completedRepetitions = useRef(0);
+  const silenceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const silenceNext = useRef<number | null>(null);
   const section = verses.some(v => v.sourceChapter !== undefined);
   const [reciterId, setReciterId] = useState(defaultReciterId);
   const [playingVerse, setPlayingVerse] = useState<number | null>(null);
@@ -105,6 +114,8 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
 
   const stop = useCallback(() => {
     requestRef.current++;
+    if (silenceTimer.current) clearTimeout(silenceTimer.current);
+    silenceTimer.current = null; silenceNext.current = null; completedRepetitions.current = 0;
     clearWatchdog();
     const audio = audioRef.current;
     if (audio) { audio.pause(); audio.removeAttribute("src"); audio.load(); }
@@ -199,6 +210,15 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
         startRef.current(currentVerseRef.current, 0, "french");
         return;
       }
+      if (memorizationRef.current && currentVerseRef.current !== null) {
+        const settings = memorizationRef.current;
+        const next = memorizationNext(settings, currentVerseRef.current, ++completedRepetitions.current, verses.map(v => v.number));
+        if (!next) { stop(); return; }
+        completedRepetitions.current = next.completed;
+        silenceNext.current = next.verse;
+        silenceTimer.current = setTimeout(() => { silenceTimer.current = null; silenceNext.current = null; startRef.current(next.verse); }, settings.delay * 1000);
+        return;
+      }
       if (repeatModeRef.current === "verse" && currentVerseRef.current !== null) startRef.current(currentVerseRef.current);
       else if ((sequenceRef.current || repeatModeRef.current === "surah") && verses[index + 1]) startRef.current(verses[index + 1].number);
       else if (repeatModeRef.current === "surah") startRef.current(verses[0].number);
@@ -216,6 +236,8 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
     audio.addEventListener("pause", onPause);
     return () => {
       clearWatchdog();
+      if (silenceTimer.current) clearTimeout(silenceTimer.current);
+      silenceNext.current = null; silenceTimer.current = null;
       audio.pause();
       window.removeEventListener(AUDIO_FOCUS_EVENT, onAudioFocus);
       audio.removeEventListener("playing", onPlaying);
@@ -229,9 +251,17 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
     };
   }, [clearWatchdog, stop, verses]);
 
+  const configureMemorization = useCallback((settings: MemorizationSettings | null) => {
+    if (settings && (reciterRef.current === "tvquran.hady-toure" || !validMemorization(settings, verses.map(v => v.number)))) return;
+    stop();
+    memorizationRef.current = settings; setMemorization(settings);
+    repeatModeRef.current = "off"; setRepeatMode("off");
+  }, [stop, verses]);
+
   const chooseReciter = useCallback((id: string) => {
     if (!reciters.some((reciter) => reciter.id === id && (!section || reciter.mode !== "surah"))) return;
     stop();
+    memorizationRef.current = null; setMemorization(null);
     reciterRef.current = id;
     catalogRef.current = null;
     setReciterId(id);
@@ -251,10 +281,11 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
 
   const chooseRepeatMode = useCallback((mode: "off" | "verse" | "surah") => {
     if (mode === "verse" && reciterRef.current === "tvquran.hady-toure") return;
+    if (memorizationRef.current) { stop(); memorizationRef.current = null; setMemorization(null); }
     const next = repeatModeRef.current === mode ? "off" : mode;
     repeatModeRef.current = next;
     setRepeatMode(next);
-  }, []);
+  }, [stop]);
 
   const playVerse = useCallback(async (verseNumber: number, continueSequence = false) => {
     if (reciterRef.current === "tvquran.hady-toure" || !verses.some((verse) => verse.number === verseNumber)) return;
@@ -266,7 +297,7 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
     const key = `${chapter}/${id}/${verses[0].globalNumber}/${verses.at(-1)?.globalNumber}`;
     let pending = catalogCacheRef.current.get(key);
     if (!pending) {
-      pending = section ? loadSectionRecitation(id, verses) : loadRecitation(chapter, id, verses);
+      pending = offlineCatalog(chapter, id, verses);
       catalogCacheRef.current.set(key, pending);
     }
     try {
@@ -275,7 +306,7 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
       if (translationRef.current) {
         frenchPending = frenchCacheRef.current.get(frenchKey);
         if (!frenchPending) {
-          frenchPending = loadFrenchRecitation(chapter, verses);
+          frenchPending = offlineCatalog(chapter, id, verses, true);
           frenchCacheRef.current.set(frenchKey, frenchPending);
         }
       }
@@ -292,7 +323,7 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
       setLoading(false);
       setError(cause instanceof Error ? cause.message : "La source audio est indisponible.");
     }
-  }, [chapter, stop, verses, section]);
+  }, [chapter, stop, verses]);
 
   const playSurah = useCallback(() => {
     if (reciterRef.current !== "tvquran.hady-toure" || !Number.isInteger(chapter) || chapter < 1 || chapter > 114) return;
@@ -310,12 +341,14 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
   }, [chapter, stop]);
 
   const pause = useCallback(() => {
+    if (silenceTimer.current) { clearTimeout(silenceTimer.current); silenceTimer.current = null; }
     audioRef.current?.pause();
     clearWatchdog();
     setPaused(true);
     setLoading(false);
   }, [clearWatchdog]);
   const resume = useCallback(() => {
+    if (silenceNext.current !== null) { const next = silenceNext.current; silenceNext.current = null; startRef.current(next); return; }
     const audio = audioRef.current;
     if (!audio || (currentVerseRef.current === null && !surahRef.current)) return;
     setPaused(false);
@@ -329,7 +362,7 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
 
   // Synchronize the external audio element when the requested reading session changes.
   // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { stop(); catalogRef.current = null; }, [chapter, verses, stop]);
+  useEffect(() => { stop(); memorizationRef.current = null; setMemorization(null); catalogRef.current = null; }, [chapter, verses, stop]);
 
   useEffect(() => {
     if (!("mediaSession" in navigator)) return;
@@ -352,7 +385,7 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
     navigator.mediaSession.playbackState = playingVerse === null && !playingSurah ? "none" : paused ? "paused" : "playing";
   }, [chapter, verses, reciterId, playingVerse, playingSurah, paused, phase]);
 
-  return <QuranAudioContext.Provider value={{ section, verses, translationEnabled, phase, chooseTranslation, reciterId, chooseReciter, playingVerse, playingSurah, paused, loading, error, repeatMode, chooseRepeatMode, stop, pause, resume, playVerse, playSurah }}>
+  return <QuranAudioContext.Provider value={{ memorization, configureMemorization, section, verses, translationEnabled, phase, chooseTranslation, reciterId, chooseReciter, playingVerse, playingSurah, paused, loading, error, repeatMode, chooseRepeatMode, stop, pause, resume, playVerse, playSurah }}>
     {children}
   </QuranAudioContext.Provider>;
 }

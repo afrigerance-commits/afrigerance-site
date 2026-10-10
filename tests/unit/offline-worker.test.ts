@@ -56,3 +56,26 @@ describe("Public reading offline cache", () => {
     expect(await (await task!).text()).toContain("pas encore enregistrée");
   });
 });
+
+describe("Explicit personal Quran audio downloads", () => {
+  it("serves a saved recording and its byte ranges without contacting the network", async () => {
+    const w = worker(false);
+    const url = "https://everyayah.com/data/Ghamadi_40kbps/001001.mp3";
+    w.stores.set("mirath-quran-audio-v1", new Map([[url, new Response("0123456789", { headers: { "content-type": "audio/mpeg" } })]]));
+    let task!: Promise<Response>;
+    const request = { url, method: "GET", headers: new Headers({ range: "bytes=2-5" }) };
+    w.handlers.fetch({ request, respondWith: (p: Promise<Response>) => { task = p; } });
+    const response = await task;
+    expect(response.status).toBe(206);
+    expect(response.headers.get("content-range")).toBe("bytes 2-5/10");
+    expect(await response.text()).toBe("2345");
+    expect(w.requests).toHaveLength(0);
+    w.handlers.fetch({ request: { ...request, headers: new Headers({ range: "bytes=99-" }) }, respondWith: (p: Promise<Response>) => { task = p; } });
+    expect((await task).status).toBe(416);
+  });
+  it("does not intercept arbitrary external media", () => {
+    const w = worker(); let intercepted = false;
+    w.handlers.fetch({ request: { url: "https://evil.test/quran/audio/128/ar.alafasy/1.mp3", method: "GET" }, respondWith: () => { intercepted = true; } });
+    expect(intercepted).toBe(false);
+  });
+});

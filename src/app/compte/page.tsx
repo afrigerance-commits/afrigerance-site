@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { LogOut } from "lucide-react";
@@ -50,6 +51,8 @@ export default async function ComptePage() {
         </Card>
       </div>
 
+      <p className="mt-6 text-sm leading-7 text-muted">Les objectifs, notes et progrès des parcours sont actuellement conservés sur l’appareil utilisé. Ils ne sont pas encore synchronisés par votre compte.</p>
+      <nav className="mt-4 flex flex-wrap gap-4 text-sm font-semibold text-primary"><Link href="/mon-suivi" className="underline">Mon suivi de lecture</Link><Link href="/mes-notes" className="underline">Mes notes personnelles</Link><Link href="/hors-ligne" className="underline">Mes téléchargements</Link></nav>
       <form action={signOut} className="mt-10">
         <Button type="submit" variant="outline">
           <LogOut className="h-4 w-4" /> Se déconnecter

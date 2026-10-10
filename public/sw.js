@@ -1,9 +1,10 @@
 /* Only public reading documents and same-origin static assets are stored.
- * Authenticated pages, API calls, RSC payloads and external media are excluded. */
+ * Authenticated pages, API calls and RSC payloads are excluded. Only explicit
+ * Quran audio downloads use a separate personal cache. */
 const VERSION = "mirath-offline-v1";
 const PAGES = `${VERSION}-pages`;
 const ASSETS = `${VERSION}-assets`;
-const PUBLIC_PAGE = /^\/(?:$|coran(?:\/|$)|hadith(?:\/|$)|invocations(?:\/|$)|fiqh(?:\/|$)|sira(?:\/|$)|compagnons(?:\/|$)|prophetes(?:\/|$)|routine$|blog(?:\/|$)|apprendre(?:\/|$)|hors-ligne$)/;
+const PUBLIC_PAGE = /^\/(?:$|coran(?:\/|$)|hadith(?:\/|$)|invocations(?:\/|$)|fiqh(?:\/|$)|sira(?:\/|$)|compagnons(?:\/|$)|prophetes(?:\/|$)|routine$|blog(?:\/|$)|apprendre(?:\/|$)|hors-ligne$|mon-suivi$|mes-notes$)/;
 function isPublicPage(url) {
   return url.origin === self.location.origin && !url.search && PUBLIC_PAGE.test(url.pathname) && !url.pathname.endsWith(".xml");
 }
@@ -60,7 +61,30 @@ self.addEventListener("message", (event) => {
 self.addEventListener("fetch", (event) => {
   const request = event.request;
   const url = new URL(request.url);
-  if (request.method !== "GET" || url.origin !== self.location.origin) return;
+  if (request.method !== "GET") return;
+  // Explicit personal downloads only; no automatic caching of external media.
+  const personalAudio = url.protocol === "https:" && !url.search && !url.hash && (
+    (url.hostname === "everyayah.com" && /^\/data\/[\w-]+\/\d{6}\.mp3$/.test(url.pathname)) ||
+    (url.hostname === "cdn.islamic.network" && /^\/quran\/audio\/\d+\/[\w.-]+\/\d+\.mp3$/.test(url.pathname))
+  );
+  if (personalAudio) {
+    event.respondWith((async () => {
+      const saved = await (await caches.open("mirath-quran-audio-v1")).match(url.href);
+      if (!saved) return fetch(request);
+      // Audio elements may request byte ranges even for short verse recordings.
+      const range = request.headers.get("range");
+      if (!range) return saved;
+      const blob = await saved.blob();
+      const match = /^bytes=(\d*)-(\d*)$/.exec(range);
+      if (!match || (!match[1] && !match[2])) return new Response(null, { status: 416, headers: { "Content-Range": `bytes */${blob.size}` } });
+      const start = match[1] ? Number(match[1]) : Math.max(0, blob.size - Number(match[2]));
+      const end = match[1] && match[2] ? Math.min(blob.size - 1, Number(match[2])) : blob.size - 1;
+      if (start >= blob.size || start > end) return new Response(null, { status: 416, headers: { "Content-Range": `bytes */${blob.size}` } });
+      return new Response(blob.slice(start, end + 1), { status: 206, headers: { "Content-Type": blob.type || "audio/mpeg", "Content-Length": String(end - start + 1), "Content-Range": `bytes ${start}-${end}/${blob.size}`, "Accept-Ranges": "bytes" } });
+    })());
+    return;
+  }
+  if (url.origin !== self.location.origin) return;
   if (request.mode === "navigate") {
     event.respondWith((async () => {
       try { return await fetch(request); }

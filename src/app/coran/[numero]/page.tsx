@@ -4,9 +4,14 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 import { ArabicText } from "@/components/islamic/arabic-text";
+import { MemorizationPanel } from "@/components/quran/memorization-panel";
+import { QuranDownloadPanel } from "@/components/quran/audio-downloads";
 import { ReaderFocus } from "@/components/islamic/reader-focus";
 import { Separator } from "@/components/ui/separator";
 import { getChapters, getChapterMeta, getChapterVerses } from "@/lib/quran/data";
+import { QuranJuzMarker } from "@/components/islamic/quran-juz-marker";
+import { QuranPositionRail } from "@/components/islamic/quran-position-rail";
+import { verseReadingLocation } from "@/lib/quran/reading-location";
 import { partitionAt } from "@/lib/quran/partitions";
 import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/lib/site-config";
@@ -39,6 +44,7 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
   if (!chapter) notFound();
 
   const verses = getChapterVerses(number);
+  const locations = verses.map(v => verseReadingLocation(number, v.number));
   const chapters = getChapters();
   const prev = number > 1 ? getChapterMeta(number - 1) : undefined;
   const next = number < 114 ? getChapterMeta(number + 1) : undefined;
@@ -80,16 +86,22 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
         <ReadingPositionTracker chapter={number} verseCount={verses.length} />
         <nav className="reader-secondary mt-5 flex flex-wrap gap-3 text-sm" aria-label="Portions de cette sourate"><Link className="mushaf-controls rounded-xl border border-gold-600/25 px-4 py-3" href={`/coran/lecture/juz/${partitionAt(number, 1, "juz").number}`}>Lire le juz {partitionAt(number, 1, "juz").number}</Link><Link className="mushaf-controls rounded-xl border border-gold-600/25 px-4 py-3" href={`/coran/lecture/hizb/${partitionAt(number, 1, "hizb").number}`}>Lire le hizb {partitionAt(number, 1, "hizb").number}</Link></nav>
         <QuranAudioToolbar chapter={number} />
+        <MemorizationPanel />
+        <QuranDownloadPanel chapter={number} />
         <QuranReadingTools chapter={number}>
+        <QuranPositionRail locations={locations}>
         <div className="mushaf-sheet mt-5 flex flex-col gap-1 rounded-[1.5rem] border border-gold-600/20 bg-[#fffcf5] px-2 py-2 shadow-sm dark:bg-emerald-950/20 sm:px-4">
           {verses.map((v, i) => (
             <Reveal key={v.number} delay={Math.min(i * 0.015, 0.3)}>
+              {(locations[i].startsJuz || i === 0) && <QuranJuzMarker number={locations[i].juz} kind={locations[i].startsJuz ? "start" : "continued"} />}
               <QuranVerseRow verseNumber={v.number}>
                 <QuranVerseContent chapter={number} number={v.number} arabic={v.arabic} french={v.french} />
               </QuranVerseRow>
+              {locations[i].endsJuz && <QuranJuzMarker number={locations[i].juz} kind="end" />}
             </Reveal>
           ))}
         </div>
+        </QuranPositionRail>
         </QuranReadingTools>
         <QuranMiniPlayer />
       </QuranAudioProvider>

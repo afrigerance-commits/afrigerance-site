@@ -21,3 +21,9 @@ remplace les autorisations antérieures de publication automatique.
 Signal reçu pour cette livraison : « Publie sur netlify et met à jour le apk ».
 La publication des changements préparés et la compilation APK 1.2 sont donc
 autorisées. Les futures modifications restent soumises à un nouveau signal.
+
+Nouveau signal reçu le 10 octobre 2026 : « Top signal lancé ».
+La publication du lot préparé (connexion, repères Juz et outils de lecture)
+est autorisée sur Netlify. Ce lot ne modifie pas le code natif Android ;
+l’APK 1.2 existante charge les nouveaux contenus web après publication.
+Les modifications ultérieures restent soumises à un nouveau signal.
