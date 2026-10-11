@@ -3,7 +3,7 @@ import type { NativeTrack } from "./playlist";
 export interface NativePlaybackState {
   active: boolean; paused: boolean; loading: boolean; ended: boolean;
   position: number; duration: number; track?: NativeTrack;
-  tracks: NativeTrack[]; error?: string; sleepUntil: number;
+  tracks: NativeTrack[]; error?: string; sleepUntil: number; repeat?: boolean;
 }
 interface NativeQuranPlugin {
   load(options: { tracks: NativeTrack[]; startIndex: number; repeat: boolean; position?: number; paused?: boolean; sleepUntil?: number }): Promise<void>;

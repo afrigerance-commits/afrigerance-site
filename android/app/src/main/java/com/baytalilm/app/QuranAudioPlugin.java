@@ -26,7 +26,7 @@ import java.util.function.Consumer;
 import org.json.JSONObject;
 
 @CapacitorPlugin(name = "MirathQuranAudio")
-@androidx.media3.common.util.UnstableApi
+@androidx.annotation.OptIn(markerClass = androidx.media3.common.util.UnstableApi.class)
 public class QuranAudioPlugin extends Plugin {
     private ListenableFuture<MediaController> future;
     private MediaController controller;
@@ -62,6 +62,7 @@ public class QuranAudioPlugin extends Plugin {
         JSObject result = new JSObject();
         boolean ended = c.getPlaybackState() == Player.STATE_ENDED;
         result.put("active", c.getMediaItemCount() > 0 && !ended);
+        result.put("repeat", c.getRepeatMode() != Player.REPEAT_MODE_OFF);
         result.put("ended", ended); result.put("paused", !c.getPlayWhenReady() || (c.getPlaybackSuppressionReason() != Player.PLAYBACK_SUPPRESSION_REASON_NONE));
         result.put("loading", c.getPlaybackState() == Player.STATE_BUFFERING);
         result.put("position", Math.max(0, c.getCurrentPosition()) / 1000.0);

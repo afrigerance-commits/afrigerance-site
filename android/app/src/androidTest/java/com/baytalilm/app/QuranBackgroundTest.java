@@ -28,7 +28,7 @@ import org.junit.runner.RunWith;
 
 /** Synthetic silent WAV fixture: tests lifecycle and sequencing, not recitation contents. */
 @RunWith(AndroidJUnit4.class)
-@androidx.media3.common.util.UnstableApi
+@androidx.annotation.OptIn(markerClass = androidx.media3.common.util.UnstableApi.class)
 public class QuranBackgroundTest {
     private void main(Runnable task) { InstrumentationRegistry.getInstrumentation().runOnMainSync(task); }
     private void shell(String command) throws Exception {

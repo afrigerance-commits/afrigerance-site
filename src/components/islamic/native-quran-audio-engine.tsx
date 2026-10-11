@@ -51,6 +51,10 @@ export function NativeQuranAudioEngine({ chapter, verses, children }: { chapter:
         for (const t of state.tracks) if (!t.silenceMs && !t.surah) unique.set(t.verse, {number:t.verse,globalNumber:t.globalNumber,sourceChapter:t.chapter,sourceVerse:t.sourceVerse});
         const nextVerses = [...unique.values()];
         if(JSON.stringify(nextVerses)!==JSON.stringify(restoredVerses.current)){restoredVerses.current=nextVerses;setRestored(nextVerses);}
+        if(restoreNeeded.current && state.repeat){
+          const repeat=state.track.surah || new Set(nextVerses.map(v=>v.number)).size>1 ? "surah" : "verse";
+          config.current.repeatMode=repeat;setRepeatMode(repeat);
+        }
         // Restore a running service after the Activity/WebView has been recreated.
         if (restoreNeeded.current && config.current.reciterId !== state.track.reciterId) { config.current.reciterId=state.track.reciterId; setReciterId(state.track.reciterId); }
         if (restoreNeeded.current && config.current.audioMode !== state.track.audioMode) { config.current.audioMode=state.track.audioMode; setAudioMode(state.track.audioMode); }
@@ -85,7 +89,13 @@ export function NativeQuranAudioEngine({ chapter, verses, children }: { chapter:
   const previousSession=useRef(`${chapter}:${JSON.stringify(verses)}`);
   useEffect(()=>{
     const key=`${chapter}:${JSON.stringify(verses)}`;
-    if(key!==previousSession.current){ previousSession.current=key; stop(); }
+    if(key!==previousSession.current){
+      const wasEmpty=previousSession.current.endsWith(":[]");
+      previousSession.current=key;
+      const active=stateRef.current;
+      const sameReader=wasEmpty && active.active && active.track && (active.track.surah ? active.track.chapter===chapter : verses.some(v=>v.number===active.track!.verse && v.globalNumber===active.track!.globalNumber));
+      if(!sameReader)stop();
+    }
   },[chapter,verses,stop]);
 
   const startQueue = useCallback(async (verseNumber: number, continueSequence = false, preserve?: NativePlaybackState) => {

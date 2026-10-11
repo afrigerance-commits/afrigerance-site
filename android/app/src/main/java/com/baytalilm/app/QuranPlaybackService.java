@@ -17,13 +17,14 @@ import androidx.media3.session.MediaSession;
 import androidx.media3.session.MediaSessionService;
 import androidx.media3.session.SessionCommand;
 import androidx.media3.session.SessionResult;
+import androidx.media3.session.SessionError;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 /** The queue, audio focus and sleep deadline live here, independently of the WebView. */
-@androidx.media3.common.util.UnstableApi
+@androidx.annotation.OptIn(markerClass = androidx.media3.common.util.UnstableApi.class)
 public class QuranPlaybackService extends MediaSessionService {
     static final String SLEEP = "mirath.SET_SLEEP";
     private MediaSession session;
@@ -61,7 +62,7 @@ public class QuranPlaybackService extends MediaSessionService {
                         setSleep(args.getLong("until", 0));
                         return Futures.immediateFuture(new SessionResult(SessionResult.RESULT_SUCCESS));
                     }
-                    return Futures.immediateFuture(new SessionResult(SessionResult.RESULT_ERROR_NOT_SUPPORTED));
+                    return Futures.immediateFuture(new SessionResult(SessionError.ERROR_NOT_SUPPORTED));
                 }
             }).build();
         player.addListener(new Player.Listener() {
