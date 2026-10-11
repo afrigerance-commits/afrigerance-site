@@ -20,6 +20,7 @@ export function NativeQuranAudioEngine({ chapter, verses, children }: { chapter:
   const [snapshot, setSnapshot] = useState<NativePlaybackState>({ active:false, paused:false, loading:false, ended:false, position:0, duration:0, tracks:[], sleepUntil:0 });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const localError = useRef<string | null>(null);
   const restoredVerses = useRef<VerseAudioRef[]>([]);
   const [restored, setRestored] = useState<VerseAudioRef[]>([]);
   const stateRef = useRef(snapshot);
@@ -32,11 +33,11 @@ export function NativeQuranAudioEngine({ chapter, verses, children }: { chapter:
   const catalogCache = useRef(new Map<string, Promise<Map<number,string[]>>>());
   const effectiveVerses = verses.length ? verses : restored;
   const section = effectiveVerses.some(v => v.sourceChapter !== undefined && v.sourceChapter !== chapter);
-  const fail = useCallback((cause: unknown) => { if (mounted.current) { setLoading(false); setError(cause instanceof Error ? cause.message : "Le lecteur Android n’a pas pu exécuter cette commande."); } }, []);
+  const fail = useCallback((cause: unknown) => { if (mounted.current) { setLoading(false); localError.current=cause instanceof Error ? cause.message : "Le lecteur Android n’a pas pu exécuter cette commande."; setError(localError.current); } }, []);
   const command = useCallback((promise: Promise<unknown>) => { void promise.catch(fail); }, [fail]);
   const stop = useCallback(() => {
     request.current++; awaitingLoad.current = false;
-    setLoading(false); setError(null); clock.update(0,0);
+    localError.current=null; setLoading(false); setError(null); clock.update(0,0);
     command(nativeQuran.stop());
   }, [clock,command]);
 
@@ -63,7 +64,7 @@ export function NativeQuranAudioEngine({ chapter, verses, children }: { chapter:
       restoreNeeded.current=false;
       setSnapshot(previous => previous.active===state.active && previous.paused===state.paused && previous.loading===state.loading && previous.track?.id===state.track?.id && previous.error===state.error && previous.sleepUntil===state.sleepUntil ? previous : state);
       clock.update(state.position,state.duration);
-      setLoading(state.loading); setError(state.error ?? null);
+      setLoading(state.loading); setError(state.error ?? localError.current);
     };
     try {
       const mode=parseAudioMode(localStorage.getItem("mirath:quran:audio-mode"),localStorage.getItem("mirath:quran:french-audio")==="true");
@@ -104,7 +105,7 @@ export function NativeQuranAudioEngine({ chapter, verses, children }: { chapter:
     const c={...config.current};
     if (!refs.some(v=>v.number===verseNumber) || (c.reciterId==="tvquran.hady-toure" && c.audioMode!=="french")) return;
     const token=++request.current;
-    awaitingLoad.current=true; setLoading(true); setError(null);
+    awaitingLoad.current=true; localError.current=null; setLoading(true); setError(null);
     sequence.current=continueSequence;
     try {
       const catalog = (french: boolean) => {
