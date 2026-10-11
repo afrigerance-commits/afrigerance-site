@@ -1,5 +1,6 @@
 "use client";
 
+import { useTransition } from "react";
 import { chapterName } from "@/lib/quran/chapter-name";
 import { useRouter } from "next/navigation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -7,9 +8,10 @@ import type { QuranChapterMeta } from "@/lib/quran/data";
 
 export function SourateSwitcher({ chapters, current }: { chapters: QuranChapterMeta[]; current: number }) {
   const router = useRouter();
+  const [pending,startTransition]=useTransition();
 
   return (
-    <Select value={String(current)} onValueChange={(value) => router.push(`/coran/${value}`)}>
+    <div aria-busy={pending}><Select value={String(current)} onValueChange={(value) => startTransition(()=>router.push(`/coran/${value}`))}>
       <SelectTrigger className="mx-auto w-auto min-w-[16rem]" aria-label="Aller à une autre sourate">
         <SelectValue />
       </SelectTrigger>
@@ -20,6 +22,6 @@ export function SourateSwitcher({ chapters, current }: { chapters: QuranChapterM
           </SelectItem>
         ))}
       </SelectContent>
-    </Select>
+    </Select>{pending && <p role="status" className="mt-2 text-xs text-muted">Ouverture de la sourate…</p>}</div>
   );
 }

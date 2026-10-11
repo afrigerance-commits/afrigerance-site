@@ -36,8 +36,11 @@ export function ReadingPositionTracker({ chapter, verseCount }: { chapter: numbe
       if (!Number.isInteger(verse) || verse < 1 || verse > verseCount) return;
       try { setPersonalItem(readingPositionKey, JSON.stringify({ chapter, verse })); } catch { /* Storage optional. */ }
     }, { rootMargin: "-20% 0px -50% 0px", threshold: 0 });
-    elements.forEach((element) => observer.observe(element));
-    return () => observer.disconnect();
+    const observe=()=>{document.querySelectorAll(`[id^="verset-"]`).forEach(element=>observer.observe(element));};
+    observe();
+    const mutation=new MutationObserver(observe);
+    const sheet=document.querySelector(".mushaf-sheet");if(sheet)mutation.observe(sheet,{childList:true});
+    return () => {observer.disconnect();mutation.disconnect();};
   }, [chapter, verseCount]);
   return null;
 }

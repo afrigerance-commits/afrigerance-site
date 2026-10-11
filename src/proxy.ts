@@ -29,6 +29,10 @@ export async function proxy(request: NextRequest) {
     return response;
   }
 
+  // A public request without an auth token cannot need a session refresh.
+  // Private routes retain their authentication and role checks.
+  if (!needsAuth && !request.cookies.getAll().some(c => c.name.startsWith("sb-") && c.name.includes("-auth-token"))) return response;
+
   const supabase = createServerClient(supabaseUrl!, supabaseAnonKey!, {
     cookies: {
       getAll() {

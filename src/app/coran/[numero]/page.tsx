@@ -11,7 +11,7 @@ import { QuranDownloadPanel } from "@/components/quran/audio-downloads";
 import { ReaderFocus } from "@/components/islamic/reader-focus";
 import { Separator } from "@/components/ui/separator";
 import { getChapters, getChapterMeta, getChapterVerses } from "@/lib/quran/data";
-import { QuranJuzMarker } from "@/components/islamic/quran-juz-marker";
+import { QuranPassageList } from "@/components/islamic/quran-passage-list";
 import { QuranPositionRail } from "@/components/islamic/quran-position-rail";
 import { verseReadingLocation } from "@/lib/quran/reading-location";
 import { partitionAt } from "@/lib/quran/partitions";
@@ -19,8 +19,7 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/lib/site-config";
 import { ReadingProgress } from "@/components/content/reading-progress";
 import { QuranAudioProvider, QuranAudioToolbar, QuranMiniPlayer } from "@/components/islamic/quran-audio-player";
-import { QuranVerseRow } from "@/components/islamic/quran-verse-row";
-import { QuranReadingTools, QuranVerseContent } from "@/components/islamic/quran-reading-tools";
+import { QuranReadingTools } from "@/components/islamic/quran-reading-tools";
 import { SourateSwitcher } from "@/components/islamic/sourate-switcher";
 import { ReadingPositionTracker } from "@/components/islamic/reading-resume";
 
@@ -90,17 +89,7 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
         <details className="reader-settings reader-secondary mt-5 rounded-2xl border border-accent/30 bg-surface p-4"><summary className="min-h-11 cursor-pointer py-2 font-semibold text-primary">Réglages · audio, mémorisation et téléchargements</summary><QuranAudioToolbar chapter={number} /><MemorizationPanel /><QuranDownloadPanel chapter={number} /></details>
         <QuranReadingTools chapter={number}>
         <QuranPositionRail locations={locations}>
-        <div className="mushaf-sheet mt-5 flex flex-col gap-1 rounded-[1.5rem] border border-gold-600/20 bg-[#fffcf5] px-2 py-2 shadow-sm dark:bg-emerald-950/20 sm:px-4">
-          {verses.map((v, i) => (
-            <Reveal key={v.number} delay={Math.min(i * 0.015, 0.3)}>
-              {(locations[i].startsJuz || i === 0) && <QuranJuzMarker number={locations[i].juz} kind={locations[i].startsJuz ? "start" : "continued"} />}
-              <QuranVerseRow verseNumber={v.number}>
-                <QuranVerseContent chapter={number} number={v.number} arabic={v.arabic} french={v.french} />
-              </QuranVerseRow>
-              {locations[i].endsJuz && <QuranJuzMarker number={locations[i].juz} kind="end" />}
-            </Reveal>
-          ))}
-        </div>
+        <QuranPassageList key={number} chapter={number} verses={verses} locations={locations} />
         </QuranPositionRail>
         </QuranReadingTools>
         <QuranMiniPlayer />

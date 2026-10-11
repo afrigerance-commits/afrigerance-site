@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { readingIndexAt, type VerseReadingLocation } from "@/lib/quran/reading-location";
+import { readingIndexBy, type VerseReadingLocation } from "@/lib/quran/reading-location";
 
 /** Tracks the visible verse, independently of audio and of the page footer. */
 export function QuranPositionRail({ locations, children }: { locations: VerseReadingLocation[]; children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
   useEffect(() => {
-    const elements = Array.from(root.current?.querySelectorAll<HTMLElement>("[data-quran-position]") ?? []);
+    let elements = Array.from(root.current?.querySelectorAll<HTMLElement>("[data-quran-position]") ?? []);
     if (!elements.length) return;
     let frame = 0;
     const update = () => {
@@ -17,18 +17,21 @@ export function QuranPositionRail({ locations, children }: { locations: VerseRea
         frame = 0;
         // Below sticky controls, without basing progress on the rest of the page.
         const line = Math.max(160, Math.min(window.innerHeight * 0.35, window.innerHeight - 100));
-        const next = readingIndexAt(elements.map(element => element.getBoundingClientRect().top), line);
+        const next=readingIndexBy(elements.length,i=>elements[i].getBoundingClientRect().top,line);
         setIndex(current => current === next ? current : next);
       });
     };
     const resize = typeof ResizeObserver !== "undefined" ? new ResizeObserver(update) : null;
     if (root.current) resize?.observe(root.current);
+    const mutation=new MutationObserver(()=>{elements=Array.from(root.current?.querySelectorAll<HTMLElement>("[data-quran-position]")??[]);update();});
+    if(root.current)mutation.observe(root.current,{childList:true,subtree:true});
     update();
     window.addEventListener("scroll", update, { passive: true });
     window.addEventListener("resize", update);
     return () => {
       cancelAnimationFrame(frame);
       resize?.disconnect();
+      mutation.disconnect();
       window.removeEventListener("scroll", update);
       window.removeEventListener("resize", update);
     };

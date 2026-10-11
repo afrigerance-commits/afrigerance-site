@@ -33,7 +33,7 @@ async function buildIndex(): Promise<SearchResult[]> {
     ...articles.filter((a) => a.statut === "publie").map((a) => ({ titre: a.titre, description: a.resume, href: `/blog/${a.slug}`, type: "Article" })),
     ...books.map((b) => ({ titre: b.titreFrancais, description: b.presentation, href: `/bibliotheque/${b.slug}`, type: "Livre" })),
     ...scholars.filter((s) => s.statut === "publie").map((s) => ({ titre: s.transcriptionFrancaise, description: s.presentation, href: `/compagnons/${s.slug}`, type: "Figure" })),
-    ...siraEvents.filter((e) => e.statut === "publie").map((e) => ({ titre: e.titre, description: e.presentation, href: `/sira/${e.slug}`, type: "Sîra" })),
+    ...siraEvents.filter((e) => e.statut === "publie").map((e) => ({ titre: e.titre, description: e.presentation, href: `/sira/${e.slug}`, type: "Sîra", searchText: `${e.titre} ${e.presentation} ${e.periode} ${e.lesson.sections.flatMap(section => [section.titre, ...section.paragraphes]).join(" ")} ${e.sources.map(source => `${source.titre} ${source.numeroHadith ?? `${source.sourate}:${source.verset}`}`).join(" ")}` })),
     ...fiqhCourses.filter((c) => c.statut === "publie").map((c) => ({ titre: c.titre, description: c.description, href: `/fiqh/malikite/${c.slug}`, type: "Cours" })),
     ...getChapters().map((c) => ({
       titre: `Sourate ${chapterName(c)} · ${c.nameFrench}`,

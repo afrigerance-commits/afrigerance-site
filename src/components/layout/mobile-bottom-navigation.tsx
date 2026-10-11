@@ -1,5 +1,6 @@
 "use client";
 
+import { LinkPending } from "@/components/navigation/link-pending";
 import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -25,9 +26,9 @@ export function MobileBottomNavigation() {
   const moreActive = !tabs.some(tab => active(tab.href));
   return <nav className="mobile-app-dock" data-native={native} aria-label="Navigation de l’application">
     <div className="mobile-app-dock-items">
-      {tabs.map(({ href, label, icon: Icon }) => <Link key={href} href={href} className="mobile-app-tab" aria-current={active(href) ? "page" : undefined}>
+      {tabs.map(({ href, label, icon: Icon }) => <Link key={href} href={href} className="mobile-app-tab relative" aria-current={active(href) ? "page" : undefined}>
         <span className="mobile-app-tab-icon"><Icon size={21} strokeWidth={active(href) ? 2.2 : 1.7} aria-hidden="true" /></span>
-        <span>{label}</span>
+        <span>{label}</span><LinkPending />
       </Link>)}
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild><button type="button" className="mobile-app-tab" data-active={moreActive || open} aria-label="Plus de rubriques">

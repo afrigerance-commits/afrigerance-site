@@ -3,7 +3,7 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import vm from "node:vm";
 
-function worker(online = true) {
+function worker(online = true, html = '<html><title>Al-Fâtiha</title><p>بِسْمِ اللَّهِ</p></html>') {
   const handlers: Record<string, (event: any) => void> = {};
   const stores = new Map<string, Map<string, Response>>();
   const requests: { url: string; options: any }[] = [];
@@ -23,7 +23,7 @@ function worker(online = true) {
       const url = typeof input === "string" ? input : input.url;
       requests.push({ url, options });
       if (!online) throw new Error("offline");
-      return new Response('<html><title>Al-Fâtiha</title><p>بِسْمِ اللَّهِ</p></html>', { headers: { "content-type": "text/html" } });
+      return new Response(html, { headers: { "content-type": "text/html" } });
     },
   });
   return { handlers, requests, stores, setOnline: (value: boolean) => { online = value; } };
@@ -90,4 +90,11 @@ describe("Explicit personal Quran audio downloads", () => {
     w.handlers.fetch({ request: { url: "https://evil.test/quran/audio/128/ar.alafasy/1.mp3", method: "GET" }, respondWith: () => { intercepted = true; } });
     expect(intercepted).toBe(false);
   });
+});
+
+it("reuses cached immutable assets while refreshing saved public HTML",async()=>{
+ const w=worker(true,'<html><script src="/_next/static/hash.js"></script></html>');
+ for(let i=0;i<2;i++){let task!:Promise<any>;w.handlers.message({data:{type:"SAVE_PAGE",path:"/coran/1"},waitUntil:(p:Promise<any>)=>{task=p;}});await task;}
+ expect(w.requests.filter(r=>r.url.endsWith('/_next/static/hash.js'))).toHaveLength(1);
+ expect(w.requests.filter(r=>r.url.endsWith('/coran/1'))).toHaveLength(2);
 });

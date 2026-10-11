@@ -4,12 +4,12 @@ import Image from "next/image";
 import { EditorialEmpty } from "@/components/content/editorial-empty";
 import { Reveal } from "@/components/motion/reveal";
 import { LightDivider } from "@/components/motion/light-divider";
-import { Timeline } from "@/components/content/timeline-event";
-import { siraEvents } from "@/lib/data/sira";
+import { PathProgress } from "@/components/learning/path-progress";
+import { siraEvents, SIRA_PATH, siraQuestionCount } from "@/lib/data/sira";
 
 export const metadata: Metadata = {
   title: "Sîra prophétique",
-  description: "Dix étapes documentées de la vie du Prophète Muhammad ﷺ, avec références coraniques et hadiths authentiques.",
+  description: `Un parcours original en ${siraEvents.length} chapitres sur la vie du Prophète Muhammad ﷺ, avec références, exercices et progression.`,
   alternates: { canonical: "/sira" },
 };
 
@@ -20,7 +20,7 @@ export default function SiraPage() {
         <span className="mx-auto text-sm font-medium text-accent-text">Sîra prophétique</span>
         <h1 className="font-display text-4xl font-semibold sm:text-5xl">La vie du Prophète ﷺ</h1>
         <p className="mx-auto max-w-2xl text-muted">
-          Dix étapes pour commencer, avec des synthèses originales et des références précises. Ce parcours est une sélection de repères, pas une biographie exhaustive. Les commentaires pédagogiques sont distingués des sources.
+          Des origines aux derniers temps : {siraEvents.length} chapitres, {siraQuestionCount} questions corrigées et des références consultables. Un cours original pour comprendre la trajectoire, la vie familiale et la transmission. Les analyses sont distinguées des récits ; les dossiers encore à approfondir sont signalés.
         </p>
       </Reveal>
       <LightDivider className="mt-8" />
@@ -34,9 +34,10 @@ export default function SiraPage() {
       />
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2"><Link href="/prophetes" className="gateway-card rounded-2xl border border-accent/40 bg-surface p-6"><h2 className="font-display text-2xl">Histoires des prophètes</h2><p className="mt-2 text-sm text-muted">25 introductions aux figures coraniques →</p></Link><Link href="/compagnons" className="gateway-card rounded-2xl border border-accent/40 bg-surface p-6"><h2 className="font-display text-2xl">Compagnons et compagnonnes</h2><p className="mt-2 text-sm text-muted">Huit portraits documentés →</p></Link></div>
-      <div className="mt-16">
+      <aside className="mt-8 rounded-2xl border border-accent/30 bg-surface p-5 text-sm leading-7 text-muted"><strong className="text-foreground">Comment lire ce parcours</strong><p>Les premiers chapitres suivent les grandes périodes ; certains éclairages sont thématiques. Chaque leçon distingue les faits reformulés, la réflexion pédagogique et les limites documentaires. Les dates non établies ne sont pas inventées. Cette version ne remplace pas une biographie exhaustive ni un enseignement savant.</p></aside>
+      <div className="mt-12">
         {siraEvents.some((event) => event.statut === "publie") ? (
-          <Timeline events={siraEvents.filter((event) => event.statut === "publie")} />
+          <PathProgress slug={SIRA_PATH} baseHref="/sira" lessons={siraEvents.filter(event => event.statut === "publie").map(event => ({ slug: event.slug, titre: event.titre, minutes: event.lesson.minutes, objectif: event.periode }))} />
         ) : (
           <EditorialEmpty title="Revenir aux ouvrages de référence." description="La chronologie est en cours de vérification documentaire. Découvrez dès maintenant la notice bibliographique du Nectar cacheté." href="/bibliotheque/ar-rahiq-al-makhtum" action="Consulter la notice" />
         )}

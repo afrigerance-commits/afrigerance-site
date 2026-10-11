@@ -33,12 +33,18 @@ export function OfflineSupport() {
   useEffect(() => {
     if (process.env.NODE_ENV !== "production" || !("serviceWorker" in navigator)) return;
     let cancelled = false;
+    let idle: number | undefined;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const schedule=(save:()=>void)=>{
+      if('requestIdleCallback' in window) idle=window.requestIdleCallback(()=>{if(!cancelled)save();},{timeout:10000});
+      else timer=setTimeout(()=>{if(!cancelled)save();},2500);
+    };
     navigator.serviceWorker.register("/sw.js", { scope: "/", updateViaCache: "none" })
       .then(() => navigator.serviceWorker.ready)
       .then((registration) => {
-        if (!cancelled && navigator.onLine) registration.active?.postMessage({ type: "SAVE_PAGE", path: pathname });
+        if (!cancelled && navigator.onLine) schedule(()=>registration.active?.postMessage({ type: "SAVE_PAGE", path: pathname }));
       }).catch(() => { /* Reading remains usable when caching is unavailable. */ });
-    return () => { cancelled = true; };
+    return () => { cancelled = true;if(idle!==undefined)window.cancelIdleCallback(idle);if(timer)clearTimeout(timer); };
   }, [pathname]);
   if (!offline) return null;
   return <div role="status" className="fixed left-1/2 top-24 z-50 max-w-[calc(100%-2rem)] -translate-x-1/2 rounded-full border border-gold-500/40 bg-surface px-4 py-2 text-sm shadow-lg">Hors ligne · <a href="/hors-ligne" className="font-semibold underline underline-offset-4">Mes lectures enregistrées</a></div>;

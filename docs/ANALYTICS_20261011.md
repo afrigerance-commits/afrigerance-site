@@ -2,7 +2,7 @@
 
 ## Livraison
 
-Préparée localement, sans publication ni modification distante. Accès prévu : Administration → Statistiques (`/admin/statistiques`), uniquement pour le rôle administrateur. Le site public actuel ne collecte pas encore ces statistiques.
+Code publié sur https://miraath.netlify.app le 11 octobre 2026 après le signal « signal lancé ». Commit de production : `91074b3a067f28410bd44726b1f0fa90910f2bd1`. Accès prévu : Administration → Statistiques (`/admin/statistiques`), uniquement pour le rôle administrateur. La collecte n’est pas activée : migration Supabase et secret serveur requis.
 
 ## Fonctionnement
 
@@ -29,3 +29,9 @@ Documentation technique consultée : https://supabase.com/docs/guides/database/f
 ## Vérifications réalisées
 
 141 tests réussis (38 fichiers), dont 10 contrôles du suivi : consentement/retrait, pages privées, requêtes trop volumineuses, origine externe, robots, DNT, rotation quotidienne et après inactivité, disponibilité de la base, visibilité de la page. TypeScript et compilation Next.js réussis (336 pages statiques, nouvelles routes serveur incluses). `git diff --check` réussi. Migration SQL non exécutée dans cette session ; affichage et fonctionnement sur serveur réel restent à vérifier après activation. Aucun déploiement lancé.
+
+## Publication
+
+Nouvelle section de confidentialité vérifiée sur le site public. Les contrôles TypeScript, compilation et 141 tests avaient réussi sur ce code. Aucune activation distante de Supabase effectuée et aucune nouvelle APK compilée. Les futurs déploiements nécessitent un nouveau signal.
+
+Contrôles HTTP après publication : `/confidentialite` 200 avec nouvelle section, `/admin/statistiques` 307 vers la connexion sans session, `/api/analytics` POST 503 (collecte désactivée), lecteur original de la bibliothèque 200. Aucun test d’administration connecté ni d’écriture réelle en base effectué.

@@ -27,6 +27,8 @@ async function savePage(path) {
   await Promise.allSettled([...assets].map(async (path) => {
     const asset = new URL(path, url);
     if (!isAsset(asset)) return;
+    // Hashed Next assets are immutable; avoid downloading them again for each saved page.
+    if(asset.pathname.startsWith("/_next/static/") && await (await caches.open(ASSETS)).match(asset.href)) return;
     const result = await fetch(asset.href, { credentials: "omit" });
     if (result.ok) {
       if (asset.pathname.endsWith(".css")) {

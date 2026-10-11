@@ -1,0 +1,10 @@
+import {beforeEach,it,expect,vi} from 'vitest';
+import {NextRequest} from 'next/server';
+const backend=vi.hoisted(()=>({getUser:vi.fn(),create:vi.fn()}));
+vi.mock('@/lib/supabase/env',()=>({isSupabaseConfigured:true,supabaseUrl:'https://test.supabase.co',supabaseAnonKey:'test-key'}));
+vi.mock('@supabase/ssr',()=>({createServerClient:backend.create}));
+import {proxy} from '@/proxy';
+beforeEach(()=>{backend.getUser.mockReset();backend.create.mockReset();backend.getUser.mockResolvedValue({data:{user:null}});backend.create.mockReturnValue({auth:{getUser:backend.getUser}});});
+it('skips auth for anonymous public navigation but still protects account routes',async()=>{expect((await proxy(new NextRequest('https://miraath.netlify.app/coran/2'))).status).toBe(200);expect(backend.create).not.toHaveBeenCalled();const privateResponse=await proxy(new NextRequest('https://miraath.netlify.app/compte'));expect(backend.getUser).toHaveBeenCalled();expect(privateResponse.headers.get('location')).toContain('/connexion');});
+it('refreshes authentication for public requests carrying auth cookies',async()=>{await proxy(new NextRequest('https://miraath.netlify.app/coran',{headers:{cookie:'sb-test-auth-token.0=token'}}));expect(backend.getUser).toHaveBeenCalledTimes(1);});
+it('does not allow an anonymous administrator request through',async()=>{const r=await proxy(new NextRequest('https://miraath.netlify.app/admin/statistiques'));expect(r.status).toBe(307);expect(r.headers.get('location')).toContain('/connexion');});

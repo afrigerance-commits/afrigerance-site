@@ -20,3 +20,10 @@ export function readingIndexAt(tops: number[], line: number) {
   }
   return index;
 }
+
+/** Same ordered-verse semantics, with logarithmic DOM reads during scrolling. */
+export function readingIndexBy(count:number,topAt:(index:number)=>number,line:number) {
+ let low=0,high=count;
+ while(low<high){const mid=(low+high)>>>1;if(topAt(mid)<=line)low=mid+1;else high=mid;}
+ return Math.max(0,low-1);
+}

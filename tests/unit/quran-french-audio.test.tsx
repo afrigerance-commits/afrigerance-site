@@ -1,6 +1,6 @@
 import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { QuranAudioProvider, useQuranAudioContext } from "@/components/islamic/quran-audio-player";
+import { QuranAudioProvider, useQuranAudioClock, useQuranAudioContext } from "@/components/islamic/quran-audio-player";
 import { loadFrenchRecitation, loadSectionRecitation } from "@/lib/quran/reciters";
 
 const arabic = new Map([[1, ["https://example.com/ar-7.mp3"]], [2, ["https://example.com/ar-8.mp3"]]]);
@@ -27,6 +27,7 @@ class FakeAudio extends EventTarget {
 const verses = [{ number: 1, globalNumber: 7, sourceChapter: 1, sourceVerse: 7 }, { number: 2, globalNumber: 8, sourceChapter: 2, sourceVerse: 1 }];
 function Controls() {
   const p = useQuranAudioContext();
+  const time = useQuranAudioClock();
   return <>
     <button onClick={()=>p.chooseAudioMode("french")}>Français seul</button>
     <button onClick={()=>p.chooseAudioMode("arabic")}>Arabe seul</button>
@@ -41,7 +42,7 @@ function Controls() {
     <button onClick={()=>p.seek(99)}>Chercher</button>
     <button onClick={()=>p.setSleep(5)}>Minuterie</button>
     <button onClick={()=>p.setSleep(0)}>Annuler minuterie</button>
-    <output data-testid="time">{p.elapsed}:{p.duration}</output>
+    <output data-testid="time">{time.elapsed}:{time.duration}</output>
     <output data-testid="position">{p.playingVerse ?? "stop"}:{p.phase}</output>
     {p.error && <p role="alert">{p.error}</p>}
   </>;
@@ -198,4 +199,13 @@ it("continues Arabic/French sequencing while the document is hidden", async () =
   } finally {
     if(previous)Object.defineProperty(document,"visibilityState",previous);else delete (document as unknown as Record<string,unknown>).visibilityState;
   }
+});
+
+it("updates the audio clock without rerendering verse-state consumers",async()=>{
+ let renders=0;
+ function VerseProbe(){useQuranAudioContext();renders++;return <span>Verse probe</span>;}
+ render(<QuranAudioProvider chapter={1} verses={verses}><Controls/><VerseProbe/></QuranAudioProvider>);
+ await act(async()=>{});const baseline=renders;
+ act(()=>{audio.currentTime=3;audio.dispatchEvent(new Event("timeupdate"));});
+ expect(screen.getByTestId("time")).toHaveTextContent("3:20");expect(renders).toBe(baseline);
 });
