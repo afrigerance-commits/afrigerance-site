@@ -1,3 +1,4 @@
+import { HadithGradeHelpLink } from "@/components/islamic/hadith-grade-guide";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -60,6 +61,7 @@ export default async function HadithBookPage({
         {pageCount > 1 ? ` · page ${currentPage}/${pageCount}` : ""}
       </p>
 
+      <HadithGradeHelpLink />
       <div className="mt-10 flex flex-col gap-7">
         {hadiths.map((h, i) => (
           <Reveal key={h.numero} delay={Math.min(i * 0.02, 0.3)}>
@@ -69,10 +71,11 @@ export default async function HadithBookPage({
               <div className="flex flex-wrap items-center gap-2 border-b border-border bg-surface-muted/60 px-6 py-4 sm:px-9">
                 <Badge variant="outline">N° {h.numero}</Badge>
                 {h.grade && (
-                  <Badge variant={h.grade.toLowerCase().includes("sahih") ? "success" : "warning"}>
-                    {h.grade}
-                    {h.gradePar ? ` — ${h.gradePar}` : ""}
-                  </Badge>
+                  <Link href="/hadith#comprendre-authenticite" className="rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent" aria-label={`Comprendre le statut ${h.grade}${h.gradePar ? ` — ${h.gradePar}` : ""}`}>
+                    <Badge variant="outline" className="min-h-11 cursor-pointer gap-2 border-gold-500/40">
+                      {h.grade}{h.gradePar ? ` — ${h.gradePar}` : ""}<span aria-hidden="true">ⓘ</span>
+                    </Badge>
+                  </Link>
                 )}
                 <span className="ml-auto text-xs text-muted">{collection.nom} · {book.titreFrancais}</span>
               </div>

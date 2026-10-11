@@ -1,3 +1,4 @@
+import { HadithGradeGuide } from "@/components/islamic/hadith-grade-guide";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -35,6 +36,7 @@ export default function HadithPage() {
         />
       </Reveal>
       <form action="/recherche" className="mb-6 flex flex-wrap gap-3"><input name="q" aria-label="Rechercher dans les hadiths" placeholder="Fajr, prière, jeûne…" required minLength={2} maxLength={120} className="min-h-12 min-w-0 flex-1 rounded-xl border border-border bg-surface px-4" /><button className="min-h-12 rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground">Rechercher</button></form>
+      <HadithGradeGuide />
       <SavedHadiths />
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
         {hadithCollections.map((c, i) => (
