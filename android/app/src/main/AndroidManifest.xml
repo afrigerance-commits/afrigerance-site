@@ -41,6 +41,9 @@
                 <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
             </intent-filter>
         </receiver>
+        <service android:name=".QuranPlaybackService" android:exported="true" android:foregroundServiceType="mediaPlayback">
+            <intent-filter><action android:name="androidx.media3.session.MediaSessionService" /></intent-filter>
+        </service>
         <service android:name=".AdhanService" android:exported="false" android:foregroundServiceType="mediaPlayback" />
     </application>
 

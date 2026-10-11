@@ -1,4 +1,6 @@
 "use client";
+import { nativeQuranAvailable } from "@/lib/quran/native/bridge";
+import { NativeQuranAudioEngine } from "./native-quran-audio-engine";
 import { createAudioClock } from "@/lib/quran/audio-clock";
 import { mediaPosition } from "@/lib/quran/media-position";
 
@@ -13,7 +15,9 @@ import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle } from "@/co
 import { Button } from "@/components/ui/button";
 import { reciters, defaultReciterId, frenchAudioEdition, type VerseAudioRef } from "@/lib/quran/reciters";
 
-interface QuranAudioState {
+export interface QuranAudioState {
+  backgroundNative?: boolean;
+  playingChapter?: number;
   audioMode: QuranAudioMode;
   chooseAudioMode: (mode: QuranAudioMode) => void;
   seek: (seconds: number) => void;
@@ -42,14 +46,14 @@ interface QuranAudioState {
   playSurah: () => void;
 }
 
-const AudioClockContext = createContext<ReturnType<typeof createAudioClock> | null>(null);
+export const AudioClockContext = createContext<ReturnType<typeof createAudioClock> | null>(null);
 export function useQuranAudioClock() {
   const clock=useContext(AudioClockContext);
   if(!clock) throw new Error("Horloge audio hors du lecteur.");
   return useSyncExternalStore(clock.subscribe,clock.getSnapshot,clock.getSnapshot);
 }
 
-const QuranAudioContext = createContext<QuranAudioState | null>(null);
+export const QuranAudioContext = createContext<QuranAudioState | null>(null);
 type Session = { chapter: number; verses: VerseAudioRef[] };
 type AudioPhase = "arabic" | "french";
 const SessionSetup = createContext<((session: Session) => void) | null>(null);
@@ -72,7 +76,7 @@ function PersistentMiniPlayer({ chapter }: { chapter: number }) {
   if (player.playingVerse === null && !player.playingSurah && !player.error) return null;
   const active = reciters.find(r => r.id === player.reciterId)!;
   const verse = player.verses.find(v => v.number === player.playingVerse);
-  const sourceChapter = verse?.sourceChapter ?? chapter;
+  const sourceChapter = player.playingChapter ?? verse?.sourceChapter ?? chapter;
   const sourceVerse = verse?.sourceVerse ?? player.playingVerse;
   return <Sheet><aside aria-label="Mini-lecteur du Coran" className="quran-floating-player fixed left-4 z-40 flex max-w-[calc(100%-2rem)] items-center gap-3 rounded-2xl border border-gold-500/40 bg-surface p-3 shadow-xl sm:left-6"><div className="app-mini-info min-w-0 max-w-48"><Link href={`/coran/${sourceChapter}${sourceVerse ? `#verset-${sourceVerse}` : ""}`} className="block truncate text-sm font-semibold text-primary">{player.phase === "french" ? frenchAudioEdition.name : active.nom}</Link><p aria-live="polite" className="text-xs text-muted">Sourate {sourceChapter}{sourceVerse ? ` · verset ${sourceVerse}` : ""}{player.paused ? " · en pause" : ""}</p>{player.error && <p role="alert" className="mt-1 text-xs text-red-700 dark:text-red-300">{player.error}</p>}</div><SheetTrigger asChild><button type="button" aria-label="Ouvrir le lecteur complet" className="min-h-11 rounded-xl px-3 text-sm font-semibold text-primary">Lecteur</button></SheetTrigger>{(player.playingVerse !== null || player.playingSurah) && <button onClick={player.paused ? player.resume : player.pause} aria-label={player.paused ? "Reprendre la récitation" : "Mettre la récitation en pause"} className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary text-white">{player.loading ? <LoaderCircle className="size-5 animate-spin" /> : player.paused ? <Play className="size-5" /> : <Pause className="size-5" />}</button>}<button onClick={player.stop} aria-label="Arrêter la récitation" className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border"><Square className="size-4" /></button></aside><SheetContent className="app-player-sheet" aria-describedby="full-player-description"><SheetHeader><SheetTitle>Votre écoute</SheetTitle><p id="full-player-description" className="text-sm text-muted">{player.phase === "french" ? frenchAudioEdition.name : active.nom} · sourate {sourceChapter}{sourceVerse ? ` · verset ${sourceVerse}` : ""}</p></SheetHeader><FullPlayerControls/><Link href={`/coran/${sourceChapter}${sourceVerse ? `#verset-${sourceVerse}` : ""}`} className="mt-5 inline-block min-h-11 py-3 text-sm font-semibold text-primary underline">Retrouver ce verset</Link></SheetContent></Sheet>;
 }
@@ -88,12 +92,17 @@ function FullPlayerControls() {
     <div className="flex items-center justify-center gap-5"><button type="button" aria-label="Verset précédent" disabled={p.playingSurah || i <= 0} onClick={()=>p.playVerse(p.verses[i-1].number,true)} className="flex size-12 items-center justify-center rounded-full border border-border disabled:opacity-35"><SkipBack/></button><button type="button" aria-label={p.paused ? "Reprendre la récitation" : "Mettre la récitation en pause"} onClick={p.paused?p.resume:p.pause} className="flex size-16 items-center justify-center rounded-full bg-primary text-primary-foreground">{p.loading?<LoaderCircle className="animate-spin"/>:p.paused?<Play/>:<Pause/>}</button><button type="button" aria-label="Verset suivant" disabled={p.playingSurah || i < 0 || i >= p.verses.length-1} onClick={()=>p.playVerse(p.verses[i+1].number,true)} className="flex size-12 items-center justify-center rounded-full border border-border disabled:opacity-35"><SkipForward/></button></div>
     <label className="flex min-h-11 items-center justify-between gap-3 text-sm">Répétition<select aria-label="Répétition dans le lecteur complet" value={p.repeatMode} onChange={e=>p.chooseRepeatMode(e.target.value as "off"|"verse"|"surah")} className="rounded-xl border border-border bg-background p-3"><option value="off">Aucune</option>{!p.playingSurah&&<option value="verse">Ce verset</option>}<option value="surah">Cette lecture</option></select></label>
     <label className="flex min-h-11 items-center justify-between gap-3 text-sm">Arrêt automatique<select aria-label="Minuterie d’arrêt" value="" onChange={e=>p.setSleep(Number(e.target.value))} className="rounded-xl border border-border bg-background p-3"><option value="" disabled>Choisir</option><option value="0">Désactiver</option>{[5,15,30,60].map(n=><option key={n} value={n}>{n} minutes</option>)}</select></label>
-    <p role="status" className="text-xs leading-6 text-muted">{p.sleepUntil ? `Arrêt prévu à ${new Date(p.sleepUntil).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}.` : "Minuterie désactivée."} La minuterie nécessite que l’application reste en fonctionnement.</p>
+    <p role="status" className="text-xs leading-6 text-muted">{p.sleepUntil ? `Arrêt prévu à ${new Date(p.sleepUntil).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}.` : "Minuterie désactivée."} {p.backgroundNative ? "L’écoute continue en arrière-plan et écran verrouillé. La minuterie est gérée par Android." : "La minuterie nécessite que l’application reste en fonctionnement."}</p>
     {p.error && <p role="alert" className="rounded-xl border border-border p-3 text-sm">{p.error}</p>}
   </div>;
 }
 
-function QuranAudioEngine({ chapter, verses, children }: { chapter: number; verses: VerseAudioRef[]; children: ReactNode }) {
+function QuranAudioEngine(props: { chapter: number; verses: VerseAudioRef[]; children: ReactNode }) {
+  const native = useSyncExternalStore(() => () => {}, nativeQuranAvailable, () => false);
+  return native ? <NativeQuranAudioEngine {...props} /> : <WebQuranAudioEngine {...props} />;
+}
+
+function WebQuranAudioEngine({ chapter, verses, children }: { chapter: number; verses: VerseAudioRef[]; children: ReactNode }) {
   const [clock] = useState(createAudioClock);
   const [sleepUntil,setSleepUntil] = useState(0);
   const setSleep = (minutes: number) => { if ([0,5,15,30,60].includes(minutes)) setSleepUntil(minutes ? Date.now()+minutes*60000 : 0); };
@@ -169,7 +178,7 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
     setLoading(false);
     phaseRef.current = "arabic"; setPhase("arabic");
     setError(null);
-  }, [clearWatchdog]);
+  }, [clearWatchdog, clock]);
 
   const start = useCallback((verseNumber: number, urlIndex = 0, phase: AudioPhase = audioModeRef.current === "french" ? "french" : "arabic") => {
     const urls = (phase === "french" ? frenchCatalogRef : catalogRef).current?.get(verseNumber);
@@ -188,6 +197,8 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
     setLoading(true);
     const url = urls[urlIndex];
     clock.update(0,0);
+    // HTMLAudioElement is an imperative external resource, not immutable React state.
+    // eslint-disable-next-line react-hooks/immutability
     audio.src = url;
     audio.play().catch((cause) => {
       if (audio.src !== url || currentVerseRef.current !== verseNumber || phaseRef.current !== phase) return;
@@ -199,7 +210,7 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
     watchdogRef.current = setTimeout(() => {
       if (audio.src === url && audio.paused) failureRef.current();
     }, 12000);
-  }, [clearWatchdog, stop]);
+  }, [clearWatchdog, stop, clock]);
 
   const handleFailure = useCallback(() => {
     const verse = currentVerseRef.current;
@@ -224,6 +235,8 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
     const audio = new Audio();
     audio.preload = "auto";
     preloadRef.current = preload;
+    // Keep the external audio resource in a mutable ref.
+    // eslint-disable-next-line react-hooks/immutability
     audioRef.current = audio;
     const onTime = () => {
       clock.update(audio.currentTime,audio.duration);
@@ -298,7 +311,7 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
       audioRef.current = null;
       currentVerseRef.current = null; surahRef.current = false; sequenceRef.current = false;
     };
-  }, [clearWatchdog, stop, verses]);
+  }, [clearWatchdog, stop, verses, clock]);
 
   const configureMemorization = useCallback((settings: MemorizationSettings | null) => {
     if (settings && ((reciterRef.current === "tvquran.hady-toure" && audioModeRef.current !== "french") || !validMemorization(settings, verses.map(v => v.number)))) return;
@@ -390,6 +403,7 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
     surahRef.current = true;
     setPlayingSurah(true);
     setLoading(true);
+    // eslint-disable-next-line react-hooks/immutability
     audio.src = `https://download.tvquran.com/download/recitations/355/280/${String(chapter).padStart(3, "0")}.mp3`;
     audio.play().catch(() => {
       if (surahRef.current) { stop(); setError("Impossible de démarrer cette récitation. Réessayez."); }

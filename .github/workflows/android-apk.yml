@@ -1,7 +1,7 @@
 name: MIRATH Android APK
 on:
   push:
-    branches: [claude/elegant-wozniak-f2m61x]
+    branches: [claude/elegant-wozniak-f2m61x, android/background-audio-20261011]
     paths: ['android/**', 'capacitor.config.ts', 'package*.json', '.github/workflows/android-apk.yml', 'public/icon-512.png']
   workflow_dispatch:
 permissions:
