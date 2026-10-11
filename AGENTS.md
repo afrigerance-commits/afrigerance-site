@@ -37,3 +37,9 @@ Signal « Publie les » reçu le 10 octobre 2026 : publication autorisée du lot
 des 114 noms translittérés, recherche documentaire des hadiths et trois modes
 audio indépendants. Pas de changement natif Android. Les lots suivants restent
 soumis à un nouveau signal utilisateur.
+
+Signal « Vas y publie » reçu le 11 octobre 2026 : publication autorisée du lot
+bibliothèque, lectures originales, exercices, administration des livres et
+synchronisation préparée. Les migrations Supabase restent à activer séparément.
+Aucune nouvelle APK n’est compilée pour ce lot. Les futures publications
+restent soumises à un nouveau signal utilisateur.

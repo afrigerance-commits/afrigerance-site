@@ -30,6 +30,8 @@ public class AdhanPlugin extends Plugin {
         result.put("until", AdhanScheduler.prefs(getContext()).getLong("until", 0));
         result.put("place", AdhanScheduler.prefs(getContext()).getString("place", ""));
         result.put("lastError", AdhanScheduler.prefs(getContext()).getString("lastError", ""));
+        result.put("lastPlayed", AdhanScheduler.prefs(getContext()).getLong("lastPlayed", 0));
+        result.put("playing", AdhanService.playing);
         result.put("alarmVolume", getContext().getSystemService(AudioManager.class).getStreamVolume(AudioManager.STREAM_ALARM));
         call.resolve(result);
     }

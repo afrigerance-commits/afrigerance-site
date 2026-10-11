@@ -4,7 +4,7 @@
 const VERSION = "mirath-offline-v1";
 const PAGES = `${VERSION}-pages`;
 const ASSETS = `${VERSION}-assets`;
-const PUBLIC_PAGE = /^\/(?:$|coran(?:\/|$)|hadith(?:\/|$)|invocations(?:\/|$)|fiqh(?:\/|$)|sira(?:\/|$)|compagnons(?:\/|$)|prophetes(?:\/|$)|routine$|blog(?:\/|$)|apprendre(?:\/|$)|hors-ligne$|mon-suivi$|mes-notes$|ma-bibliotheque$)/;
+const PUBLIC_PAGE = /^\/(?:$|coran(?:\/|$)|bibliotheque(?:\/|$)|hadith(?:\/|$)|invocations(?:\/|$)|fiqh(?:\/|$)|sira(?:\/|$)|compagnons(?:\/|$)|prophetes(?:\/|$)|routine$|blog(?:\/|$)|apprendre(?:\/|$)|hors-ligne$|mon-suivi$|mes-notes$|ma-bibliotheque$)/;
 function isPublicPage(url) {
   return url.origin === self.location.origin && !url.search && PUBLIC_PAGE.test(url.pathname) && !url.pathname.endsWith(".xml");
 }
@@ -41,6 +41,10 @@ async function savePage(path) {
       await boundedPut(ASSETS, asset.href, result, 350);
     }
   }));
+  const assetCache = await caches.open(ASSETS);
+  const critical = [...assets].map(path => new URL(path,url)).filter(asset => isAsset(asset) && /\.(?:js|css)$/.test(asset.pathname));
+  const present = await Promise.all(critical.map(asset => assetCache.match(asset.href)));
+  return present.every(Boolean);
 }
 function isAsset(url) {
   return url.origin === self.location.origin && (url.pathname.startsWith("/_next/static/") || /\.(?:woff2?|webp|png|jpg|jpeg|svg|ico)$/.test(url.pathname));
@@ -56,6 +60,15 @@ self.addEventListener("activate", (event) => {
   })());
 });
 self.addEventListener("message", (event) => {
+  if (event.data?.type === "SAVE_BOOK" && typeof event.data.path === "string" && /^\/bibliotheque\/[a-z0-9-]+\/lire$/.test(event.data.path)) {
+    event.waitUntil((async () => {
+      try {
+        const complete = await savePage(event.data.path);
+        const stored = await (await caches.open(PAGES)).match(new URL(event.data.path, self.location.origin).href);
+        event.ports[0]?.postMessage({ ok: !!stored && complete === true });
+      } catch { event.ports[0]?.postMessage({ ok: false }); }
+    })());
+  }
   if (event.data?.type === "SAVE_PAGE" && typeof event.data.path === "string") event.waitUntil(savePage(event.data.path).catch(() => {}));
 });
 self.addEventListener("fetch", (event) => {

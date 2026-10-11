@@ -3,7 +3,21 @@ import type { Book } from "@/lib/types/content";
 /** Notices fondées sur le registre du corpus fourni ; aucun PDF ni couverture d'édition n'est publié. */
 export const books: Book[] = [
   {
+    slug: "guide-apprendre-mirath",
+    titreOriginal: "Apprendre avec les sources",
+    titreFrancais: "Apprendre avec les sources",
+    auteur: "Rédaction MIRÂTH",
+    discipline: "Méthode / Coran / Hadith",
+    langue: "Français",
+    edition: "MIRÂTH · première édition numérique, 2026",
+    presentation: "Un guide pédagogique original réunissant les leçons MIRÂTH sur Al-Fâtiha, la responsabilité envers les dettes et la lecture des sources. Lecture par chapitres, exercices corrigés et références ; aucun PDF ni traduction moderne des livres fournis n’est reproduit.",
+    droits: "diffusion_autorisee",
+    lectureHref: "/bibliotheque/guide-apprendre-mirath/lire",
+    referencesBibliographiques: "Composition originale à partir des parcours MIRÂTH. Les citations religieuses sont consultables dans les sources nommées par chaque leçon.",
+  },
+  {
     slug: "mukhtasar-al-akhdari",
+    ressourcesMirath: [{ label: "Étudier la purification : cours MIRÂTH", href: "/fiqh/malikite/purification" }],
     titreOriginal: "Le Mukhtasar d’al-Akhdari",
     titreFrancais: "Le Mukhtasar d’al-Akhdari",
     auteur: "Abdur-Rahman al-Akhdarî",
@@ -52,6 +66,7 @@ export const books: Book[] = [
   },
   {
     slug: "histoires-des-prophetes-ibn-kathir",
+    ressourcesMirath: [{ label: "Lire les fiches MIRÂTH sur les prophètes", href: "/prophetes" }],
     titreOriginal: "Les histoires des prophètes",
     titreFrancais: "Les histoires des prophètes",
     auteur: "Ibn Kathîr",
@@ -76,6 +91,7 @@ export const books: Book[] = [
   },
   {
     slug: "ar-rahiq-al-makhtum",
+    ressourcesMirath: [{ label: "Explorer le parcours de Sîra MIRÂTH", href: "/sira" }],
     titreOriginal: "Ar-Rahîq al-Makhtûm",
     titreFrancais: "Le Nectar cacheté",
     auteur: "Safî ar-Rahmân Al-Mubârakfûrî",
@@ -87,21 +103,22 @@ export const books: Book[] = [
     droits: "droits_non_verifies",
   },
   {
-    slug: "histoires-prophetes-ibn-kathir",
-    titreOriginal: "Qisas al-Anbiyâ’",
-    titreFrancais: "Les Histoires des prophètes",
-    auteur: "Ibn Kathîr",
-    discipline: "Histoire des prophètes",
-    langue: "Français — traduction de l’arabe",
-    edition: "Éditions Maison d’Ennour ; traduction par l’équipe littéraire de l’éditeur",
-    presentation: "Ouvrage identifié dans le PDF fourni. Le récit historique doit être étudié avec ses références et en distinguant les passages coraniques, les hadiths et les autres traditions. Les fiches MIRÂTH sont des synthèses originales consultables dans Histoires des prophètes ; elles ne reproduisent pas cette traduction.",
+    slug: "cours-de-tawhid",
+    titreOriginal: "Cours de Tawhîd",
+    titreFrancais: "Cours de Tawhîd",
+    auteur: "Auteur et enseignant à confirmer",
+    discipline: "Croyance",
+    langue: "Français, avec passages arabes",
+    edition: "Notes de cours ; première séance indiquée le 23 septembre 2007",
+    presentation: "Document de notes de cours consacré à la croyance. L’attribution, les citations et la transcription arabe doivent être vérifiées avant de proposer des leçons à partir de ce document.",
+    referencesBibliographiques: "PDF fourni : 137 pages ; titre et date de séance, PDF p. 1. Aucune autorisation de diffusion publique identifiée.",
     droits: "droits_non_verifies",
-    referencesBibliographiques: "Notice établie à partir des premières pages du PDF fourni. Aucun droit de diffusion publique du fichier ou de la traduction moderne n’a été établi.",
   },
 ];
 
 export function getBook(slug: string) {
-  return books.find((book) => book.slug === slug);
+  const canonicalSlug = slug === "histoires-prophetes-ibn-kathir" ? "histoires-des-prophetes-ibn-kathir" : slug;
+  return books.find((book) => book.slug === canonicalSlug);
 }
 
 export const rightsStatusLabels: Record<Book["droits"], string> = {

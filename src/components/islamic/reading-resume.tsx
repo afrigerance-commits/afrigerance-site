@@ -1,4 +1,6 @@
 "use client";
+import { getPersonalItem, setPersonalItem } from "@/lib/account/storage";
+
 import { useEffect, useState } from "react";
 import { chapterName } from "@/lib/quran/chapter-name";
 import Link from "next/link";
@@ -10,8 +12,9 @@ export function ReadingResume({ chapters }: { chapters: QuranChapterMeta[] }) {
   const [position, setPosition] = useState<ReadingPosition | null>(null);
   useEffect(() => {
     let cancelled = false;
-    queueMicrotask(() => { if (cancelled) return; try { setPosition(parseReadingPosition(localStorage.getItem(readingPositionKey), chapters)); } catch { /* Private mode. */ } });
-    return () => { cancelled = true; };
+    const load = () => { if (cancelled) return; try { setPosition(parseReadingPosition(getPersonalItem(readingPositionKey), chapters)); } catch { setPosition(null); } };
+    queueMicrotask(load); window.addEventListener("storage",load); window.addEventListener("mirath-account-storage",load);
+    return () => { cancelled = true; window.removeEventListener("storage",load); window.removeEventListener("mirath-account-storage",load); };
   }, [chapters]);
   if (!position) return null;
   const chapter = chapters.find((c) => c.number === position.chapter)!;
@@ -31,7 +34,7 @@ export function ReadingPositionTracker({ chapter, verseCount }: { chapter: numbe
       }
       const verse = [...visible.keys()].sort((a,b) => a-b)[0];
       if (!Number.isInteger(verse) || verse < 1 || verse > verseCount) return;
-      try { localStorage.setItem(readingPositionKey, JSON.stringify({ chapter, verse })); } catch { /* Storage optional. */ }
+      try { setPersonalItem(readingPositionKey, JSON.stringify({ chapter, verse })); } catch { /* Storage optional. */ }
     }, { rootMargin: "-20% 0px -50% 0px", threshold: 0 });
     elements.forEach((element) => observer.observe(element));
     return () => observer.disconnect();

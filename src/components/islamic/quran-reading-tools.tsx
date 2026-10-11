@@ -1,4 +1,6 @@
 "use client";
+import { getPersonalItem, setPersonalItem, removePersonalItem } from "@/lib/account/storage";
+
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { Bookmark, BookmarkCheck, Minus, Plus } from "lucide-react";
@@ -59,8 +61,8 @@ export function QuranReadingTools({ chapter, children }: { chapter: number; chil
   useEffect(() => {
     let cancelled = false;
     try {
-      const saved = Number(localStorage.getItem(`mirath:quran:bookmark:${chapter}`));
-      const size = Number(localStorage.getItem("mirath:quran:font-size"));
+      const saved = Number(getPersonalItem(`mirath:quran:bookmark:${chapter}`));
+      const size = Number(getPersonalItem("mirath:quran:font-size"));
       queueMicrotask(() => {
         if (cancelled) return;
         setBookmarked(Number.isInteger(saved) && saved > 0 ? saved : null);
@@ -70,12 +72,18 @@ export function QuranReadingTools({ chapter, children }: { chapter: number; chil
     return () => { cancelled = true; };
   }, [chapter]);
 
+  useEffect(() => {
+    const refresh = () => { try { const value=Number(getPersonalItem(`mirath:quran:bookmark:${chapter}`)); setBookmarked(Number.isInteger(value) && value>0 ? value : null); } catch { setBookmarked(null); } };
+    window.addEventListener("storage",refresh); window.addEventListener("mirath-account-storage",refresh);
+    return () => { window.removeEventListener("storage",refresh); window.removeEventListener("mirath-account-storage",refresh); };
+  },[chapter]);
+
   function setBookmark(verse: number) {
     const value = bookmarked === verse ? null : verse;
     setBookmarked(value);
     try {
-      if (value) localStorage.setItem(`mirath:quran:bookmark:${chapter}`, String(value));
-      else localStorage.removeItem(`mirath:quran:bookmark:${chapter}`);
+      if (value) setPersonalItem(`mirath:quran:bookmark:${chapter}`, String(value));
+      else removePersonalItem(`mirath:quran:bookmark:${chapter}`);
       window.dispatchEvent(new Event("mirath-quran-bookmarks"));
     } catch { /* Stockage désactivé. */ }
   }
@@ -83,7 +91,7 @@ export function QuranReadingTools({ chapter, children }: { chapter: number; chil
   function changeFont(amount: number) {
     const size = Math.max(26, Math.min(46, fontSize + amount));
     setFontSize(size);
-    try { localStorage.setItem("mirath:quran:font-size", String(size)); } catch { /* Stockage désactivé. */ }
+    try { setPersonalItem("mirath:quran:font-size", String(size)); } catch { /* Stockage désactivé. */ }
   }
 
   return <ReadingContext.Provider value={{ language: language.value, bookmarked, setBookmark, hideArabic, hideVersion, showFrench, fontSize, tajweed: tajweedEnabled ? tajweed : null }}>

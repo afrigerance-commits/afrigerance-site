@@ -39,6 +39,18 @@ describe("Public reading offline cache", () => {
     w.handlers.fetch({ request: { url: "https://miraath.netlify.app/coran/1", mode: "navigate", method: "GET" }, respondWith: (p: Promise<any>) => { task = p; } });
     expect(await (await task!).text()).toContain("بِسْمِ اللَّهِ");
   });
+  it("confirms book saving only when a readable document has been cached", async () => {
+    const w = worker(); let task!: Promise<any>;
+    const messages: any[]=[];
+    w.handlers.message({ data: {type:"SAVE_BOOK",path:"/bibliotheque/guide-apprendre-mirath/lire"}, ports:[{postMessage:(message:any)=>messages.push(message)}], waitUntil:(promise:Promise<any>)=>{task=promise;} });
+    await task; expect(messages).toEqual([{ok:true}]);
+    w.setOnline(false);
+    w.handlers.fetch({request:{url:"https://miraath.netlify.app/bibliotheque/guide-apprendre-mirath/lire",mode:"navigate",method:"GET"},respondWith:(promise:Promise<any>)=>{task=promise;}});
+    expect((await task).status).toBe(200);
+    const unavailable=worker(false);let failed!:Promise<any>;const errors:any[]=[];
+    unavailable.handlers.message({data:{type:"SAVE_BOOK",path:"/bibliotheque/guide-apprendre-mirath/lire"},ports:[{postMessage:(message:any)=>errors.push(message)}],waitUntil:(promise:Promise<any>)=>{failed=promise;}});
+    await failed;expect(errors).toEqual([{ok:false}]);
+  });
   it("does not store private routes, API calls, external URLs or RSC query payloads", async () => {
     const w = worker();
     for (const path of ["/admin", "/profil", "/connexion", "/api/prayer-times", "https://other.test/coran/1", "/coran/1?_rsc=123"]) {

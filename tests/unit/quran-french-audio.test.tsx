@@ -185,3 +185,17 @@ it("repeats French alone and returns to Arabic-only mode when selected", async (
   await waitFor(()=>expect(audio.src).toBe("https://example.com/ar-7.mp3"));
   end(); expect(audio.src).toBe("https://example.com/ar-7.mp3");
 });
+
+it("continues Arabic/French sequencing while the document is hidden", async () => {
+  await start();
+  const previous=Object.getOwnPropertyDescriptor(document,"visibilityState");
+  Object.defineProperty(document,"visibilityState",{configurable:true,value:"hidden"});
+  try {
+    act(()=>document.dispatchEvent(new Event("visibilitychange")));
+    end();expect(audio.src).toBe("https://example.com/fr-7.mp3");
+    end();expect(audio.src).toBe("https://example.com/ar-8.mp3");
+    expect(audio.paused).toBe(false);
+  } finally {
+    if(previous)Object.defineProperty(document,"visibilityState",previous);else delete (document as unknown as Record<string,unknown>).visibilityState;
+  }
+});

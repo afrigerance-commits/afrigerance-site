@@ -14,8 +14,8 @@ export function LessonReview({ path, lesson, allowed, questions, next }: { path:
   const allAnswered = questions.every((_, index) => answers[index] !== undefined);
   const score = questions.filter((question, index) => answers[index] === question.answer).length;
   return <section aria-labelledby="review-title" className="mt-10 rounded-3xl border border-accent/30 bg-surface p-5 sm:p-8">
-    <p className="eyebrow">Vérifier ma compréhension</p><h2 id="review-title" className="mt-3 font-display text-3xl">Deux questions pour retenir.</h2>
-    <p className="mt-3 text-base leading-7 text-muted">Répondez, consultez les explications, puis validez la leçon lorsque les deux réponses sont correctes.</p>
+    <p className="eyebrow">Vérifier ma compréhension</p><h2 id="review-title" className="mt-3 font-display text-3xl">{questions.length} questions pour retenir.</h2>
+    <p className="mt-3 text-base leading-7 text-muted">Répondez, consultez les explications, puis validez la leçon lorsque toutes les réponses sont correctes.</p>
     <form onSubmit={event => { event.preventDefault(); setChecked(true); }} className="mt-7 space-y-7">
       {questions.map((question, index) => <fieldset key={question.question} className="min-w-0">
         <legend className="mb-3 text-base font-semibold leading-7">{index + 1}. {question.question}</legend>

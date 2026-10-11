@@ -11,7 +11,7 @@ import { invocationTopics } from "@/lib/data/invocation-topics";
 import { chapterName } from "@/lib/quran/chapter-name";
 import { getPublishedVideos } from "@/lib/data/published-videos";
 import { getPublishedArticles } from "@/lib/data/published-articles";
-import { books } from "@/lib/data/books";
+import { getLibraryBooks } from "@/lib/books/catalog";
 import { scholars } from "@/lib/data/scholars";
 import { siraEvents } from "@/lib/data/sira";
 import { fiqhCourses } from "@/lib/data/fiqh";
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 };
 
 async function buildIndex(): Promise<SearchResult[]> {
-  const [articles, videos] = await Promise.all([getPublishedArticles(), getPublishedVideos()]);
+  const [articles, videos, books] = await Promise.all([getPublishedArticles(), getPublishedVideos(), getLibraryBooks()]);
   return [
     ...videos.map((v) => ({ titre: v.titre, description: v.description, href: `/videos#video-${v.slug}`, type: "Vidéo" })),
     ...disciplines.map((d) => ({ titre: d.name, description: d.description, href: `/explorer-le-savoir/${d.slug}`, type: "Discipline" })),

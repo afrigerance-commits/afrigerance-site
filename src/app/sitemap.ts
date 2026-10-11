@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { siteConfig, disciplines } from "@/lib/site-config";
 import { getPublishedArticles } from "@/lib/data/published-articles";
 import { invocationTopics } from "@/lib/data/invocation-topics";
-import { books } from "@/lib/data/books";
+import { getLibraryBooks } from "@/lib/books/catalog";
 import { prophets } from "@/lib/data/prophets";
 import { scholars } from "@/lib/data/scholars";
 import { siraEvents } from "@/lib/data/sira";
@@ -57,7 +57,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   });
   // Seul le contenu publié a vocation à être indexé.
   (await getPublishedArticles()).forEach((a) => entries.push({ url: url(`/blog/${a.slug}`) }));
-  books.forEach((b) => entries.push({ url: url(`/bibliotheque/${b.slug}`) }));
+  (await getLibraryBooks()).forEach((b) => {
+    entries.push({ url: url(`/bibliotheque/${b.slug}`) });
+    if(b.lectureHref) entries.push({ url: url(b.lectureHref) });
+  });
   scholars.filter((s) => s.statut === "publie").forEach((s) => entries.push({ url: url(`/compagnons/${s.slug}`) }));
   siraEvents.filter((e) => e.statut === "publie").forEach((e) => entries.push({ url: url(`/sira/${e.slug}`) }));
   learningPaths.forEach((p) => {

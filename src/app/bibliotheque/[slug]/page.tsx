@@ -6,24 +6,25 @@ import { Reveal } from "@/components/motion/reveal";
 import { BookCover } from "@/components/content/book-cover";
 import { DemoBadge } from "@/components/islamic/reliability-badge";
 import { Badge } from "@/components/ui/badge";
-import { books, getBook } from "@/lib/data/books";
+import { books } from "@/lib/data/books";
+import { getLibraryBook } from "@/lib/books/catalog";
 import { getBookAccess } from "@/lib/book-access";
 
 
 export function generateStaticParams() {
-  return books.map((b) => ({ slug: b.slug }));
+  return [...books.map((b) => ({ slug: b.slug })), { slug: "histoires-prophetes-ibn-kathir" }];
 }
 
 export async function generateMetadata({ params }: PageProps<"/bibliotheque/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const book = getBook(slug);
+  const book = await getLibraryBook(slug);
   if (!book) return {};
   return { title: book.titreFrancais, description: book.presentation, alternates: { canonical: `/bibliotheque/${slug}` } };
 }
 
 export default async function BookPage({ params }: PageProps<"/bibliotheque/[slug]">) {
   const { slug } = await params;
-  const book = getBook(slug);
+  const book = await getLibraryBook(slug);
   if (!book) notFound();
   const access = getBookAccess(book);
 
@@ -68,10 +69,13 @@ export default async function BookPage({ params }: PageProps<"/bibliotheque/[slu
           </dl>
 
           <p className="text-foreground/90">{book.presentation}</p>
-          {book.slug === "histoires-prophetes-ibn-kathir" && <Link href="/prophetes" className="font-semibold text-primary underline">Lire les fiches originales : histoires des prophètes →</Link>}
-          {book.slug === "ar-rahiq-al-makhtum" && <Link href="/sira" className="font-semibold text-primary underline">Lire le parcours de Sîra sur MIRÂTH →</Link>}
+          {book.ressourcesMirath && <div className="rounded-2xl border border-accent/30 bg-surface p-4">
+            <h2 className="font-display text-lg font-semibold">À étudier sur MIRÂTH</h2>
+            <p className="mt-2 text-sm text-muted">Contenus pédagogiques distincts du texte intégral de cette édition.</p>
+            {book.ressourcesMirath.map(resource => <Link key={resource.href} href={resource.href} className="mt-3 block min-h-11 py-2 font-semibold text-primary underline">{resource.label} →</Link>)}
+          </div>}
 
-          {access.mode === "read" && <a href={access.href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 w-fit items-center rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground">Lire l’ouvrage</a>}
+          {access.mode === "read" && <a href={access.href} className="inline-flex min-h-11 w-fit items-center rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground">Lire l’ouvrage</a>}
           <p className="text-sm leading-7 text-muted">{access.mode === "notice" ? "Vous consultez une notice bibliographique. Le texte intégral de cette édition n’est pas disponible sur MIRÂTH." : "L’accès au texte est distinct de sa notice bibliographique."}</p>
           {book.droits === "consultation_externe" && book.lienConsultationExterne && (
             <a

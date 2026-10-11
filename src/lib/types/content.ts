@@ -125,7 +125,9 @@ export interface Book extends DemoFlag {
   droits: BookRightsStatus;
   lienConsultationExterne?: string;
   fichierPdf?: string;
+  lectureHref?: string;
   couverture?: string;
+  ressourcesMirath?: { label: string; href: string }[];
 }
 
 export interface Video extends DemoFlag {

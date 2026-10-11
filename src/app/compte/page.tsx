@@ -1,3 +1,5 @@
+import { LearningDashboard } from "@/components/learning/learning-dashboard";
+import { ReaderSyncPanel } from "@/components/account/reader-sync";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
@@ -5,7 +7,6 @@ import { LogOut } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { signOut } from "@/lib/actions/auth";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
@@ -22,15 +23,11 @@ export default async function ComptePage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/connexion?redirect=/compte");
 
-  const [{ data: profile }, { data: progressRows }, { data: bookmarkRows }] = await Promise.all([
+  const [{ data: profile }, { data: bookmarkRows }] = await Promise.all([
     supabase.from("profiles").select("display_name").eq("id", user.id).maybeSingle(),
-    supabase.from("progress").select("completed").eq("user_id", user.id),
     supabase.from("bookmarks").select("content_type, content_id").eq("user_id", user.id),
   ]);
 
-  const completedCount = progressRows?.filter((p) => p.completed).length ?? 0;
-  const totalTracked = progressRows?.length ?? 0;
-  const progressPercent = totalTracked > 0 ? Math.round((completedCount / totalTracked) * 100) : 0;
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
@@ -38,20 +35,14 @@ export default async function ComptePage() {
 
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <Card className="p-6">
-          <h2 className="font-display text-lg font-semibold">Progression</h2>
-          <p className="mt-1 text-sm text-muted">
-            {completedCount} leçon{completedCount > 1 ? "s" : ""} terminée{completedCount > 1 ? "s" : ""} sur{" "}
-            {totalTracked} suivie{totalTracked > 1 ? "s" : ""}.
-          </p>
-          <Progress value={progressPercent} className="mt-4" />
-        </Card>
-        <Card className="p-6">
-          <h2 className="font-display text-lg font-semibold">Favoris</h2>
+          <h2 className="font-display text-lg font-semibold">Favoris éditoriaux</h2>
           <p className="mt-1 text-sm text-muted">{bookmarkRows?.length ?? 0} élément(s) enregistré(s).</p>
         </Card>
       </div>
 
-      <p className="mt-6 text-sm leading-7 text-muted">Les objectifs, notes et progrès des parcours sont actuellement conservés sur l’appareil utilisé. Ils ne sont pas encore synchronisés par votre compte.</p>
+      <p className="mt-6 text-sm leading-7 text-muted">Vos lectures sans compte et vos données de compte sont séparées. Utilisez la synchronisation pour retrouver vos progrès entre appareils.</p>
+      <ReaderSyncPanel/>
+      <LearningDashboard/>
       <nav className="mt-4 flex flex-wrap gap-4 text-sm font-semibold text-primary"><Link href="/mon-suivi" className="underline">Mon suivi de lecture</Link><Link href="/mes-notes" className="underline">Mes notes personnelles</Link><Link href="/hors-ligne" className="underline">Mes téléchargements</Link></nav>
       <form action={signOut} className="mt-10">
         <Button type="submit" variant="outline">

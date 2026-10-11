@@ -34,6 +34,12 @@ export type ReferenceableContentType = "article" | "lesson" | "sira_event" | "sc
 export type Database = {
   public: {
     Tables: {
+      reader_state: {
+        Row: { user_id: string; key: string; value: string | null; revision: number; updated_at: string };
+        Insert: { user_id: string; key: string; value?: string | null };
+        Update: { value?: string | null };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           id: string;
@@ -213,6 +219,11 @@ export type Database = {
       books: {
         Row: {
           id: string;
+          published: boolean;
+          pdf_path: string | null;
+          page_count: number | null;
+          discipline_label: string | null;
+          rights_justification: string | null;
           slug: string;
           titre_original: string | null;
           titre_francais: string;
@@ -230,8 +241,8 @@ export type Database = {
           created_at: string;
           updated_at: string;
         };
-        Insert: Partial<{ id: string; droits: BookRightsStatusDb }> & { slug: string; titre_francais: string };
-        Update: Partial<{ titre_francais: string; presentation: string | null; droits: BookRightsStatusDb }>;
+        Insert: Partial<{ id: string; droits: BookRightsStatusDb; published: boolean; pdf_path: string | null; page_count: number | null; discipline_label: string | null; rights_justification: string | null; auteur: string; langue: string; edition: string; presentation: string; lien_consultation_externe: string | null }> & { slug: string; titre_francais: string };
+        Update: Partial<{ titre_francais: string; auteur: string; langue: string; edition: string; presentation: string; droits: BookRightsStatusDb; published: boolean; pdf_path: string | null; page_count: number | null; discipline_label: string | null; rights_justification: string | null; lien_consultation_externe: string | null }>;
         Relationships: [];
       };
       book_rights: {
@@ -391,7 +402,9 @@ export type Database = {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      sync_reader_state: { Args: { p_key: string; p_value: string | null; p_expected: number }; Returns: unknown };
+    };
     Enums: {
       user_role: UserRoleDb;
       editorial_status: EditorialStatusDb;

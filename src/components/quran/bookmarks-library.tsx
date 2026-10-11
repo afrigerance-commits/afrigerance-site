@@ -1,4 +1,6 @@
 "use client";
+import { getPersonalItem } from "@/lib/account/storage";
+
 import { useEffect, useState } from "react";
 import { chapterName } from "@/lib/quran/chapter-name";
 import Link from "next/link";
@@ -9,7 +11,7 @@ export function QuranBookmarksLibrary() {
   useEffect(() => {
     const load = () => {
       try {
-        const bookmarks = chapters.flatMap(c => { const verse = Number(localStorage.getItem(`mirath:quran:bookmark:${c.number}`)); return Number.isInteger(verse) && verse >= 1 && verse <= c.versesCount ? [{ chapter: c.number, verse, name: `${chapterName(c)} · ${c.nameFrench}` }] : []; });
+        const bookmarks = chapters.flatMap(c => { const verse = Number(getPersonalItem(`mirath:quran:bookmark:${c.number}`)); return Number.isInteger(verse) && verse >= 1 && verse <= c.versesCount ? [{ chapter: c.number, verse, name: `${chapterName(c)} · ${c.nameFrench}` }] : []; });
         setSaved(bookmarks);
       } catch { setError("Les signets de cet appareil ne sont pas accessibles."); }
     };

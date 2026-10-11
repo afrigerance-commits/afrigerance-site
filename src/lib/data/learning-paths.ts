@@ -1,3 +1,4 @@
+import { learningPractice } from "@/lib/data/learning-practice";
 import type { LearningPath, LearningLesson } from "@/lib/types/content";
 
 /** Commentaires pédagogiques MIRÂTH, distincts des textes cités.
@@ -171,6 +172,7 @@ const sources: LearningLesson[] = [
 ];
 
 function path(slug: string, titre: string, description: string, objectifs: string[], lessons: LearningLesson[]): LearningPath {
+  lessons = lessons.map(lesson => ({ ...lesson, questions: [...lesson.questions, ...(learningPractice[lesson.slug] || [])] }));
   return { slug, titre, description, objectifs, lessons, niveauRequis: "aucun", etapes: lessons.map(lesson => ({ titre: lesson.titre, lienHref: `/apprendre/${slug}/${lesson.slug}` })) };
 }
 export const learningPaths: LearningPath[] = [

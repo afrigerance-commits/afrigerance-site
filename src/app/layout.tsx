@@ -1,3 +1,4 @@
+import { ReaderSyncProvider } from "@/components/account/reader-sync";
 import type { Metadata, Viewport } from "next";
 import { fontDisplay, fontBody, fontArabic, fontQuran } from "@/lib/fonts";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -74,7 +75,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           }}
         />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <PersistentQuranAudio>
+          <ReaderSyncProvider><PersistentQuranAudio>
           <a href="#contenu-principal" className="skip-link">
             Aller au contenu principal
           </a>
@@ -86,7 +87,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <div className="app-desktop-footer"><Footer /></div>
           <OfflineSupport />
           <MobileBottomNavigation />
-          </PersistentQuranAudio>
+          </PersistentQuranAudio></ReaderSyncProvider>
         </ThemeProvider>
       </body>
     </html>

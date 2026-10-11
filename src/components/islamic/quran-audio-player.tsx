@@ -1,4 +1,5 @@
 "use client";
+import { mediaPosition } from "@/lib/quran/media-position";
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
@@ -218,7 +219,12 @@ function QuranAudioEngine({ chapter, verses, children }: { chapter: number; vers
     audio.preload = "auto";
     preloadRef.current = preload;
     audioRef.current = audio;
-    const onTime = () => { setElapsed(Number.isFinite(audio.currentTime)?audio.currentTime:0); setDuration(Number.isFinite(audio.duration)?audio.duration:0); };
+    const onTime = () => {
+      setElapsed(Number.isFinite(audio.currentTime)?audio.currentTime:0); setDuration(Number.isFinite(audio.duration)?audio.duration:0);
+      if ("mediaSession" in navigator && navigator.mediaSession.setPositionState) {
+        try { navigator.mediaSession.setPositionState(mediaPosition(audio.duration,audio.currentTime,audio.playbackRate || 1)); } catch { /* Playback continues on engines with partial support. */ }
+      }
+    };
     audio.addEventListener("timeupdate",onTime); audio.addEventListener("loadedmetadata",onTime);
     const onPlaying = () => {
       window.dispatchEvent(new CustomEvent(AUDIO_FOCUS_EVENT, { detail: audio }));
