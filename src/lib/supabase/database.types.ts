@@ -403,6 +403,8 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      record_page_view: { Args: {p_id:string;p_path:string;p_visitor:string;p_session:string;p_device:string;p_source:string};Returns:undefined };
+      analytics_report: { Args:{p_days:number};Returns:unknown };
       sync_reader_state: { Args: { p_key: string; p_value: string | null; p_expected: number }; Returns: unknown };
     };
     Enums: {

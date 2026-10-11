@@ -2,7 +2,7 @@
 
 ## Statut de livraison
 
-Lot préparé localement, aucun déploiement Netlify ni poussée vers une branche distante. La consigne utilisateur de publication sur signal reste applicable. Aucun PDF reçu sur Telegram n’a été rendu public. Les migrations Supabase sont préparées mais non appliquées dans cette session : aucun accès d’administration de la base n’est disponible.
+Lot effectivement publié sur https://miraath.netlify.app après le signal « Vas y publie » du 11 octobre 2026. Commit de production : `0fb5fbbcd5edc2155b3a4822de2885524d56479d`. Les futures publications restent soumises à un nouveau signal. Aucun PDF reçu sur Telegram n’a été rendu public. Les migrations Supabase sont préparées mais non appliquées dans cette session : aucun accès d’administration de la base n’est disponible.
 
 ## Fonctions réalisées
 
@@ -32,3 +32,7 @@ Avant d’activer les fonctions pour le public : deux comptes réels sur deux ap
 131 tests réussis (36 fichiers), TypeScript et compilation de production réussis. Tests spécifiques : séparation invités/comptes, changement de compte pendant une requête, conflits de révision, reprise et signets du livre, confirmation d’enregistrement hors connexion, filtrage des accès aux ouvrages, chemins de stockage et séquence arabe/français en document masqué.
 
 Pas d’essai visuel navigateur, pas de téléphone physique connecté, pas de SDK Android disponible ici. Pas de nouvelle APK compilée pour les deux champs de diagnostic natif. Les tests physiques écran verrouillé, restrictions de batterie, interruptions par appel, adhan aux heures réelles et audio hors connexion restent à réaliser ; aucun résultat fictif ne leur est attribué. Les politiques SQL restent à éprouver sur Supabase après activation.
+
+## Vérification après publication
+
+Réponses HTTP 200 et nouveaux contenus vérifiés sur le catalogue, la fiche du guide original, son lecteur, une leçon enrichie et les deux routes Ibn Kathîr. Le service worker publié contient SAVE_BOOK et la prise en charge de la bibliothèque. La page personnelle répond également en HTTP 200. Vérification HTTP du contenu uniquement : aucune validation visuelle ni essai sur téléphone ajoutés. Les migrations Supabase ne sont toujours pas appliquées ; aucune nouvelle APK livrée.

@@ -43,3 +43,8 @@ bibliothèque, lectures originales, exercices, administration des livres et
 synchronisation préparée. Les migrations Supabase restent à activer séparément.
 Aucune nouvelle APK n’est compilée pour ce lot. Les futures publications
 restent soumises à un nouveau signal utilisateur.
+
+Signal « signal lancé » reçu le 11 octobre 2026 : publication autorisée du lot
+statistiques facultatives de fréquentation. La collecte reste désactivée tant
+que la migration Supabase, la purge et le secret serveur ne sont pas activés.
+Les prochaines publications restent soumises à un nouveau signal.

@@ -1,3 +1,4 @@
+import { AnalyticsPreferences } from "@/components/analytics/visitor-analytics";
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/layout/page-header";
 import { Reveal } from "@/components/motion/reveal";
@@ -33,6 +34,11 @@ export default function ConfidentialitePage() {
             aux messages envoyés via le formulaire de contact, et, avec consentement, informer des nouvelles
             publications.
           </p>
+        </section>
+        <section>
+          <h2 className="mb-2 font-display text-lg font-semibold text-foreground">Statistiques facultatives</h2>
+          <p>Après votre accord, MIRÂTH mesure les pages publiques consultées, les visites, le type d’appareil et la provenance générale. Un identifiant aléatoire renouvelé chaque jour estime les visiteurs ; il n’est pas lié au compte. Aucun texte recherché, note personnelle, adresse IP ou contenu de formulaire n’est enregistré dans ce suivi. Les données sont conservées 90 jours et accessibles uniquement à l’administrateur. Les refus et les signaux Do Not Track / Global Privacy Control sont respectés. Les statistiques excluent donc une partie des visites et ne représentent pas un décompte exact des personnes. L’hébergeur peut conserver ses propres journaux techniques, indépendamment de ce dispositif.</p>
+          <AnalyticsPreferences />
         </section>
         <section>
           <h2 className="mb-2 font-display text-lg font-semibold text-foreground">Vos droits</h2>

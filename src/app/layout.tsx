@@ -1,3 +1,4 @@
+import { VisitorAnalytics } from "@/components/analytics/visitor-analytics";
 import { ReaderSyncProvider } from "@/components/account/reader-sync";
 import type { Metadata, Viewport } from "next";
 import { fontDisplay, fontBody, fontArabic, fontQuran } from "@/lib/fonts";
@@ -85,6 +86,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <PageTransition>{children}</PageTransition>
           </main>
           <div className="app-desktop-footer"><Footer /></div>
+          <VisitorAnalytics />
           <OfflineSupport />
           <MobileBottomNavigation />
           </PersistentQuranAudio></ReaderSyncProvider>

@@ -13,6 +13,8 @@ const ACCOUNT_PREFIX = "/compte";
  */
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
+  // The anonymous statistics endpoint neither reads nor refreshes account cookies.
+  if (request.nextUrl.pathname === "/api/analytics") return response;
 
   const needsAuth =
     request.nextUrl.pathname.startsWith(ADMIN_PREFIX) || request.nextUrl.pathname.startsWith(ACCOUNT_PREFIX);

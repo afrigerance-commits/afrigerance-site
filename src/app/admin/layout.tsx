@@ -9,6 +9,7 @@ import {
   Library,
   Users,
   Settings,
+  ChartNoAxesCombined,
   ExternalLink,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -54,7 +55,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
           <span className="font-display text-lg font-semibold">Administration</span>
         </div>
         <nav className="flex flex-row flex-wrap gap-1 lg:flex-col" aria-label="Navigation administration">
-          {navItems.map((item) => (
+          {[...navItems, ...(roles.includes("administrateur") ? [{ href: "/admin/statistiques", label: "Statistiques", icon: ChartNoAxesCombined }] : [])].map((item) => (
             <Link
               key={item.href}
               href={item.href}
