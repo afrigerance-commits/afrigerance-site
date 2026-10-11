@@ -2,6 +2,11 @@ package com.baytalilm.app;
 
 import android.content.ComponentName;
 import android.net.Uri;
+import android.util.Base64;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -104,7 +109,7 @@ public class QuranAudioPlugin extends Plugin {
                 for (int n = 0; n < urls.length(); n++) if (!allowed(urls.getString(n))) throw new IllegalArgumentException();
                 Bundle extras = new Bundle(); extras.putString("track", track.toString());
                 MediaItem.Builder item = new MediaItem.Builder().setMediaId(track.getString("id"))
-                    .setUri(urls.getString(0)).setMediaMetadata(new MediaMetadata.Builder()
+                    .setUri(localUri(urls.getString(0))).setMediaMetadata(new MediaMetadata.Builder()
                         .setTitle(track.getString("title")).setArtist(track.getString("artist"))
                         .setAlbumTitle("MIRÂTH").setExtras(extras).build());
                 if (track.has("silenceMs")) {
@@ -128,6 +133,39 @@ public class QuranAudioPlugin extends Plugin {
     private void sleep(MediaController c, long until) {
         Bundle args = new Bundle(); args.putLong("until", until);
         c.sendCustomCommand(new SessionCommand(QuranPlaybackService.SLEEP, Bundle.EMPTY), args);
+    }
+    private File audioFile(String url) throws Exception {
+        byte[] hash=MessageDigest.getInstance("SHA-256").digest(url.getBytes(StandardCharsets.UTF_8));
+        StringBuilder name=new StringBuilder();for(byte b:hash)name.append(String.format("%02x",b));
+        File directory=new File(getContext().getFilesDir(),"quran-downloads");
+        if(!directory.exists()&&!directory.mkdirs())throw new IllegalStateException("Stockage indisponible");
+        return new File(directory,name+".mp3");
+    }
+    private Uri localUri(String url) throws Exception {
+        if(url.startsWith("https:")){File file=audioFile(url);if(file.isFile()&&file.length()>0)return Uri.fromFile(file);}
+        return Uri.parse(url);
+    }
+    @PluginMethod public void cacheAudio(PluginCall call) {
+        try {
+            String url=call.getString("url"), data=call.getString("base64");
+            if(url==null||!url.startsWith("https:")||!allowed(url)||data==null||data.length()>42*1024*1024)throw new IllegalArgumentException();
+            File target=audioFile(url);
+            if(!target.isFile()||target.length()==0){
+                byte[] bytes=Base64.decode(data,Base64.DEFAULT);
+                if(bytes.length==0||bytes.length>30*1024*1024)throw new IllegalArgumentException();
+                File temporary=new File(target.getPath()+".tmp");
+                try(FileOutputStream out=new FileOutputStream(temporary)){out.write(bytes);}
+                if(!temporary.renameTo(target)){temporary.delete();throw new IllegalStateException();}
+            }
+            call.resolve();
+        }catch(Exception e){call.reject("Impossible de préparer cette piste hors connexion.",e);}
+    }
+    @PluginMethod public void removeCachedAudio(PluginCall call) {
+        try {
+            JSArray urls=call.getArray("urls");if(urls==null||urls.length()>13000)throw new IllegalArgumentException();
+            for(int i=0;i<urls.length();i++){String url=urls.getString(i);if(!allowed(url)||!url.startsWith("https:"))throw new IllegalArgumentException();File file=audioFile(url);if(file.exists()&&!file.delete())throw new IllegalStateException();}
+            call.resolve();
+        }catch(Exception e){call.reject("Impossible de supprimer les pistes téléchargées.",e);}
     }
     @PluginMethod public void getState(PluginCall call) { withController(call, c -> call.resolve(state(c, true))); }
     @PluginMethod public void pause(PluginCall call) { withController(call, c -> { c.pause(); call.resolve(); }); }

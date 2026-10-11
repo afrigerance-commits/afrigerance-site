@@ -4,6 +4,7 @@ import { AudioClockContext, QuranAudioContext, type QuranAudioState } from "./qu
 import { AUDIO_FOCUS_EVENT } from "./sourced-audio";
 import { createAudioClock } from "@/lib/quran/audio-clock";
 import { nativeQuran, type NativePlaybackState } from "@/lib/quran/native/bridge";
+import { prepareNativeOffline } from "@/lib/quran/native/offline";
 import { nativePlaylist, type NativeTrack } from "@/lib/quran/native/playlist";
 import { offlineCatalog } from "@/lib/quran/offline-audio";
 import { parseAudioMode, type QuranAudioMode } from "@/lib/quran/audio-mode";
@@ -116,6 +117,8 @@ export function NativeQuranAudioEngine({ chapter, verses, children }: { chapter:
       if(token!==request.current || !mounted.current)return;
       const plan=nativePlaylist({chapter,verses:refs,start:verseNumber,sequence:continueSequence,mode:c.audioMode,repeat:c.repeatMode,memorization:c.memorization,reciterId:c.reciterId,artist:reciters.find(r=>r.id===c.reciterId)!.nom,frenchArtist:frenchAudioEdition.name,arabic,french});
       if(preserve?.track){ const i=plan.tracks.findIndex(t=>t.verse===verseNumber && t.phase===preserve.track!.phase && !t.silenceMs); if(i>=0)plan.startIndex=i; }
+      await prepareNativeOffline(plan.tracks,()=>token!==request.current || !mounted.current);
+      if(token!==request.current || !mounted.current)return;
       await nativeQuran.load({...plan,position:preserve?.position ?? 0,paused:preserve?.paused ?? false,sleepUntil:preserve?.sleepUntil ?? stateRef.current.sleepUntil});
       if(token!==request.current)return;
       awaitingLoad.current=false;

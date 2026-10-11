@@ -7,6 +7,8 @@ export interface NativePlaybackState {
 }
 interface NativeQuranPlugin {
   load(options: { tracks: NativeTrack[]; startIndex: number; repeat: boolean; position?: number; paused?: boolean; sleepUntil?: number }): Promise<void>;
+  cacheAudio(options: {url:string;base64:string}): Promise<void>;
+  removeCachedAudio(options: {urls:string[]}): Promise<void>;
   pause(): Promise<void>; resume(): Promise<void>; stop(): Promise<void>;
   seek(options: { seconds: number }): Promise<void>;
   setSleep(options: { until: number }): Promise<void>;

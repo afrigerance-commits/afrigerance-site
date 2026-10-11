@@ -1,5 +1,14 @@
 # MIRÂTH Android — APK de test
 
+## Version 1.3 préparée — Coran en arrière-plan
+
+Demande du 11 octobre 2026 : poursuivre l’écoute hors de l’application et écran verrouillé. Un service Android Media3 (ExoPlayer + MediaSessionService) porte la file complète, la notification et les commandes système. Le JavaScript ne déclenche plus chaque verset dans la nouvelle APK : la file contient arabe seul, français seul ou arabe puis français, les répétitions et les pauses de mémorisation. La minuterie est native. Les interruptions d’autres applications et le débranchement du casque passent par l’audio focus Android. La fermeture de l’Activity libère le contrôleur sans arrêter le service.
+
+L’application 1.2 continue d’utiliser le lecteur web. L’activation de la 1.3 exige installation de la nouvelle APK ET publication du nouveau lecteur web. Aucun déploiement Netlify autorisé pour ce lot ; la compilation est lancée sur une branche séparée avec `[skip netlify]`. La diffusion utilise Internet ; pour les packs déjà téléchargés, les pistes du cache web sont copiées dans le stockage privé Android avant une lecture hors connexion. Une piste manquante bloque le démarrage au lieu de sauter un verset. La suppression d’un pack retire aussi ces copies natives. Un arrêt forcé Android ou une extinction arrête la lecture. iOS n’est pas couvert.
+
+Validation locale : 158 tests de suite générale, 2 tests supplémentaires du pont natif, TypeScript, lint ciblé (avertissement img existant) et compilation des 368 pages. Essais natifs et signature : en cours, résultat à consigner après leur achèvement. Aucun téléphone physique n’est connecté.
+
+
 ## Version 1.2 — navigation et français après chaque verset
 
 Publication autorisée par l’utilisateur le 9 octobre 2026. Version Android 1.2
