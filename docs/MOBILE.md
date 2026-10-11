@@ -6,7 +6,9 @@ Demande du 11 octobre 2026 : poursuivre l’écoute hors de l’application et �
 
 L’application 1.2 continue d’utiliser le lecteur web. L’activation de la 1.3 exige installation de la nouvelle APK ET publication du nouveau lecteur web. Aucun déploiement Netlify autorisé pour ce lot ; la compilation est lancée sur une branche séparée avec `[skip netlify]`. La diffusion utilise Internet ; pour les packs déjà téléchargés, les pistes du cache web sont copiées dans le stockage privé Android avant une lecture hors connexion. Une piste manquante bloque le démarrage au lieu de sauter un verset. La suppression d’un pack retire aussi ces copies natives. Un arrêt forcé Android ou une extinction arrête la lecture. iOS n’est pas couvert.
 
-Validation locale : 158 tests de suite générale, 2 tests supplémentaires du pont natif, TypeScript, lint ciblé (avertissement img existant) et compilation des 368 pages. Essais natifs et signature : en cours, résultat à consigner après leur achèvement. Aucun téléphone physique n’est connecté.
+Validation locale : suite de 163 tests web réussie, puis les trois tests du moteur natif réussis après la correction finale des erreurs (un test supplémentaire). TypeScript, lint ciblé (avertissement img existant) et compilation des 368 pages réussis. Validation Android finale : exécution 38151172515 réussie le 11 octobre, source 546ad4d6d6dda3318703f91ef13666d9f22ade56, compilation/lint/signature et cinq tests Android 15 réussis, zéro échec ou test ignoré. Les tests audio utilisent une piste WAV silencieuse pour vérifier l’état du lecteur et la progression, pas l’écoute des paroles sur un haut-parleur. Aucun téléphone physique n’est connecté.
+
+APK 1.3 préparée : MIRATH-Android-1.3.apk, 15 524 341 octets, SHA256 71f6c87dfb2df2ec88827c37807b65f79a4a8b89ce0f67e5259be7b775cd8e39. Même certificat de test que la 1.2 : 106f6e6781b824308b1729feb65434c785f31fa82d4a6c0ade6f00891874c596. Pas de publication Netlify pour ce lot.
 
 
 ## Version 1.2 — navigation et français après chaque verset

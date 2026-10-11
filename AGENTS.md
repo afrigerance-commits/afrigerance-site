@@ -48,3 +48,22 @@ Signal « signal lancé » reçu le 11 octobre 2026 : publication autorisée du 
 statistiques facultatives de fréquentation. La collecte reste désactivée tant
 que la migration Supabase, la purge et le secret serveur ne sont pas activés.
 Les prochaines publications restent soumises à un nouveau signal.
+
+Signal « publie toutes les modifications jusque là » reçu le 11 octobre 2026 :
+publication autorisée de tous les changements préparés, notamment la navigation
+progressive du Coran et le parcours Sîra original de 42 chapitres. Branche Netlify
+mise à jour vers de10bfe825d716a339afb1273c36e3b925774838. Aucun nouvel APK
+natif compilé. Les modifications suivantes exigent un nouveau signal utilisateur.
+
+Signal « publie » reçu le 11 octobre 2026 à 05:24 UTC : publication du guide
+des degrés de hadiths et des liens d’aide depuis les badges autorisée. Commit
+de production : 5de2233d3576b7cbcd8e58ad28b59a81d4c82a2e. Les prochaines
+modifications restent soumises à un nouveau signal.
+
+Demande du 11 octobre 2026 : « Continuer à écouter le Coran même quand on sort de
+l’application est ce possible tu peux gérer ça ? ». Préparation autorisée du
+service natif Android, du pont web et de l’APK 1.3. Compilation/tests réalisés
+sur android/background-audio-20261011 avec [skip netlify]. Aucun signal de
+publication pour ce lot ; la production reste au commit 5de2233d3576b7cbcd8e58ad28b59a81d4c82a2e.
+L’activation exige une publication explicite du nouveau lecteur et l’installation
+de l’APK 1.3. Essais physiques encore à effectuer.
