@@ -75,3 +75,15 @@ sur feature/quran-page-reader-20261018 à partir du lot audio natif en attente.
 Aucun signal de publication reçu. Ne pas déployer ce lot ni le lot audio
 précédent sans nouveau signal explicite. Aucune modification native Android
 nécessaire pour ces options web.
+
+
+Signal « Publie » reçu le 18 octobre 2026 à 22:57 UTC : publication autorisée
+du lecteur page par page, options d’affichage et jauges, ainsi que du lot
+d’écoute native en arrière-plan inclus dans sa base. Vérifications : 177 tests
+et compilation de 972 pages réussis. La production peut être mise à jour
+pour ce lot uniquement ; les modifications ultérieures exigent un nouveau signal.
+
+Publication effectuée pour ce signal : production 213b2cee89be0c77e83fc2dc94a2121e8eb2a228.
+Vérification HTTP du site Netlify réussie : pages 1 et 604, Juz 2, Hizb 2,
+sourate 2 ; options facultatives et jauges propres à chaque portion présentes.
+Les futures modifications restent soumises à un nouveau signal utilisateur.

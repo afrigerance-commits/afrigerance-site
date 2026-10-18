@@ -24,3 +24,27 @@ Base : android/background-audio-20261011, commit 4bfc99f628c461e68699b135596d3a4
 Branche de préparation : feature/quran-page-reader-20261018. Aucun code natif modifié, aucune nouvelle APK nécessaire pour ces seuls réglages web. L’écoute native en arrière-plan nécessite l’APK 1.3 déjà préparée.
 
 Aucun déploiement Netlify autorisé ni lancé. La branche de production n’est pas modifiée. La publication ultérieure doit être déclenchée uniquement après signal explicite de l’utilisateur.
+
+
+## Autorisation de publication
+
+Signal « Publie » reçu le 18 octobre 2026 à 22:57 UTC. Le lot ci-dessus et le
+lot audio natif de sa base sont autorisés à être publiés ensemble en un seul
+déploiement Netlify. Les vérifications listées ci-dessus sont réussies.
+L’écoute native en arrière-plan requiert l’installation de l’APK 1.3 ; le
+navigateur et les anciennes APK conservent le lecteur web. Essais physiques
+Android et rendu visuel sur téléphone restant à effectuer.
+
+
+## Publication vérifiée
+
+Publié sur https://miraath.netlify.app avec le commit de production
+213b2cee89be0c77e83fc2dc94a2121e8eb2a228. Les pages /coran,
+/coran/lecture/page/1, /coran/lecture/page/604, /coran/lecture/juz/2,
+/coran/lecture/hizb/2 et /coran/2 répondent en HTTP 200 et présentent
+les nouvelles options ; les cinq lecteurs présentent la jauge correspondant
+à leur portion. Contrôle du HTML et des routes, sans essai visuel ou physique.
+Un seul changement de référence de production et déploiement Netlify demandé.
+Le workflow Android a démarré automatiquement ; l’APK 1.3 du même code natif
+avait déjà passé ses cinq tests instrumentés. Cette publication n’est pas
+un nouvel essai sur téléphone.
