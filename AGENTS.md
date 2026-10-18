@@ -67,3 +67,11 @@ sur android/background-audio-20261011 avec [skip netlify]. Aucun signal de
 publication pour ce lot ; la production reste au commit 5de2233d3576b7cbcd8e58ad28b59a81d4c82a2e.
 L’activation exige une publication explicite du nouveau lecteur et l’installation
 de l’APK 1.3. Essais physiques encore à effectuer.
+
+
+Demande du 18 octobre 2026 : lecture page par page, tafsir et notes facultatifs,
+lecture en un bloc, jauge propre au Juz/Hizb/sourate sélectionné. Lot préparé
+sur feature/quran-page-reader-20261018 à partir du lot audio natif en attente.
+Aucun signal de publication reçu. Ne pas déployer ce lot ni le lot audio
+précédent sans nouveau signal explicite. Aucune modification native Android
+nécessaire pour ces options web.

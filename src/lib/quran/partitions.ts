@@ -1,12 +1,13 @@
+import pages from "../../../data/quran/pages.json";
 import boundaries from "../../../data/quran/partitions.json";
 import chapters from "../../../data/quran/chapters-meta.json";
 
-export type PartitionType = "juz" | "hizb";
+export type PartitionType = "juz" | "hizb" | "page";
 export function globalVerse(chapter: number, verse: number) {
   return chapters.filter(c => c.number < chapter).reduce((sum, c) => sum + c.versesCount, 0) + verse;
 }
 export function getPartitions(type: PartitionType) {
-  return boundaries[type].map((start, index, all) => {
+  return (type === "page" ? pages : boundaries[type]).map((start, index, all) => {
     const next = all[index + 1];
     const first = globalVerse(start.chapter, start.verse);
     const last = next ? globalVerse(next.chapter, next.verse) - 1 : 6236;

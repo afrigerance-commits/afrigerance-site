@@ -165,3 +165,16 @@ Les signes de pause restent ceux du texte arabe sourcé existant. Aucun coloriag
 ## Découpage du lecteur en juz et hizb
 
 Métadonnées Tanzil version 1.0, © 2008–2009 Tanzil.info, licence CC BY : https://tanzil.net/res/text/metadata/quran-data.xml (consulté le 8 octobre 2026). Les 30 limites de juz sont importées telles quelles ; les 60 limites de hizb sont les entrées 1, 5, 9… des 240 quarts de hizb. Texte arabe inchangé. La coloration des caractères U+06D6–U+06DC conserve leurs positions dans le texte original.
+
+
+### Lecture page par page — 18 octobre 2026
+
+`data/quran/pages.json` reprend les 604 entrées `<page>` des métadonnées
+Tanzil 1.0 : https://tanzil.net/res/text/metadata/quran-data.xml. Documentation :
+https://tanzil.net/docs/Quran_Metadata. Attribution © Tanzil.info, CC BY,
+comme les autres métadonnées déjà intégrées. Les couples sura/aya sont conservés
+sans modification ; la fin de chaque page est le verset précédant la suivante.
+Les tests contrôlent une couverture contiguë des 6 236 versets, sans trou ni doublon.
+Il s’agit des limites des pages du mushaf de Médine, pas d’un fac-similé ni
+d’une reproduction des 15 lignes imprimées. Le texte arabe et les signes de
+pause existants ne sont pas modifiés.

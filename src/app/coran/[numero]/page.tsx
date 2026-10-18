@@ -85,10 +85,10 @@ export default async function SouratePage({ params }: PageProps<"/coran/[numero]
 
       <QuranAudioProvider chapter={number} verses={verses.map((v) => ({ number: v.number, globalNumber: v.globalNumber! }))}>
         <ReadingPositionTracker chapter={number} verseCount={verses.length} />
-        <nav className="reader-secondary mt-5 flex flex-wrap gap-3 text-sm" aria-label="Portions de cette sourate"><Link className="mushaf-controls rounded-xl border border-gold-600/25 px-4 py-3" href={`/coran/lecture/juz/${partitionAt(number, 1, "juz").number}`}>Lire le juz {partitionAt(number, 1, "juz").number}</Link><Link className="mushaf-controls rounded-xl border border-gold-600/25 px-4 py-3" href={`/coran/lecture/hizb/${partitionAt(number, 1, "hizb").number}`}>Lire le hizb {partitionAt(number, 1, "hizb").number}</Link></nav>
+        <nav className="reader-secondary mt-5 flex flex-wrap gap-3 text-sm" aria-label="Portions de cette sourate"><Link className="mushaf-controls rounded-xl border border-gold-600/25 px-4 py-3" href={`/coran/lecture/page/${partitionAt(number, 1, "page").number}`}>Lire page par page</Link><Link className="mushaf-controls rounded-xl border border-gold-600/25 px-4 py-3" href={`/coran/lecture/juz/${partitionAt(number, 1, "juz").number}`}>Lire le juz {partitionAt(number, 1, "juz").number}</Link><Link className="mushaf-controls rounded-xl border border-gold-600/25 px-4 py-3" href={`/coran/lecture/hizb/${partitionAt(number, 1, "hizb").number}`}>Lire le hizb {partitionAt(number, 1, "hizb").number}</Link></nav>
         <details className="reader-settings reader-secondary mt-5 rounded-2xl border border-accent/30 bg-surface p-4"><summary className="min-h-11 cursor-pointer py-2 font-semibold text-primary">Réglages · audio, mémorisation et téléchargements</summary><QuranAudioToolbar chapter={number} /><MemorizationPanel /><QuranDownloadPanel chapter={number} /></details>
         <QuranReadingTools chapter={number}>
-        <QuranPositionRail locations={locations}>
+        <QuranPositionRail locations={locations} scope={{label:"Sourate",number}}>
         <QuranPassageList key={number} chapter={number} verses={verses} locations={locations} />
         </QuranPositionRail>
         </QuranReadingTools>

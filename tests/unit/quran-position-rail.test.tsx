@@ -31,6 +31,38 @@ describe("Repères des Juz", () => {
 });
 
 describe("Bande de position", () => {
+  for (const label of ["Juz", "Hizb", "Sourate", "Page"]) {
+    it(`suit la portion ${label} sélectionnée et atteint sa fin même au changement de sourate`, () => {
+      let frame: FrameRequestCallback | undefined;
+      vi.spyOn(window, "requestAnimationFrame").mockImplementation(callback => { frame=callback; return 1; });
+      let secondVisible=false;
+      vi.spyOn(HTMLElement.prototype,"getBoundingClientRect").mockImplementation(function(this:HTMLElement) {
+        return {top:this.dataset.quranPosition === "2:1" ? (secondVisible?100:900) : -100} as DOMRect;
+      });
+      render(<QuranPositionRail scope={{label,number:1}} locations={[verseReadingLocation(1,7),verseReadingLocation(2,1)]}>
+        <div data-quran-position="1:7">Premier</div><div data-quran-position="2:1">Dernier</div>
+      </QuranPositionRail>);
+      act(()=>frame?.(0));
+      const rail=screen.getByRole("progressbar",{name:`Position dans ${label} 1`});
+      expect(rail).toHaveAttribute("aria-valuemax","2");
+      expect(rail).toHaveAttribute("aria-valuenow","1");
+      secondVisible=true;
+      act(()=>window.dispatchEvent(new Event("scroll")));
+      act(()=>frame?.(0));
+      expect(rail).toHaveAttribute("aria-valuenow","2");
+      expect(rail).toHaveAttribute("aria-valuetext",expect.stringContaining("100 %"));
+    });
+  }
+  it("maps a partially rendered DOM to the correct absolute verse position", () => {
+    let frame: FrameRequestCallback | undefined;
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation(callback => {frame=callback;return 1;});
+    vi.spyOn(HTMLElement.prototype,"getBoundingClientRect").mockReturnValue({top:0} as DOMRect);
+    render(<QuranPositionRail scope={{label:"Sourate",number:2}} locations={[1,2,3].map(v=>verseReadingLocation(2,v))}>
+      <div data-quran-position="2:3">Verset restauré</div>
+    </QuranPositionRail>);
+    act(()=>frame?.(0));
+    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow","3");
+  });
   it("garde le verset long courant, sélectionne les limites et la fin", () => {
     expect(readingIndexAt([100, 1000, 1200], 300)).toBe(0);
     expect(readingIndexAt([-100, 300, 800], 300)).toBe(1);
