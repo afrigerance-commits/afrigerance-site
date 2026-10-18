@@ -1,3 +1,5 @@
+import { QuranPortionSheet } from "@/components/islamic/quran-portion-sheet";
+import { QuranPageNavigation } from "@/components/islamic/quran-page-navigation";
 import { chapterName } from "@/lib/quran/chapter-name";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -15,16 +17,16 @@ import { QuranDownloadPanel } from "@/components/quran/audio-downloads";
 import { ReaderFocus } from "@/components/islamic/reader-focus";
 
 export function generateStaticParams() {
-  return (["juz", "hizb"] as const).flatMap(type => getPartitions(type).map(p => ({ type, numero: String(p.number) })));
+  return (["juz", "hizb", "page"] as const).flatMap(type => getPartitions(type).map(p => ({ type, numero: String(p.number) })));
 }
 function resolve(type: string, numero: string) {
-  if (type !== "juz" && type !== "hizb") return null;
+  if (type !== "juz" && type !== "hizb" && type !== "page") return null;
   return getPartitions(type).find(p => p.number === Number(numero)) ?? null;
 }
 export async function generateMetadata({ params }: { params: Promise<{ type: string; numero: string }> }): Promise<Metadata> {
   const { type, numero } = await params;
   const p = resolve(type, numero);
-  return p ? { title: `${type === "juz" ? "Juz" : "Hizb"} ${p.number} — Lecture du Coran`, alternates: { canonical: `/coran/lecture/${type}/${p.number}` } } : {};
+  return p ? { title: `${type === "juz" ? "Juz" : type === "hizb" ? "Hizb" : "Page"} ${p.number} — Lecture du Coran`, alternates: { canonical: `/coran/lecture/${type}/${p.number}` } } : {};
 }
 export default async function PortionPage({ params }: { params: Promise<{ type: string; numero: string }> }) {
   const { type, numero } = await params;
@@ -38,7 +40,7 @@ export default async function PortionPage({ params }: { params: Promise<{ type: 
   }
   const audio = parts.flatMap(part => part.verses.map(v => ({ number: v.position, globalNumber: v.globalNumber!, sourceChapter: part.chapter, sourceVerse: v.number })));
   const locations = parts.flatMap(part => part.verses.map(v => verseReadingLocation(part.chapter, v.number)));
-  const label = type === "juz" ? "Juz" : "Hizb";
+  const label = type === "juz" ? "Juz" : type === "hizb" ? "Hizb" : "Page";
   const total = getPartitions(type as PartitionType).length;
   return <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6"><ReaderFocus>
     <Link href="/coran" className="reader-secondary text-sm text-muted underline">Choisir une autre portion</Link>
@@ -47,19 +49,21 @@ export default async function PortionPage({ params }: { params: Promise<{ type: 
     <QuranAudioProvider chapter={p.start.chapter} verses={audio}>
       <details className="reader-settings reader-secondary mt-5 rounded-2xl border border-accent/30 bg-surface p-4"><summary className="min-h-11 cursor-pointer py-2 font-semibold text-primary">Réglages · audio, mémorisation et téléchargements</summary><QuranAudioToolbar chapter={p.start.chapter} /><MemorizationPanel /><QuranDownloadPanel chapter={p.start.chapter} /></details>
       <p className="mt-4 text-sm text-muted">Cliquez sur le texte d’un verset pour écouter à partir de celui-ci. La récitation poursuit la portion, y compris au changement de sourate, puis s’arrête à sa fin.</p>
-      <QuranPositionRail locations={locations}>
+      {type === "page" && <QuranPageNavigation current={p.number} />}
+      <QuranPositionRail locations={locations} scope={{label,number:p.number}}>
       {parts.map(part => <section key={part.chapter} className="mt-8">
         <h2 className="mb-4 font-display text-xl text-primary"><Link href={`/coran/${part.chapter}`}>{part.chapter}. {chapterName(part.meta)} · {part.meta.nameFrench}</Link></h2>
-        <QuranReadingTools chapter={part.chapter}><div className="mushaf-sheet mt-5 rounded-3xl border border-gold-600/25 px-2 py-2 sm:px-4">{part.verses.map(v => <div key={v.number}>
+        <QuranReadingTools chapter={part.chapter} collapsible={part.chapter !== p.start.chapter}><QuranPortionSheet>{part.verses.map(v => <div key={v.number} className="quran-portion-verse">
           {(locations[v.position - 1].startsJuz || v.position === 1) && <QuranJuzMarker number={locations[v.position - 1].juz} kind={locations[v.position - 1].startsJuz ? "start" : "continued"} />}
           <QuranVerseRow verseNumber={v.position}><QuranVerseContent chapter={part.chapter} number={v.number} audioNumber={v.position} arabic={v.arabic} french={v.french} /></QuranVerseRow>
           {locations[v.position - 1].endsJuz && <QuranJuzMarker number={locations[v.position - 1].juz} kind="end" />}
-          </div>)}</div></QuranReadingTools>
+          </div>)}</QuranPortionSheet></QuranReadingTools>
       </section>)}
       </QuranPositionRail>
       <QuranMiniPlayer />
     </QuranAudioProvider>
-    <p className="reader-secondary mt-8 text-sm leading-7 text-muted">Texte arabe et traduction : Tanzil, édition uthmani Hafs et Muhammad Hamidullah. Découpage : <a href="https://tanzil.net/docs/Quran_Metadata" className="underline">métadonnées Tanzil</a> (CC BY). Les signes d’arrêt proviennent du texte original ; aucune pause n’est ajoutée. Le mode tajwîd affiche une édition annotée distincte.</p>
+    {type === "page" && <QuranPageNavigation current={p.number} />}
+    <p className="reader-secondary mt-8 text-sm leading-7 text-muted">Pages : découpage du mushaf de Médine en 604 pages, avec une mise en page adaptée à l’écran (les lignes de l’édition imprimée ne sont pas reproduites). Texte arabe et traduction : Tanzil, édition uthmani Hafs et Muhammad Hamidullah. Découpage : <a href="https://tanzil.net/docs/Quran_Metadata" className="underline">métadonnées Tanzil</a> (CC BY). Les signes d’arrêt proviennent du texte original ; aucune pause n’est ajoutée. Le mode tajwîd affiche une édition annotée distincte.</p>
     <nav aria-label="Portions précédente et suivante" className="reader-secondary mt-6 flex justify-between gap-4 border-t border-border pt-5">
       {p.number > 1 ? <Link href={`/coran/lecture/${type}/${p.number - 1}`}>{label} {p.number - 1}</Link> : <span />}
       {p.number < total && <Link href={`/coran/lecture/${type}/${p.number + 1}`}>{label} {p.number + 1}</Link>}

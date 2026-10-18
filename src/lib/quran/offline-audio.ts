@@ -1,3 +1,4 @@
+import { nativeQuran, nativeQuranAvailable } from "./native/bridge";
 import { parseAudioMode, type QuranAudioMode } from "./audio-mode";
 import { reciters, loadFrenchRecitation, loadRecitation, loadSectionRecitation, type VerseAudioRef } from "./reciters";
 export const AUDIO_CACHE = "mirath-quran-audio-v1";
@@ -83,6 +84,7 @@ export async function removeAudioPack(id: string) {
   const retained = new Set(keep.flatMap(p => p.urls));
   const cache = await caches.open(AUDIO_CACHE);
   for (const url of target?.urls ?? []) if (!retained.has(url)) await cache.delete(url);
+  if (nativeQuranAvailable()) await nativeQuran.removeCachedAudio({urls:(target?.urls ?? []).filter(url=>!retained.has(url))});
   localStorage.setItem(PACKS_KEY, JSON.stringify(keep));
   window.dispatchEvent(new Event("mirath-audio-downloads"));
 }

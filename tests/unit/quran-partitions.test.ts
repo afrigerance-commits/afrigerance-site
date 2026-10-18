@@ -3,16 +3,25 @@ import { getPartitions, partitionAt } from "@/lib/quran/partitions";
 import { loadSectionRecitation } from "@/lib/quran/reciters";
 
 describe("Tanzil Quran partitions", () => {
-  for (const type of ["juz", "hizb"] as const) {
+  for (const type of ["juz", "hizb", "page"] as const) {
     it(`covers all 6236 verses exactly once in ${type}`, () => {
       const parts = getPartitions(type);
-      expect(parts).toHaveLength(type === "juz" ? 30 : 60);
+      expect(parts).toHaveLength(type === "juz" ? 30 : type === "hizb" ? 60 : 604);
       expect(parts[0].first).toBe(1);
       expect(parts.at(-1)!.last).toBe(6236);
       expect(parts.reduce((n,p) => n+p.count,0)).toBe(6236);
       parts.slice(1).forEach((p,i) => expect(p.first).toBe(parts[i].last+1));
     });
   }
+  it("uses Medina page boundaries, including pages that span several chapters", () => {
+    const pages = getPartitions("page");
+    expect(pages[0].start).toEqual({chapter:1,verse:1});
+    expect(pages[0].end).toEqual({chapter:1,verse:7});
+    expect(pages[1].start).toEqual({chapter:2,verse:1});
+    expect(pages[21].start).toEqual({chapter:2,verse:142});
+    expect(pages[603].start).toEqual({chapter:112,verse:1});
+    expect(pages[603].end).toEqual({chapter:114,verse:6});
+  });
   it("retains boundary verses at juz 2 and juz 30", () => {
     expect(getPartitions("juz")[1].start).toEqual({ chapter: 2, verse: 142 });
     expect(getPartitions("juz")[29].start).toEqual({ chapter: 78, verse: 1 });

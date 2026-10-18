@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
+import { useQuranDisplay } from "./quran-display-options";
 import { cn } from "@/lib/utils";
 import { useQuranAudioContext, VersePlayButton } from "@/components/islamic/quran-audio-player";
 
@@ -11,19 +12,21 @@ import { useQuranAudioContext, VersePlayButton } from "@/components/islamic/qura
  */
 export function QuranVerseRow({ verseNumber, children }: { verseNumber: number; children: ReactNode }) {
   const player = useQuranAudioContext();
+  const display = useQuranDisplay();
   const isPlaying = player.playingVerse === verseNumber;
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isPlaying) {
-      ref.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      const target = ref.current?.querySelector<HTMLElement>("[data-quran-position]") ?? ref.current;
+      target?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
     }
   }, [isPlaying]);
 
   return (
     <div
       ref={ref}
-      className={cn(
+      className={display.continuous && !display.tafsir && !display.notes ? "contents" : cn(
         "scroll-mt-56 flex flex-col rounded-2xl border border-transparent border-b-border px-3 transition-colors duration-300 sm:px-6",
         isPlaying && "border-gold-600/50 bg-[#f5f0e6] shadow-sm ring-1 ring-gold-600/25 dark:bg-emerald-900/20",
       )}

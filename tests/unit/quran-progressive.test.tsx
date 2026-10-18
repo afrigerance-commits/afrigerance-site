@@ -7,9 +7,16 @@ vi.mock('@/components/islamic/quran-audio-player',()=>({useQuranAudioContext:()=
 vi.mock('@/components/islamic/quran-verse-row',()=>({QuranVerseRow:({children}:{children:React.ReactNode})=>children}));
 vi.mock('@/components/islamic/quran-reading-tools',()=>({QuranVerseContent:({number,arabic}:{number:number;arabic:string})=><p id={`verset-${number}`} data-testid="verse">{number} {arabic}</p>}));
 import {QuranPassageList} from '@/components/islamic/quran-passage-list';
+import {QuranDisplayOptions} from '@/components/islamic/quran-display-options';
 const verses=Array.from({length:286},(_,i)=>({number:i+1,arabic:'بِسْمِ اللَّهِ',french:'Texte de test'}));
 const locations=verses.map(v=>verseReadingLocation(2,v.number));
-afterEach(()=>{cleanup();player.playingVerse=null;history.replaceState(null,'','/');});
+afterEach(()=>{cleanup();localStorage.clear();player.playingVerse=null;history.replaceState(null,'','/');});
+it('shows the complete chapter immediately in continuous mode',()=>{
+ render(<><QuranDisplayOptions/><QuranPassageList chapter={2} verses={verses} locations={locations}/></>);
+ fireEvent.click(screen.getByRole('button',{name:'Lecture en un bloc'}));
+ expect(screen.getAllByTestId('verse')).toHaveLength(286);
+ expect(screen.queryByRole('button',{name:'Afficher les versets suivants'})).toBeNull();
+});
 it('limits the first render, preserves all text and lets readers reveal the rest',()=>{render(<QuranPassageList chapter={2} verses={verses} locations={locations}/>);expect(screen.getAllByTestId('verse')).toHaveLength(30);fireEvent.click(screen.getByText('Afficher les versets suivants'));expect(screen.getAllByTestId('verse')).toHaveLength(60);fireEvent.click(screen.getByText('Afficher toute la sourate'));expect(screen.getAllByTestId('verse')).toHaveLength(286);expect(document.getElementById('verset-286')?.textContent).toContain('بِسْمِ اللَّهِ');});
 it('reveals the bookmarked verse and follows audio beyond the first batch',async()=>{history.replaceState(null,'','/#verset-80');const view=render(<QuranPassageList chapter={2} verses={verses} locations={locations}/>);await waitFor(()=>expect(document.getElementById('verset-80')).toBeTruthy());player.playingVerse=280;view.rerender(<QuranPassageList chapter={2} verses={verses} locations={locations}/>);await waitFor(()=>expect(document.getElementById('verset-280')).toBeTruthy());});
 it('keeps the same reading line for long verses with fewer than ten DOM measurements',()=>{const tops=Array.from({length:286},(_,i)=>i*100);for(const line of [-1,0,160,700,27000,50000]){let reads=0;expect(readingIndexBy(tops.length,i=>{reads++;return tops[i];},line)).toBe(readingIndexAt(tops,line));expect(reads).toBeLessThan(10);}});
