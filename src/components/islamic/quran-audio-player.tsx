@@ -474,7 +474,7 @@ export function useQuranAudioContext() {
   return context;
 }
 
-export function QuranAudioToolbar({ chapter }: { chapter: number }) {
+export function QuranAudioToolbar({ chapter, startVerse }: { chapter: number; startVerse?: number }) {
   const player = useQuranAudioContext();
   const active = reciters.find((reciter) => reciter.id === player.reciterId)!;
   const verseIndex = player.verses.findIndex((verse) => verse.number === player.playingVerse);
@@ -497,7 +497,7 @@ export function QuranAudioToolbar({ chapter }: { chapter: number }) {
       </div>
       </details>
       <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-4">
-        {active.mode === "surah" && player.audioMode !== "french" ? (!player.playingSurah ? <Button onClick={player.playSurah} disabled={player.loading} className="bg-emerald-900 text-ivory-50 hover:bg-emerald-700"><Play className="size-4" /> Écouter Muhammad Hady Touré</Button> : <><Button variant="outline" onClick={player.paused ? player.resume : player.pause}>{player.paused ? <Play className="size-4" /> : <Pause className="size-4" />}{player.paused ? "Reprendre" : "Pause"}</Button><Button variant="ghost" onClick={player.stop}><Square className="size-4" /> Arrêter</Button></>) : player.playingVerse === null ? <Button onClick={() => player.playVerse(player.verses[0].number, true)} disabled={player.loading} className="bg-emerald-900 text-ivory-50 hover:bg-emerald-700">
+        {active.mode === "surah" && player.audioMode !== "french" ? (!player.playingSurah ? <Button onClick={player.playSurah} disabled={player.loading} className="bg-emerald-900 text-ivory-50 hover:bg-emerald-700"><Play className="size-4" /> Écouter Muhammad Hady Touré</Button> : <><Button variant="outline" onClick={player.paused ? player.resume : player.pause}>{player.paused ? <Play className="size-4" /> : <Pause className="size-4" />}{player.paused ? "Reprendre" : "Pause"}</Button><Button variant="ghost" onClick={player.stop}><Square className="size-4" /> Arrêter</Button></>) : player.playingVerse === null ? <Button onClick={() => player.playVerse(startVerse ?? player.verses[0].number, true)} disabled={player.loading} className="bg-emerald-900 text-ivory-50 hover:bg-emerald-700">
           {player.loading ? <LoaderCircle className="size-4 animate-spin" /> : <Play className="size-4" />} {player.loading ? "Chargement…" : (player.section ? "Écouter la portion" : "Écouter la sourate")}
         </Button> : <>
           <Button variant="outline" size="icon" aria-label="Verset précédent" disabled={!previous} onClick={() => player.playVerse(previous.number, true)}><SkipBack className="size-4" /></Button>

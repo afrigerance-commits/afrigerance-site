@@ -87,3 +87,11 @@ Publication effectuée pour ce signal : production 213b2cee89be0c77e83fc2dc94a21
 Vérification HTTP du site Netlify réussie : pages 1 et 604, Juz 2, Hizb 2,
 sourate 2 ; options facultatives et jauges propres à chaque portion présentes.
 Les futures modifications restent soumises à un nouveau signal utilisateur.
+
+
+Demande suivante du 18 octobre 2026 : « Les pages pour la lecture page par
+page doivent être sous forme de bouquin ». Lot livre préparé sur
+feature/quran-book-20261018 : double page RTL sur grand écran, page unique
+sur mobile, reliure et feuilletage, tafsir/notes facultatifs. Le précédent
+signal « Publie » ne couvre pas ce nouveau lot. Aucun déploiement autorisé
+ni lancé ; production conservée au commit 213b2cee89be0c77e83fc2dc94a2121e8eb2a228.
