@@ -36,8 +36,11 @@ Permissions-Policy ne bloque le micro dans la configuration du projet.
   transcription arabe simulée, masquage de l’application, erreur réseau et
   résultat tardif. Reconnaissance simulée ; aucun micro réel n’a été utilisé.
 - TypeScript et git diff --check réussis.
-- Compilation web : en cours.
-- Compilation APK, lint Android et essais sur émulateur : en attente.
+- Compilation web réussie : 972 pages. Le cache Turbopack local corrompu
+  a été supprimé avant une compilation complète réussie.
+- Compilation APK, lint Android et essais sur émulateur lancés sur GitHub Actions,
+  exécution 39286158576, commit 0870bd4811bb62fbe644ca89fd33039f6191fcb5.
+  État actuel : attente d’un exécuteur ; aucun APK compilé n’est encore validé.
 - Les tests Android utilisent des résultats d’activité simulés avec Espresso,
   pour vérifier le pont, le retour arabe, l’annulation et les erreurs. Le
   fournisseur factice figure uniquement dans l’APK de test instrumenté.
