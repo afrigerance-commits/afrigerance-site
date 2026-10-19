@@ -22,7 +22,7 @@ import com.getcapacitor.WebViewListener;
 /** One native Back path for the system gesture and navigation button. No website update required. */
 final class AppBackNavigation extends OnBackPressedCallback {
     private static final long EXIT_WINDOW_MS = 2000;
-    private static final long WEB_RESPONSE_MS = 500;
+    private static final long WEB_RESPONSE_MS = 1500;
     private static final String HANDLE_BACK = "window.__mirathAndroidBack ? window.__mirathAndroidBack.handle() : 'unavailable'";
 
     private final MainActivity activity;
@@ -96,6 +96,13 @@ final class AppBackNavigation extends OnBackPressedCallback {
         pendingRequest = 0;
         if ("\"dismissed\"".equals(action) || "\"navigated\"".equals(action)) { resetExit(); return; }
         if ("\"root\"".equals(action)) { confirmRootExit(); return; }
+        if (action == null) {
+            // evaluateJavascript can still execute after the response deadline.
+            // A native history pop here could combine with its delayed JS pop.
+            resetExit();
+            Toast.makeText(activity, "Retour en cours. Patientez un instant.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         WebBackForwardList history = webView.copyBackForwardList();
         int current = history.getCurrentIndex();
         for (int i = current - 1; i >= 0; i--) {

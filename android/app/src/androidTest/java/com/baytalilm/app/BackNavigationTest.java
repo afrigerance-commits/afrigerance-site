@@ -42,7 +42,7 @@ public class BackNavigationTest {
         if (!"true".equals(read(scenario, "location.pathname === '/'"))) {
             scenario.onActivity(activity -> activity.getBridge().getWebView().loadUrl("https://miraath.netlify.app/"));
         }
-        await(scenario, "location.pathname === '/' && document.readyState === 'complete' && !!document.querySelector('.mobile-app-dock[data-native=true]')");
+        await(scenario, "location.pathname === '/' && document.readyState === 'complete' && !!window.__mirathAndroidBack && !!document.querySelector('.mobile-app-dock[data-native=true]')");
         scenario.onActivity(activity -> activity.getBridge().getWebView().clearHistory());
     }
     private void back(ActivityScenario<MainActivity> scenario) {
@@ -115,7 +115,7 @@ public class BackNavigationTest {
         try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
             home(scenario);
             scenario.onActivity(activity -> activity.getBridge().getWebView().loadUrl("https://miraath.netlify.app/invocations"));
-            await(scenario, "location.pathname === '/invocations' && document.readyState === 'complete' && !!document.querySelector('main')");
+            await(scenario, "location.pathname === '/invocations' && document.readyState === 'complete' && !!window.__mirathAndroidBack && !!document.querySelector('main')");
             scenario.onActivity(activity -> activity.getBridge().getWebView().clearHistory());
             back(scenario);
             await(scenario, "location.pathname === '/' && document.readyState === 'complete'");
@@ -130,6 +130,21 @@ public class BackNavigationTest {
             long deadline = System.currentTimeMillis() + 5000;
             while (scenario.getState() != Lifecycle.State.CREATED && System.currentTimeMillis() < deadline) Thread.sleep(100);
             assertEquals("Two recent Back actions should background the root task", Lifecycle.State.CREATED, scenario.getState());
+        }
+    }
+    @Test public void slowRendererDoesNotCauseTwoHistoryPopsForOneBack() throws Exception {
+        try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
+            home(scenario);
+            read(scenario, "document.querySelector('.mobile-app-dock a[href=\"/coran\"]').click()");
+            await(scenario, "location.pathname === '/coran' && (() => { const el=document.querySelector('main a[href=\"/coran/1\"]'); return el && Object.keys(el).some(key => key.startsWith('__reactProps$') && typeof el[key]?.onClick === 'function'); })()");
+            read(scenario, "document.querySelector('main a[href=\"/coran/1\"]').click()");
+            await(scenario, "location.pathname === '/coran/1' && !!document.querySelector('select[aria-label=\"Langue de l’audio\"]')");
+            read(scenario, "window.__slowOriginalBack = window.__mirathAndroidBack.handle; window.__mirathAndroidBack.handle = () => { const until=performance.now()+2300; while(performance.now()<until){}; return window.__slowOriginalBack(); }; true");
+            back(scenario);
+            await(scenario, "location.pathname === '/coran'");
+            Thread.sleep(700);
+            assertEquals("One Back must only leave the reader once", "\"/coran\"", read(scenario, "location.pathname"));
+            assertEquals(Lifecycle.State.RESUMED, scenario.getState());
         }
     }
 }

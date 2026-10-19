@@ -60,7 +60,7 @@ jobs:
         with:
           api-level: 35
           arch: x86_64
-          target: google_apis
+          target: default
           profile: pixel_7
           ram-size: 3072M
           disable-animations: true

@@ -23,7 +23,7 @@ système à l’historique de la WebView.
 - À l’accueil sans historique, un premier Retour affiche une indication.
   Un second dans les deux secondes met la tâche en arrière-plan. La
   confirmation est réinitialisée lors d’un déplacement ou d’une pause.
-- Attente du résultat web limitée à 500 ms, opérations concurrentes et
+- Attente du résultat web limitée à 1 500 ms, opérations concurrentes et
   callbacks tardifs ignorés, nettoyage à la destruction de l’activité.
 - APK 1.5 / versionCode 6 ; certificat et identifiant conservés. Les
   fonctionnalités audio et vocales de l’APK 1.4 sont incluses.
@@ -81,3 +81,20 @@ explicitement le focus réel de MainActivity. Les assertions de navigation et
 le véritable balayage sont conservés. Aucun échec n’est masqué ou relancé
 automatiquement. Troisième vérification en cours ; aucune APK intermédiaire
 livrée ni publication Netlify.
+
+## Troisième vérification et environnement isolé
+
+Exécution 39334665938, commit c90d09b9cc6fff7a31f781438c2f68d6c0bea15f :
+compilation et lint réussis, 9 tests sur 12 réussis. Le contrôle de focus
+confirme explicitement l’alerte ANR de nexuslauncher devant MIRÂTH. L’image
+de test passe à Android 15 AOSP (default/x86_64), sans lanceur ni services
+Google. Le fournisseur vocal simulé reste dans l’APK de test séparée ;
+aucune modification du moteur vocal livré. Les alertes système et les
+échecs ne sont pas masqués.
+
+Les scénarios attendent aussi la présence du pont de retour avant action.
+La fenêtre de réponse laisse 1 500 ms à un rendu chargé, sans retarder
+une réponse normale. En cas de délai dépassé, aucun retour natif ne se
+superpose au JavaScript susceptible de s’exécuter tardivement. Un scénario
+supplémentaire bloque volontairement le rendu 2,3 s pour vérifier qu’une
+seule action Retour ne saute pas deux pages. Vérification de 13 tests en cours.
