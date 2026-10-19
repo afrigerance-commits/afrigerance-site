@@ -123,3 +123,17 @@ autorisée du lot de refonte préparé sur feature/mirath-redesign-20261019.
 207 tests et compilation des 972 pages réussis. Les limites d’inspection
 visuelle et d’essais physiques ont été expliquées avant ce signal.
 Les modifications ultérieures nécessitent un nouveau signal utilisateur.
+
+Publication de la refonte effectuée : da6295ce5f2e7a3ae16a047ff231b55cc2e8269a.
+Contrôle HTTP réussi sur accueil, livre page 604, Hadith et connexion :
+nouveau système partagé présent. Validation visuelle et essais physiques
+restent non effectués. Les lots suivants attendent un nouveau signal.
+
+
+Demande du 19 octobre 2026 à 15:54 UTC : « Vas y et publie directement sur
+Netlify » pour la recherche vocale intelligente. Publication autorisée pour
+ce lot : dictée Web Speech à la demande, recherche documentaire par intention
+et variantes, références existantes uniquement. Pas d’écoute automatique ni
+de service de transcription facturé ajouté. Compatibilité variable, notamment
+WebView APK ; repli saisie/dictée du clavier explicite. Pas de nouveau code
+natif ni APK. Les lots suivants exigent un nouveau signal utilisateur.

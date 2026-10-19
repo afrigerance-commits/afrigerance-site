@@ -2,7 +2,7 @@
 
 ## État de livraison
 
-Implémentation préparée sur `feature/mirath-redesign-20261019`. Aucun déploiement Netlify, aucune publication ni nouvelle APK. Production conservée au commit d6f23f375f597c027a439e520665f2ed0eb24fbb.
+Refonte publiée sur https://miraath.netlify.app, commit da6295ce5f2e7a3ae16a047ff231b55cc2e8269a. Aucun nouvel APK : ce lot utilise le lecteur web existant. Branche de préparation conservée : `feature/mirath-redesign-20261019`.
 
 ## Concept et système
 
@@ -47,7 +47,7 @@ Android : le pont et le service Media3 de l’APK 1.3 sont conservés ; les essa
 3. Lecture audio puis navigation routine/autre sourate, pause/reprise, casque, écran verrouillé et appel sur téléphone Android avec APK 1.3 ; vérifier séparément le navigateur et iOS.
 4. Mode statique prefers-reduced-motion, lecteur d’écran et navigation clavier.
 
-Aucun signal de publication pour ce lot : attendre la demande explicite de l’utilisateur.
+Les modifications ultérieures à ce lot nécessitent un nouveau signal explicite de publication.
 
 
 ## Autorisation de publication
@@ -55,3 +55,12 @@ Aucun signal de publication pour ce lot : attendre la demande explicite de l’u
 Signal « publie » reçu le 19 octobre 2026 à 14:47 UTC. Le lot préparé est
 autorisé à être déployé sur Netlify. Les limites de vérification visuelle
 et d’essais sur téléphone restent celles indiquées ci-dessus.
+
+
+## Vérification de mise en ligne
+
+Publication confirmée le 19 octobre 2026 : accueil, page 604 du livre, Hadith et
+connexion en HTTP 200 avec le nouveau corps mirath-app. L’accueil présente
+la nouvelle composition « Le savoir éclaire. ». Contrôle du HTML public ;
+aucune vérification visuelle ou physique supplémentaire revendiquée.
+Un seul changement de référence de production a déclenché le déploiement.

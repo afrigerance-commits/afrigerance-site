@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Search as SearchIcon } from "lucide-react";
+import { VoiceSearchForm } from "@/components/search/voice-search-form";
+import { interpretSearch, matchesIntent } from "@/lib/search/intent";
+import { prophets } from "@/lib/data/prophets";
 import { PageHeader } from "@/components/layout/page-header";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { relevance } from "@/lib/search/match";
 import { hadithSearchIndex, type SearchResult } from "@/lib/search/hadith-index";
@@ -35,6 +35,7 @@ async function buildIndex(): Promise<SearchResult[]> {
     ...scholars.filter((s) => s.statut === "publie").map((s) => ({ titre: s.transcriptionFrancaise, description: s.presentation, href: `/compagnons/${s.slug}`, type: "Figure" })),
     ...siraEvents.filter((e) => e.statut === "publie").map((e) => ({ titre: e.titre, description: e.presentation, href: `/sira/${e.slug}`, type: "Sîra", searchText: `${e.titre} ${e.presentation} ${e.periode} ${e.lesson.sections.flatMap(section => [section.titre, ...section.paragraphes]).join(" ")} ${e.sources.map(source => `${source.titre} ${source.numeroHadith ?? `${source.sourate}:${source.verset}`}`).join(" ")}` })),
     ...fiqhCourses.filter((c) => c.statut === "publie").map((c) => ({ titre: c.titre, description: c.description, href: `/fiqh/malikite/${c.slug}`, type: "Cours" })),
+    ...prophets.map(p=>({titre:`${p.nom} · récit d’un prophète`,description:`Repères coraniques : ${p.chapter}:${p.range}. ${p.sections[0].texte}`,href:`/prophetes/${p.slug}`,type:"Prophète",searchText:`${p.nom} ${p.sections.map(s=>`${s.titre} ${s.texte}`).join(' ')}`})),
     ...getChapters().map((c) => ({
       titre: `Sourate ${chapterName(c)} · ${c.nameFrench}`,
       description: `${c.nameTransliteration} — ${c.versesCount} versets, ${c.revelation === "Mecca" ? "mecquoise" : "médinoise"}.`,
@@ -42,7 +43,7 @@ async function buildIndex(): Promise<SearchResult[]> {
       type: "Coran",
     })),
     { titre: invocationCollection.title, description: invocationCollection.description, href: `/invocations/${invocationCollection.slug}`, type: "Invocations" },
-    ...debtInvocations.map((item) => ({ titre: item.title, description: `${item.translation} — ${item.reference}`, href: `/invocations/${invocationCollection.slug}#invocations`, type: "Invocation" })),
+    ...debtInvocations.map((item) => ({ titre: item.title, description: `${item.translation} — ${item.reference}`, searchText: `${invocationCollection.title} ${item.title} ${item.translation} ${item.reference}`, href: `/invocations/${invocationCollection.slug}#invocations`, type: "Invocation" })),
     ...debtHadiths.map((item) => ({ titre: item.title, description: `${item.translation} — ${item.reference}`, href: `/invocations/${invocationCollection.slug}#hadiths`, type: "Hadith thématique" })),
     ...hadithSearchIndex(),
     ...invocationTopics.flatMap(topic => [{ titre: topic.title, description: topic.description, href: `/invocations/${topic.slug}`, type: "Invocations" }, ...topic.items.map(item => ({ titre: item.title, description: `${item.translation.slice(0,260)} — ${item.reference}`, href: `/invocations/${topic.slug}`, type: "Invocation", searchText: `${topic.title} ${item.title} ${item.arabic} ${item.translation} ${item.context} ${item.reference}` }))]),
@@ -67,8 +68,10 @@ export default async function RecherchePage({
   const query = (first(params.q) ?? "").trim().slice(0,120);
   const collection = first(params.collection) ?? "";
   const selected = hadithCollections.some(c=>c.slug === collection) ? collection : "";
-  const matches = query.length >= 2 ? (await buildIndex()).map(r=>({result:r,score:relevance(query,r.searchText ?? `${r.titre} ${r.description}`,r.titre)})).filter(r=>r.score > 0 && (!selected || r.result.collection === selected)).sort((a,b)=>b.score-a.score || a.result.href.localeCompare(b.result.href)) : [];
-  const deduplicated = [...new Map(matches.map(r=>[r.result.href,r.result])).values()];
+  const intent=interpretSearch(query,selected);
+  const matches = query.length >= 2 ? (await buildIndex()).filter(r=>matchesIntent(intent,r)).map(r=>({result:r,score:intent.keywords?relevance(intent.keywords,r.searchText ?? `${r.titre} ${r.description}`,r.titre):(intent.category||intent.collection?1:0)})).filter(r=>r.score>0).sort((a,b)=>b.score-a.score || a.result.href.localeCompare(b.result.href)) : [];
+  const seen=new Set<string>();
+  const deduplicated = matches.filter(r=>{if(seen.has(r.result.href))return false;seen.add(r.result.href);return true;}).map(r=>r.result);
   const rawPage = Number(first(params.page));
   const page = Math.min(Math.max(1,Number.isInteger(rawPage) ? rawPage : 1),Math.max(1,Math.ceil(deduplicated.length/20)));
   const results = deduplicated.slice((page-1)*20,page*20);
@@ -77,13 +80,8 @@ export default async function RecherchePage({
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
       <PageHeader eyebrow="Recherche" title="Rechercher sur la plateforme" />
-      <form action="/recherche" className="mb-12 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
-        <Input className="min-w-0 flex-1" aria-label="Votre recherche" name="q" defaultValue={query} maxLength={120} minLength={2} required placeholder="Fajr, Mouwatta, Al-Baqarah, dettes…" />
-        <select name="collection" defaultValue={selected} aria-label="Filtrer par recueil" className="min-h-11 rounded-xl border border-border bg-surface px-3"><option value="">Toute la plateforme</option>{hadithCollections.map(c=><option key={c.slug} value={c.slug}>{c.nom}</option>)}</select>
-        <Button type="submit">
-          <SearchIcon className="h-4 w-4" /> Rechercher
-        </Button>
-      </form>
+      <VoiceSearchForm initialQuery={query} collection={selected} collections />
+      {query && <p className="mb-4 text-xs text-muted">Mots-clés retenus : {intent.keywords || (intent.category || intent.collection ? "tous les contenus du filtre" : "aucun thème identifié")}{intent.collection ? ` · recueil ${intent.collection}` : ""}{intent.category ? ` · ${intent.category === "prophet" ? "récits des prophètes" : intent.category}` : ""}. Vous pouvez modifier votre demande ci-dessus.</p>}
 
       <p className="mb-5 text-sm leading-7 text-muted">Recherche dans les textes arabes et français des recueils disponibles, leurs titres et les autres rubriques. Variantes reconnues : Fajr, Sobh, aube ou aurore ; Mouwatta ou Muwatta. Les résultats renvoient aux textes existants, sans réponse religieuse générée. Cette recherche nécessite Internet.</p>
       {!query && <div className="mb-6 flex flex-wrap gap-2">{["Fajr", "Fajr Mouwatta", "dettes", "Al-Baqarah"].map(q=><Link className="min-h-11 rounded-full border border-accent/30 px-4 py-3 text-sm" href={`/recherche?q=${encodeURIComponent(q)}`} key={q}>{q}</Link>)}</div>}

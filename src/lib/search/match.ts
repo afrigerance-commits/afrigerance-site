@@ -8,6 +8,11 @@ const groups = [
   ["salat","salah","priere","prieres","صلاة","الصلاة"],
   ["zakat","aumone","aumones","زكاة","الزكاة"],
   ["baqara","baqarah"],
+  ["muslim","mouslim","مسلم"],
+  ["dette","dettes","endettement"],
+  ["moussa","musa","moise","موسى"],
+  ["youssouf","yusuf","youssef","joseph","يوسف"],
+  ["ibrahim","abraham","إبراهيم","ابراهيم"],
 ];
 const stop = new Set(["le","la","les","de","du","des","un","une","et","dans","sur","pour","en","au","aux"]);
 export function searchTerms(q: string) { return normalizeSearch(q).replace(/[’']/g," ").split(/[^\p{L}\p{N}]+/u).filter(t=>t&&!stop.has(t)).slice(0,16); }

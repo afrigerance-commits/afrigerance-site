@@ -189,3 +189,25 @@ html { scrollbar-gutter:stable; }
 .quran-floating-player .app-mini-info > a { font-weight:500; font-size:14px; }
 .quran-floating-player .app-mini-info > p { font-size:11px; }
 .quran-floating-player button { min-width:44px; }
+
+/* Voice search is an explicit, short dictation; the typed query remains primary. */
+.voice-search { margin-block:20px 28px; min-width:0; }
+.voice-search-form { display:flex; align-items:center; flex-wrap:wrap; gap:8px; border:1px solid var(--border); border-radius:14px; padding:8px 10px; background:var(--surface); }
+.voice-search-form input { flex:1 1 100px; min-width:0; min-height:44px; padding-inline:4px; font-size:16px; background:transparent; }
+.voice-search-form button { flex-shrink:0; min-width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:10px; color:var(--primary); }
+.voice-search-form .voice-submit { background:var(--primary); color:var(--primary-foreground); padding-inline:12px; }
+.voice-search-form button:disabled { opacity:.5; cursor:default; }
+.voice-mic { border:1px solid var(--border); }
+.voice-mic[data-listening=true] { background:var(--primary); color:var(--primary-foreground); outline:2px solid var(--accent); outline-offset:2px; }
+.voice-search-meta { display:flex; align-items:start; flex-wrap:wrap; gap:8px 14px; margin-top:10px; font-size:10px; color:var(--muted); line-height:1.7; }
+.voice-search-meta > label { display:flex; align-items:center; flex-shrink:0; gap:5px; }
+.voice-search-meta select { min-height:36px; background:transparent; border:1px solid var(--border); border-radius:8px; padding:4px; font-size:12px; }
+.voice-search-meta p { flex:1 1 240px; padding-block:4px; }
+.voice-search-meta a { text-decoration:underline; text-underline-offset:3px; }
+.voice-search-status { min-height:20px; margin-top:6px; font-size:12px; color:var(--primary); line-height:1.7; }
+.voice-collection { flex-basis:100%; border-top:1px solid var(--border); padding-top:8px; }
+.voice-collection select { width:100%; min-height:44px; background:var(--surface); border-radius:8px; font-size:14px; }
+.voice-search-home .atelier-search { max-width:none; margin-top:0; border-width:0 0 1px; border-radius:0; background:transparent; padding-inline:0; }
+.voice-search-home .voice-submit-label,.voice-search-quick .voice-submit-label { display:none; }
+.voice-search-home { max-width:480px; }
+@media(max-width:639px){.voice-submit-label{display:none}.voice-search-quick{margin-bottom:14px}.voice-search-meta{font-size:10px}.voice-search-meta p{flex-basis:100%}}
