@@ -180,3 +180,13 @@ mentions du service vocal Android et résultats existants présents. Le
 pont natif est publié ; installation de l’APK 1.4 nécessaire. Aucun essai
 de microphone réel revendiqué, compatibilité navigateur toujours
 conditionnelle. Les prochains lots exigent un nouveau signal utilisateur.
+
+Signalement suivant : geste Retour vers la droite dans l’APK ferme
+l’application au lieu de revenir à la page précédente. Correction native
+préparée sur feature/android-back-20261019, APK 1.5 / code 6 : callback
+AndroidX pour geste/bouton Retour, fermeture préalable des panneaux web,
+historique des pages MIRÂTH, repli accueil sans boucle et double Retour
+rapproché à la racine pour mettre l’application en arrière-plan. Aucun
+changement de source web nécessaire, aucune publication Netlify autorisée
+pour ce nouveau lot. Compiler/tester sur la branche avec [skip netlify] et
+livrer l’APK sans modifier la production 89e7ec6f02442095db58fd75165757ffba2663c7.
