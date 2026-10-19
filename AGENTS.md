@@ -137,3 +137,9 @@ et variantes, références existantes uniquement. Pas d’écoute automatique ni
 de service de transcription facturé ajouté. Compatibilité variable, notamment
 WebView APK ; repli saisie/dictée du clavier explicite. Pas de nouveau code
 natif ni APK. Les lots suivants exigent un nouveau signal utilisateur.
+
+Publication recherche vocale effectuée : ede45978703cca2f8997ec8056c51a73865da052.
+HTTP 200 vérifié sur accueil, recherche naturelle, Hadith et confidentialité :
+micro présent, mots-clés retenus et résultats Muwatta affichés, information
+de confidentialité accessible. Dictée réelle et compatibilité APK non
+testées physiquement. Les futurs lots attendent un nouveau signal.

@@ -38,3 +38,16 @@ Sources techniques consultées :
 ## Compatibilité et APK
 
 La présence de l’API ne garantit pas l’accès effectif au service de reconnaissance sur chaque navigateur. WebView de l’APK et Firefox peuvent ne pas la fournir ou refuser le service ; ces cas sont gérés par les messages et la saisie. Aucun moteur natif de reconnaissance n’a été ajouté à l’APK actuelle. La recherche Web nécessite une connexion Internet. Pas de garantie de transcription locale ou hors ligne.
+
+
+## Publication vérifiée
+
+Publié sur https://miraath.netlify.app avec le commit
+ede45978703cca2f8997ec8056c51a73865da052. Contrôles HTTP 200 : accueil
+et index Hadith avec bouton « Dicter ma recherche », recherche globale
+avec la phrase naturelle Fajr/Mouwatta affichant les mots-clés retenus et
+des liens /hadith/muwatta/, et confidentialité avec l’ancre recherche-vocale.
+La mise en ligne est confirmée ; aucun essai réel de micro ou de téléphone
+n’est revendiqué. Un seul changement de référence de production a déclenché
+Netlify. Aucun nouvel APK nécessaire pour afficher cette interface web ;
+le support de la dictée directe dans le WebView reste conditionnel.
