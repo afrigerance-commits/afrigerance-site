@@ -1,5 +1,5 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { bookSpreadNumbers, type QuranBookPage } from "@/lib/quran/book";
 const {push, player} = vi.hoisted(()=>({push:vi.fn(), player:{playingVerse:null as number|null}}));
 vi.mock("next/navigation",()=>({useRouter:()=>({push})}));
@@ -10,10 +10,11 @@ vi.mock("@/components/islamic/quran-audio-player",()=>({
 }));
 vi.mock("@/components/islamic/quran-reading-tools",()=>({
   QuranReadingTools:({children,continuous,controls}:{children:React.ReactNode;continuous:boolean;controls:boolean})=><div data-testid="reading" data-continuous={continuous} data-controls={controls}>{children}</div>,
-  QuranVerseContent:({arabic,audioNumber}:{arabic:string;audioNumber:number})=><button data-testid="verse" data-position={audioNumber}>{arabic}</button>,
+  QuranVerseContent:({arabic,audioNumber,chapter,number}:{arabic:string;audioNumber:number;chapter:number;number:number})=><button data-testid="verse" data-quran-position={`${chapter}:${number}`} data-position={audioNumber}>{arabic}</button>,
 }));
 import { QuranBookReader } from "@/components/islamic/quran-book-reader";
 let wide=false;
+beforeEach(()=>{Object.defineProperty(HTMLElement.prototype,"scrollIntoView",{configurable:true,value:vi.fn()});});
 const pages:QuranBookPage[]=[1,2].map((number)=>({number,juz:1,parts:[{chapter:number,title:`Sourate ${number}`,verses:[{number:1,arabic:`عَرَبِيّ ${number}`,french:`Sens ${number}`,globalNumber:number===1?1:8,position:number}]}]}));
 function mount(current=1) {
  vi.stubGlobal('matchMedia',vi.fn(()=>({matches:wide,addEventListener:vi.fn(),removeEventListener:vi.fn()})));
@@ -58,4 +59,13 @@ it("shows the companion page on mobile when the recitation crosses the page boun
  expect(screen.getByRole('article',{name:'Page 1'})).toHaveAttribute('data-current','false');
  expect(screen.queryByRole('button',{name:'Lecture en un bloc'})).toBeNull();
  expect(screen.getByRole('button',{name:'Afficher le tafsir'})).toBeInTheDocument();
+});
+
+it("records the visible page and verse for reopening the same book location",()=>{
+ let notify:IntersectionObserverCallback|undefined;
+ vi.stubGlobal('IntersectionObserver',class {constructor(callback:IntersectionObserverCallback){notify=callback;}observe(){}disconnect(){}});
+ mount(2);
+ const verse=screen.getAllByTestId('verse')[1];
+ act(()=>notify?.([{target:verse,isIntersecting:true,boundingClientRect:{top:100}} as unknown as IntersectionObserverEntry],{} as IntersectionObserver));
+ expect(JSON.parse(localStorage.getItem('mirath:quran:last-reading')!)).toEqual({chapter:2,verse:1,context:{type:'page',number:2}});
 });

@@ -33,3 +33,14 @@ Préparé uniquement sur feature/quran-book-20261018, avec commits [skip netlify
 
 « Publie ! » reçu le 19 octobre 2026 à 00:38 UTC : publication du lot livre
 autorisée sur Netlify. Aucun changement natif Android ni nouvelle APK requis.
+
+
+## Publication vérifiée
+
+Publié sur https://miraath.netlify.app le 19 octobre 2026, commit de production
+d6f23f375f597c027a439e520665f2ed0eb24fbb. Les routes /coran/lecture/page/1
+et /coran/lecture/page/604 répondent en HTTP 200 et servent chacune le
+lecteur « Livre du Coran », deux feuillets distincts, les options de tafsir
+et le bon folio final pour la page 604. Le lecteur Juz 2 reste accessible.
+Contrôle des routes et du HTML, sans essai visuel sur téléphone.
+Un seul changement de branche de production a déclenché la publication.

@@ -23,7 +23,7 @@ function FooterColumn({ title, links }: { title: string; links: readonly { label
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-surface">
+    <footer className="atelier-footer border-t border-border bg-surface">
       <div className="premium-container py-16">
         <div className="mb-14 flex flex-col items-start justify-between gap-6 border-b border-border pb-10 lg:flex-row lg:items-end">
           <p className="max-w-xl font-display text-3xl leading-tight tracking-tight sm:text-4xl">Lire. Comprendre.<br /><span className="text-primary">Transmettre.</span></p>

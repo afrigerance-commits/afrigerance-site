@@ -101,3 +101,25 @@ Signal « Publie ! » reçu le 19 octobre 2026 à 00:38 UTC : publication
 autorisée du mode livre préparé sur feature/quran-book-20261018.
 182 tests réussis, compilation de 972 pages validée. Ce signal couvre
 uniquement ce lot ; les futures modifications nécessitent un nouveau signal.
+
+Publication du mode livre effectuée : d6f23f375f597c027a439e520665f2ed0eb24fbb.
+Les pages 1 et 604 du site Netlify répondent en HTTP 200 avec le nouveau
+lecteur et deux feuillets distincts. Les prochains lots attendent un nouveau signal.
+
+
+Demande du 19 octobre 2026 à 14:05 UTC : refonte globale MIRÂTH, sans
+publication. Branche feature/mirath-redesign-20261019. Système visuel
+commun ivoire/encre/émeraude/or, accueil unifié, options de lecture épurées,
+typographie réglable partagée et reprise contextuelle. L’audio persistant
+ne change de file sur une autre vue du Coran qu’après une action explicite.
+Ne pas publier ce nouveau lot sans signal. Production inchangée :
+d6f23f375f597c027a439e520665f2ed0eb24fbb. Le navigateur de contrôle
+est indisponible dans cet environnement géré : vérifications visuelles
+et essais physiques non effectués, à ne pas présenter comme réussis.
+
+
+Signal « publie » reçu le 19 octobre 2026 à 14:47 UTC : publication
+autorisée du lot de refonte préparé sur feature/mirath-redesign-20261019.
+207 tests et compilation des 972 pages réussis. Les limites d’inspection
+visuelle et d’essais physiques ont été expliquées avant ce signal.
+Les modifications ultérieures nécessitent un nouveau signal utilisateur.

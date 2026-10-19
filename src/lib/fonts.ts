@@ -6,26 +6,27 @@ export const fontDisplay = Fraunces({
   subsets: ["latin"],
   style: ["normal", "italic"],
   weight: "variable",
-  axes: ["opsz", "SOFT", "WONK"],
+  axes: ["opsz"],
 });
 
 /** Texte français courant : sans-serif contemporaine. */
 export const fontBody = Work_Sans({
   variable: "--font-body",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: "variable",
 });
 
 /** Arabe courant (hadith, interface, cours) : excellente lisibilité et diacritiques. */
 export const fontArabic = Noto_Naskh_Arabic({
   variable: "--font-arabic",
   subsets: ["arabic"],
-  weight: ["400", "500", "600", "700"],
+  weight: "variable",
+  preload: false,
 });
 
 /** Réservée aux citations du Coran : calligraphie naskh adaptée au texte coranique. */
 export const fontQuran = Amiri({
   variable: "--font-quran",
   subsets: ["arabic"],
-  weight: ["400", "700"],
+  weight: "400",
 });

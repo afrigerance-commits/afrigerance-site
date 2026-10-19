@@ -10,6 +10,7 @@ const reader = () => <QuranReadingTools chapter={1}><QuranVerseContent chapter={
 
 it("keeps tafsir and notes absent until requested, including in French mode, and remembers options", async () => {
   const view = render(reader());
+  fireEvent.click(screen.getByText("Ma lecture · langue, taille et affichage"));
   expect(screen.queryByText("Tafsir chargé sur demande")).toBeNull();
   expect(screen.queryByRole("textbox")).toBeNull();
   fireEvent.click(screen.getByRole("button", {name:"Français seulement"}));
@@ -27,6 +28,7 @@ it("keeps tafsir and notes absent until requested, including in French mode, and
 
 it("renders uninterrupted Arabic with original pause signs and retains verse audio", () => {
   render(reader());
+  fireEvent.click(screen.getByText("Ma lecture · langue, taille et affichage"));
   fireEvent.click(screen.getByRole("button",{name:"Arabe seulement"}));
   fireEvent.click(screen.getByRole("button",{name:"Lecture en un bloc"}));
   const verse = screen.getByRole("button",{name:"Écouter à partir de 1:1"});

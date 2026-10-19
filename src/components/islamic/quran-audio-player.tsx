@@ -67,8 +67,34 @@ export function PersistentQuranAudio({ children }: { children: ReactNode }) {
 
 export function QuranAudioProvider({ chapter, verses, children }: { chapter: number; verses: VerseAudioRef[]; children: ReactNode }) {
   const configure = useContext(SessionSetup);
-  useEffect(() => { configure?.({ chapter, verses }); }, [configure, chapter, verses]);
-  return configure ? children : <QuranAudioEngine chapter={chapter} verses={verses}>{children}</QuranAudioEngine>;
+  return configure ? <ScopedQuranReader chapter={chapter} verses={verses} configure={configure}>{children}</ScopedQuranReader> : <QuranAudioEngine chapter={chapter} verses={verses}>{children}</QuranAudioEngine>;
+}
+
+/** Browsing a different reader must not replace the playing queue until a play action. */
+function ScopedQuranReader({chapter, verses, configure, children}:{chapter:number;verses:VerseAudioRef[];configure:(session:Session)=>void;children:ReactNode}) {
+  const player = useQuranAudioContext();
+  const [intent,setIntent] = useState<{verse:number;sequence:boolean;surah?:boolean;memorization?:MemorizationSettings|null}|null>(null);
+  const same = JSON.stringify(player.verses) === JSON.stringify(verses);
+  const active = player.playingVerse !== null || player.playingSurah || player.loading;
+  useEffect(()=>{if(!same && !active) configure({chapter,verses});},[configure,chapter,verses,same,active]);
+  useEffect(()=>{
+    if(!same || !intent) return;
+    let cancelled=false;
+    queueMicrotask(()=>{
+      if(cancelled) return;
+      setIntent(null);
+      if("memorization" in intent) player.configureMemorization(intent.memorization??null);
+      else if(intent.surah) player.playSurah(); else player.playVerse(intent.verse,intent.sequence);
+    });
+    return()=>{cancelled=true;};
+  },[same,intent,player.playVerse,player.playSurah,player.configureMemorization]);
+  const begin=(verse:number,sequence=false,surah=false)=>{
+    if(same) {if(surah)player.playSurah();else player.playVerse(verse,sequence);return;}
+    player.stop();
+    configure({chapter,verses});
+    setIntent({verse,sequence,surah});
+  };
+  return <QuranAudioContext.Provider value={same?player:{...player,verses,section:verses.some(v=>v.sourceChapter!==undefined),playingVerse:null,playingSurah:false,error:null,loading:false,memorization:null,configureMemorization:(settings)=>{player.stop();configure({chapter,verses});setIntent({verse:1,sequence:false,memorization:settings});},playVerse:(verse,sequence)=>begin(verse,sequence),playSurah:()=>begin(verses[0]?.number??1,false,true)}}>{children}</QuranAudioContext.Provider>;
 }
 
 function PersistentMiniPlayer({ chapter }: { chapter: number }) {
@@ -78,7 +104,13 @@ function PersistentMiniPlayer({ chapter }: { chapter: number }) {
   const verse = player.verses.find(v => v.number === player.playingVerse);
   const sourceChapter = player.playingChapter ?? verse?.sourceChapter ?? chapter;
   const sourceVerse = verse?.sourceVerse ?? player.playingVerse;
-  return <Sheet><aside aria-label="Mini-lecteur du Coran" className="quran-floating-player fixed left-4 z-40 flex max-w-[calc(100%-2rem)] items-center gap-3 rounded-2xl border border-gold-500/40 bg-surface p-3 shadow-xl sm:left-6"><div className="app-mini-info min-w-0 max-w-48"><Link href={`/coran/${sourceChapter}${sourceVerse ? `#verset-${sourceVerse}` : ""}`} className="block truncate text-sm font-semibold text-primary">{player.phase === "french" ? frenchAudioEdition.name : active.nom}</Link><p aria-live="polite" className="text-xs text-muted">Sourate {sourceChapter}{sourceVerse ? ` · verset ${sourceVerse}` : ""}{player.paused ? " · en pause" : ""}</p>{player.error && <p role="alert" className="mt-1 text-xs text-red-700 dark:text-red-300">{player.error}</p>}</div><SheetTrigger asChild><button type="button" aria-label="Ouvrir le lecteur complet" className="min-h-11 rounded-xl px-3 text-sm font-semibold text-primary">Lecteur</button></SheetTrigger>{(player.playingVerse !== null || player.playingSurah) && <button onClick={player.paused ? player.resume : player.pause} aria-label={player.paused ? "Reprendre la récitation" : "Mettre la récitation en pause"} className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary text-white">{player.loading ? <LoaderCircle className="size-5 animate-spin" /> : player.paused ? <Play className="size-5" /> : <Pause className="size-5" />}</button>}<button onClick={player.stop} aria-label="Arrêter la récitation" className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border"><Square className="size-4" /></button></aside><SheetContent className="app-player-sheet" aria-describedby="full-player-description"><SheetHeader><SheetTitle>Votre écoute</SheetTitle><p id="full-player-description" className="text-sm text-muted">{player.phase === "french" ? frenchAudioEdition.name : active.nom} · sourate {sourceChapter}{sourceVerse ? ` · verset ${sourceVerse}` : ""}</p></SheetHeader><FullPlayerControls/><Link href={`/coran/${sourceChapter}${sourceVerse ? `#verset-${sourceVerse}` : ""}`} className="mt-5 inline-block min-h-11 py-3 text-sm font-semibold text-primary underline">Retrouver ce verset</Link></SheetContent></Sheet>;
+  return <Sheet><aside aria-label="Mini-lecteur du Coran" className="quran-floating-player fixed left-4 z-40 flex max-w-[calc(100%-2rem)] items-center gap-3 rounded-2xl border border-gold-500/40 bg-surface p-3 shadow-xl sm:left-6"><div className="app-mini-info min-w-0 max-w-48"><Link href={`/coran/${sourceChapter}${sourceVerse ? `#verset-${sourceVerse}` : ""}`} className="block truncate text-sm font-semibold text-primary">{player.phase === "french" ? frenchAudioEdition.name : active.nom}</Link><p aria-live="polite" className="text-xs text-muted">Sourate {sourceChapter}{sourceVerse ? ` · verset ${sourceVerse}` : ""}{player.paused ? " · en pause" : ""}</p>{player.error && <p role="alert" className="mt-1 text-xs text-red-700 dark:text-red-300">{player.error}</p>}</div><SheetTrigger asChild><button type="button" aria-label="Ouvrir le lecteur complet" className="min-h-11 rounded-xl px-3 text-sm font-semibold text-primary">Lecteur</button></SheetTrigger>{(player.playingVerse !== null || player.playingSurah) && <button onClick={player.paused ? player.resume : player.pause} aria-label={player.paused ? "Reprendre la récitation" : "Mettre la récitation en pause"} className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary text-white">{player.loading ? <LoaderCircle className="size-5 animate-spin" /> : player.paused ? <Play className="size-5" /> : <Pause className="size-5" />}</button>}<button onClick={player.stop} aria-label="Arrêter la récitation" className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border"><Square className="size-4" /></button><MiniAudioProgress /></aside><SheetContent className="app-player-sheet" aria-describedby="full-player-description"><SheetHeader><SheetTitle>Votre écoute</SheetTitle><p id="full-player-description" className="text-sm text-muted">{player.phase === "french" ? frenchAudioEdition.name : active.nom} · sourate {sourceChapter}{sourceVerse ? ` · verset ${sourceVerse}` : ""}</p></SheetHeader><FullPlayerControls/><Link href={`/coran/${sourceChapter}${sourceVerse ? `#verset-${sourceVerse}` : ""}`} className="mt-5 inline-block min-h-11 py-3 text-sm font-semibold text-primary underline">Retrouver ce verset</Link></SheetContent></Sheet>;
+}
+
+function MiniAudioProgress() {
+  const {elapsed,duration}=useQuranAudioClock();
+  const fraction=duration>0?Math.min(1,Math.max(0,elapsed/duration)):0;
+  return <div className="atelier-mini-progress" role="progressbar" aria-label="Progression de la piste audio" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(fraction*100)}><span style={{transform:`scaleX(${fraction})`}} /></div>;
 }
 
 function FullPlayerControls() {

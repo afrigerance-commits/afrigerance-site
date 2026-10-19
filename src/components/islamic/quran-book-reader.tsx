@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore, type TouchEvent, type KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
+import { saveReadingDestination } from "@/lib/quran/reading-destination";
 import { bookSpreadNumbers, type QuranBookPage } from "@/lib/quran/book";
 import { QuranAudioProvider, QuranAudioToolbar, QuranMiniPlayer, QuranAudioModeSelector, useQuranAudioContext } from "./quran-audio-player";
 import { QuranReadingTools, QuranVerseContent } from "./quran-reading-tools";
 import { QuranLanguageSelector, useQuranLanguage } from "./quran-language-selector";
-import { QuranDisplayOptions } from "./quran-display-options";
+import { QuranDisplayOptions, useQuranDisplay } from "./quran-display-options";
+import { QuranTypographyControls } from "./quran-typography-controls";
 import { QuranPageNavigation } from "./quran-page-navigation";
 import { ReaderFocus } from "./reader-focus";
 
@@ -32,6 +34,7 @@ function Book({ pages, current }: { pages: QuranBookPage[]; current: number }) {
   const [active, setActive] = useState(current);
   const wide = useSyncExternalStore(subscribeWidth, isWide, () => false);
   const language = useQuranLanguage();
+  const display = useQuranDisplay();
   const player = useQuranAudioContext();
   const router = useRouter();
   const touch = useRef<{x:number;y:number}|null>(null);
@@ -59,6 +62,20 @@ function Book({ pages, current }: { pages: QuranBookPage[]; current: number }) {
     });
     return () => cancelAnimationFrame(frame);
   }, [pages, player.playingVerse]);
+
+  useEffect(()=>{
+    if(!book.current || !("IntersectionObserver" in window))return;
+    const visible=new Map<Element,number>();
+    const observer=new IntersectionObserver(entries=>{
+      for(const entry of entries){if(entry.isIntersecting)visible.set(entry.target,entry.boundingClientRect.top);else visible.delete(entry.target);}
+      const target=[...visible].sort((a,b)=>a[1]-b[1])[0]?.[0] as HTMLElement|undefined;
+      const [chapter,verse]=(target?.dataset.quranPosition??'').split(':').map(Number);
+      const page=pages.find(page=>page.parts.some(part=>part.chapter===chapter && part.verses.some(v=>v.number===verse)));
+      if(page && document.visibilityState!=='hidden')saveReadingDestination({chapter,verse},'page',page.number);
+    },{rootMargin:'-20% 0px -45% 0px'});
+    book.current.querySelectorAll('[data-quran-position]').forEach(element=>observer.observe(element));
+    return()=>observer.disconnect();
+  },[pages,display.tafsir,display.notes]);
 
   function turn(direction: -1 | 1) {
     const next = wide ? first + direction * 2 : active + direction;
@@ -88,7 +105,7 @@ function Book({ pages, current }: { pages: QuranBookPage[]; current: number }) {
     </header>
     <details className="reader-settings reader-secondary mb-5 rounded-2xl border border-accent/25 bg-surface p-4">
       <summary className="min-h-11 cursor-pointer py-2 font-semibold text-primary">Ma lecture · langue, audio, tafsir et notes</summary>
-      <div className="mt-3 space-y-4"><QuranLanguageSelector compact /><QuranAudioModeSelector /><QuranDisplayOptions book /><QuranAudioToolbar chapter={page.parts[0].chapter} startVerse={page.parts[0].verses[0].position} /></div>
+      <div className="mt-3 space-y-4"><QuranLanguageSelector compact />{language.value !== "french" && <QuranTypographyControls />}<QuranAudioModeSelector /><QuranDisplayOptions book /><QuranAudioToolbar chapter={page.parts[0].chapter} startVerse={page.parts[0].verses[0].position} /></div>
     </details>
     <div className="quran-book-controls"><QuranPageNavigation current={active} spread={wide} book /></div>
     <p id="book-instructions" className="mb-4 text-center text-xs leading-6 text-muted">{wide ? "Lecture de droite à gauche. Feuilletez par double page ; les flèches du clavier fonctionnent lorsque le livre est sélectionné." : "Faites glisser horizontalement pour tourner la page, ou utilisez les boutons."} Touchez un verset pour l’écouter.</p>

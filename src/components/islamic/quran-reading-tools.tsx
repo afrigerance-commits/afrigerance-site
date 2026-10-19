@@ -3,7 +3,8 @@ import { getPersonalItem, setPersonalItem, removePersonalItem } from "@/lib/acco
 
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { Bookmark, BookmarkCheck, Minus, Plus } from "lucide-react";
+import { QuranTypographyControls, useQuranTypography } from "./quran-typography-controls";
+import { Bookmark, BookmarkCheck } from "lucide-react";
 import { useQuranAudioContext, VersePlayButton, QuranAudioModeSelector } from "@/components/islamic/quran-audio-player";
 import { VerseNoteEditor } from "@/components/quran/verse-note";
 import { QuranTafsir } from "@/components/islamic/quran-tafsir";
@@ -34,7 +35,7 @@ export function QuranReadingTools({ chapter, children, collapsible = false, cont
   const [hideVersion, setHideVersion] = useState(0);
   const language = useQuranLanguage();
   const showFrench = language.value !== "arabic";
-  const [fontSize, setFontSize] = useState(32);
+  const fontSize = useQuranTypography().value;
   const [tajweedEnabled, setTajweedEnabled] = useState(false);
   const [tajweed, setTajweed] = useState<Map<number, TajweedSegment[]> | null>(null);
   const [tajweedError, setTajweedError] = useState(false);
@@ -65,11 +66,9 @@ export function QuranReadingTools({ chapter, children, collapsible = false, cont
     let cancelled = false;
     try {
       const saved = Number(getPersonalItem(`mirath:quran:bookmark:${chapter}`));
-      const size = Number(getPersonalItem("mirath:quran:font-size"));
       queueMicrotask(() => {
         if (cancelled) return;
         setBookmarked(Number.isInteger(saved) && saved > 0 ? saved : null);
-        if (size >= 26 && size <= 46) setFontSize(size);
       });
     } catch { /* La lecture fonctionne aussi sans stockage local. */ }
     return () => { cancelled = true; };
@@ -91,12 +90,6 @@ export function QuranReadingTools({ chapter, children, collapsible = false, cont
     } catch { /* Stockage désactivé. */ }
   }
 
-  function changeFont(amount: number) {
-    const size = Math.max(26, Math.min(46, fontSize + amount));
-    setFontSize(size);
-    try { setPersonalItem("mirath:quran:font-size", String(size)); } catch { /* Stockage désactivé. */ }
-  }
-
   const toolbar = <>
     <div className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-gold-600/25 bg-[#f8f4e9] p-3 text-sm dark:bg-emerald-900/15 sm:p-4" aria-label="Options de lecture">
       <span className="mr-auto font-semibold text-emerald-950 dark:text-ivory-50">Ma lecture</span>
@@ -105,19 +98,17 @@ export function QuranReadingTools({ chapter, children, collapsible = false, cont
       <QuranLanguageSelector compact />
       <div className="w-full"><QuranAudioModeSelector /></div>
       {language.value !== "french" && <button type="button" aria-pressed={tajweedEnabled} onClick={() => setTajweedEnabled((current) => !current)} className="rounded-lg border border-border bg-white/70 min-h-11 px-3 py-2 font-medium hover:border-emerald-700 dark:bg-white/5">Tajwîd {tajweedEnabled ? "activé" : "désactivé"}</button>}
-      {language.value !== "french" && <div className="flex items-center rounded-lg border border-border bg-white/70 dark:bg-white/5" aria-label="Taille du texte arabe">
-        <button type="button" aria-label="Réduire le texte arabe" disabled={fontSize <= 26} onClick={() => changeFont(-4)} className="flex size-11 items-center justify-center disabled:opacity-40"><Minus className="size-4" /></button>
-        <span className="px-1 text-xs" aria-hidden="true">Aa</span>
-        <button type="button" aria-label="Agrandir le texte arabe" disabled={fontSize >= 46} onClick={() => changeFont(4)} className="flex size-11 items-center justify-center disabled:opacity-40"><Plus className="size-4" /></button>
-      </div>}
-      <QuranDisplayOptions />
+      {language.value !== "french" && <QuranTypographyControls />}
     </div>
     {tajweedEnabled && language.value !== "french" && <div className="mt-2 rounded-xl border border-gold-600/20 bg-[#fffcf5] px-4 py-3 text-xs leading-6 text-muted dark:bg-emerald-950/20" role="status">
       {tajweedError ? "Les annotations de tajwîd ne sont pas disponibles pour cette sourate ; le texte habituel reste affiché." : !tajweed ? "Chargement des annotations de tajwîd…" : <><span className="font-semibold text-foreground">Code couleur :</span> {Object.entries(tajweedRules).filter(([key]) => ["n", "q", "f", "i", "a", "g"].includes(key)).map(([key, rule]) => <span key={key} className="mr-3 inline-flex items-center gap-1"><span className="size-2.5 rounded-full" style={{ backgroundColor: rule.color }} />{rule.label}</span>)}<span className="block">Graphie annotée distincte de l’édition habituelle ; les signes de pause du texte original restent accessibles en désactivant l’option. Source : Al Quran Cloud.</span></>}
     </div>}
   </>;
   return <ReadingContext.Provider value={{ continuous, language: language.value, bookmarked, setBookmark, hideArabic, hideVersion, showFrench, fontSize, tajweed: tajweedEnabled ? tajweed : null }}>
-    {controls && (collapsible ? <details className="reader-secondary my-3 rounded-xl border border-gold-600/20 px-3"><summary className="min-h-11 cursor-pointer py-3 text-sm text-primary">Options de cette sourate</summary>{toolbar}</details> : toolbar)}
+    {controls && <div className="atelier-reader-options">
+      <details className="reader-secondary atelier-preferences my-3"><summary>{collapsible ? "Options de cette sourate" : "Ma lecture · langue, taille et affichage"}</summary>{toolbar}</details>
+      {!collapsible && <QuranDisplayOptions />}
+    </div>}
     {children}
   </ReadingContext.Provider>;
 }

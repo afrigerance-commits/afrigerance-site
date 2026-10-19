@@ -2,23 +2,25 @@
 import { getPersonalItem, setPersonalItem } from "@/lib/account/storage";
 
 import { useEffect, useState } from "react";
+import { readingDestination } from "@/lib/quran/reading-destination";
 import { chapterName } from "@/lib/quran/chapter-name";
 import Link from "next/link";
 import { ArrowUpRight, Bookmark } from "lucide-react";
-import { parseReadingPosition, readingPositionKey, type ReadingPosition } from "@/lib/quran/reading-position";
+import { readingPositionKey } from "@/lib/quran/reading-position";
 import type { QuranChapterMeta } from "@/lib/quran/data";
 
 export function ReadingResume({ chapters }: { chapters: QuranChapterMeta[] }) {
-  const [position, setPosition] = useState<ReadingPosition | null>(null);
+  const [destination, setDestination] = useState<ReturnType<typeof readingDestination>>(null);
   useEffect(() => {
     let cancelled = false;
-    const load = () => { if (cancelled) return; try { setPosition(parseReadingPosition(getPersonalItem(readingPositionKey), chapters)); } catch { setPosition(null); } };
+    const load = () => { if (cancelled) return; try { setDestination(readingDestination(getPersonalItem(readingPositionKey), chapters)); } catch { setDestination(null); } };
     queueMicrotask(load); window.addEventListener("storage",load); window.addEventListener("mirath-account-storage",load);
     return () => { cancelled = true; window.removeEventListener("storage",load); window.removeEventListener("mirath-account-storage",load); };
   }, [chapters]);
-  if (!position) return null;
+  if (!destination) return null;
+  const position = destination.position;
   const chapter = chapters.find((c) => c.number === position.chapter)!;
-  return <Link href={`/coran/${position.chapter}#verset-${position.verse}`} className="resume-panel my-6 flex flex-wrap items-center gap-4 rounded-2xl border border-accent/35 bg-surface px-5 py-4 transition-colors hover:border-primary"><Bookmark className="size-5 text-primary" /><div className="flex-1"><span className="block text-[10px] font-semibold uppercase tracking-widest text-accent-text">Reprendre ma lecture</span><span className="mt-1 block text-sm font-medium">{chapterName(chapter)} · verset {position.verse}</span></div><span className="hidden text-xs text-muted sm:block">Enregistré sur cet appareil</span><ArrowUpRight className="size-4 text-primary" /></Link>;
+  return <Link href={destination.href} className="resume-panel atelier-resume my-6 flex flex-wrap items-center gap-4 rounded-2xl border border-accent/35 bg-surface px-5 py-4 transition-colors hover:border-primary"><Bookmark className="size-5 text-primary" /><div className="flex-1"><span className="block text-[10px] font-semibold uppercase tracking-widest text-accent-text">Reprendre ma lecture</span><span className="mt-1 block text-sm font-medium">{destination.label ?? `${chapterName(chapter)} · verset ${position.verse}`}</span></div><span className="hidden text-xs text-muted sm:block">Enregistré sur cet appareil</span><ArrowUpRight className="size-4 text-primary" /></Link>;
 }
 
 export function ReadingPositionTracker({ chapter, verseCount }: { chapter: number; verseCount: number }) {

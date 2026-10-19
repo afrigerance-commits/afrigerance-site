@@ -50,11 +50,11 @@ export function Header({ authSlot }: { authSlot?: React.ReactNode }) {
   const secondaryActive = siteConfig.nav.secondary.some((item) => isActive(item.href));
 
   return (
-    <header className={cn("sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-md transition-[background-color,box-shadow] duration-300", scrolled && "nav-scrolled")}>
+    <header className={cn("atelier-header sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-md transition-[background-color,box-shadow] duration-300", scrolled && "nav-scrolled")}>
       <div className="mx-auto flex h-18 max-w-7xl items-center justify-between gap-2 px-4 sm:h-20 sm:gap-4 sm:px-6 lg:px-8">
         <Logo />
 
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="Navigation principale">
+        <nav className="atelier-primary-nav hidden items-center gap-1 lg:flex" aria-label="Navigation principale">
           {siteConfig.nav.primary.map((item, i) => {
             const Icon = featuredIcons[i];
             return (

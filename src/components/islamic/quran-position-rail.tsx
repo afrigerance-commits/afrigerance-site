@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { saveReadingDestination } from "@/lib/quran/reading-destination";
 import { readingIndexBy, type VerseReadingLocation } from "@/lib/quran/reading-location";
 
 /** Tracks the visible verse, independently of audio and of the page footer. */
@@ -39,6 +40,11 @@ export function QuranPositionRail({ locations, children, scope }: { locations: V
     };
   }, [locations]);
   const current = locations[Math.min(index, locations.length - 1)];
+  useEffect(()=>{
+    if(!current || document.visibilityState === 'hidden')return;
+    const type=scope?.label==='Juz'?'juz':scope?.label==='Hizb'?'hizb':scope?.label==='Page'?'page':undefined;
+    saveReadingDestination({chapter:current.chapter,verse:current.verse},type,scope?.number);
+  },[current,scope?.label,scope?.number]);
   if (!current) return <>{children}</>;
   const position = scope ? index + 1 : current.juzPosition;
   const count = scope ? locations.length : current.juzCount;
