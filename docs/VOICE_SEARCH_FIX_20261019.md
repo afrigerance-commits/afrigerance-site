@@ -1,7 +1,8 @@
 # Correctif de dictée — 19 octobre 2026
 
-Le signalement utilisateur ne précise pas le navigateur ni s’il concerne l’APK.
-La cause sur son appareil n’est donc pas établie. L’inspection confirme que la
+L’utilisateur confirme ensuite que le problème concerne à la fois le site et
+l’APK (« Les 2 »). Le navigateur du site et le message d’erreur restent inconnus ;
+la cause précise sur le navigateur de son appareil n’est donc pas établie. L’inspection confirme que la
 version publiée s’appuie uniquement sur SpeechRecognition du navigateur et
 que l’APK 1.3 ne contient aucun service de dictée natif. Aucune règle locale
 Permissions-Policy ne bloque le micro dans la configuration du projet.
@@ -40,7 +41,11 @@ Permissions-Policy ne bloque le micro dans la configuration du projet.
   a été supprimé avant une compilation complète réussie.
 - Compilation APK, lint Android et essais sur émulateur lancés sur GitHub Actions,
   exécution 39286158576, commit 0870bd4811bb62fbe644ca89fd33039f6191fcb5.
-  État actuel : attente d’un exécuteur ; aucun APK compilé n’est encore validé.
+  Exécution terminée avec succès : compilation APK, lint Android sans erreur,
+  9 tests instrumentés réussis sur émulateur Android 15. Parmi ces tests,
+  les 4 tests VoiceSearchTest vérifient le contrat d’intent, le texte arabe
+  renvoyé au pont, l’annulation et une erreur réseau simulés.
+  Aucun essai vocal réel n’est revendiqué.
 - Les tests Android utilisent des résultats d’activité simulés avec Espresso,
   pour vérifier le pont, le retour arabe, l’annulation et les erreurs. Le
   fournisseur factice figure uniquement dans l’APK de test instrumenté.
@@ -65,3 +70,24 @@ universelle ; il n’est pas configuré dans ce correctif.
 - https://capacitorjs.com/docs/plugins/android
 - API locale Capacitor 8.5.2 : Plugin.startActivityForResult / ActivityCallback.
 - https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition
+
+## APK prête
+
+- Fichier : MIRATH-Android-1.4.apk, 15 526 485 octets.
+- SHA-256 : 164fdc33b92ad2b4d3f509902cffb5007fd4a25ba5c142ef499d1392c3a54736.
+- Certificat SHA-256 inchangé : 106f6e6781b824308b1729feb65434c785f31fa82d4a6c0ade6f00891874c596.
+- Fichier conservé : libfile_fa2e0228c4008191b33c0ac4d3876bf8.
+- Le composant factice de reconnaissance est absent de l’APK livrée ; il
+  figure uniquement dans l’APK des tests instrumentés.
+- Aucun nouveau signal de publication reçu avec « Les 2 ». La production
+  reste sur ede45978703cca2f8997ec8056c51a73865da052. L’activation du pont
+  natif nécessite encore la publication autorisée du correctif web.
+
+## Diagnostic web restant
+
+La dictée Web Speech n’est pas disponible universellement. Elle dépend du
+navigateur et de son service vocal, même si l’autorisation microphone est
+accordée. Le correctif actuel ne contient pas de transcription indépendante
+du navigateur ; aucun service vocal serveur ni clé dédiée ne sont configurés
+localement. Ne pas annoncer cette panne web résolue sans connaître le
+navigateur, le message obtenu et un essai réel.

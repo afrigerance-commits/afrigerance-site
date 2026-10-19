@@ -155,3 +155,12 @@ ultérieure du pont web sont toutes deux nécessaires à l’activation native.
 227 tests web et TypeScript réussis. Compilation et contrôles Android à relever
 dans docs/VOICE_SEARCH_FIX_20261019.md. Tests vocaux simulés : ne pas les
 présenter comme une validation d’une voix réelle ou du téléphone utilisateur.
+
+Précision suivante : « Les 2 » = site et APK affectés. Cette précision
+n’est pas un signal de publication. L’exécution Android 39286158576 est
+terminée avec succès : APK 1.4 compilée, lint sans erreur, 9 tests sur
+émulateur Android 15 réussis (résultats vocaux simulés). APK sauvegardée
+sous libfile_fa2e0228c4008191b33c0ac4d3876bf8. Son activation native
+nécessite toujours le pont web en attente de publication autorisée. Le
+navigateur et le message d’erreur web restent à préciser ; ne pas annoncer
+la compatibilité vocale universelle ni la panne de l’utilisateur résolue.
