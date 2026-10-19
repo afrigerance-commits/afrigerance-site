@@ -164,3 +164,19 @@ sous libfile_fa2e0228c4008191b33c0ac4d3876bf8. Son activation native
 nécessite toujours le pont web en attente de publication autorisée. Le
 navigateur et le message d’erreur web restent à préciser ; ne pas annoncer
 la compatibilité vocale universelle ni la panne de l’utilisateur résolue.
+
+Signal « publie » reçu le 19 octobre 2026 à 17:42 UTC : publication
+autorisée du correctif vocal préparé sur feature/voice-fix-20261019.
+227 tests web, TypeScript, compilation de 972 pages et 9 tests Android
+sur émulateur réussis ; résultats vocaux simulés. APK 1.4 déjà compilée
+et signature vérifiée. Publier ce lot uniquement ; aucune garantie de
+compatibilité universelle du navigateur ni d’essai vocal réel. Les lots
+suivants restent soumis à un nouveau signal de publication utilisateur.
+
+Publication du correctif vocal effectuée :
+89e7ec6f02442095db58fd75165757ffba2663c7. Contrôles HTTP 200 réussis sur
+accueil, recherche Fajr/Muwatta et confidentialité : aide de dictée,
+mentions du service vocal Android et résultats existants présents. Le
+pont natif est publié ; installation de l’APK 1.4 nécessaire. Aucun essai
+de microphone réel revendiqué, compatibilité navigateur toujours
+conditionnelle. Les prochains lots exigent un nouveau signal utilisateur.

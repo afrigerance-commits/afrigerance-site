@@ -54,9 +54,10 @@ Permissions-Policy ne bloque le micro dans la configuration du projet.
 
 ## Activation et publication
 
-Lot conservé hors production. Aucun nouveau signal de publication reçu.
-La branche de compilation utilise [skip netlify] ; la branche Netlify de
-production ne doit pas être modifiée. Installer la nouvelle APK ne suffit pas
+Signal « publie » reçu le 19 octobre 2026 à 17:42 UTC : publication de ce
+lot autorisée. La branche de compilation utilisait [skip netlify] pour
+préparer l’APK sans déclencher Netlify. Un seul changement de référence
+de production est prévu pour publier le lot vérifié. Installer la nouvelle APK ne suffit pas
 tant que le pont web n’est pas publié, puisque l’APK charge le site Netlify.
 Après signal explicite : publier le pont web vérifié, installer l’APK 1.4,
 essayer la dictée sur le téléphone et relever le navigateur/service et le
@@ -91,3 +92,29 @@ accordée. Le correctif actuel ne contient pas de transcription indépendante
 du navigateur ; aucun service vocal serveur ni clé dédiée ne sont configurés
 localement. Ne pas annoncer cette panne web résolue sans connaître le
 navigateur, le message obtenu et un essai réel.
+
+## Signal de publication
+
+Publication du lot autorisée le 19 octobre 2026 à 17:42 UTC. Le navigateur
+et le message d’erreur de l’utilisateur restent inconnus : la publication
+active le pont natif de l’APK 1.4 et améliore le diagnostic web, elle
+n’ajoute aucun moteur vocal universel. Les prochains lots attendent
+un nouveau signal. La confirmation HTTP est enregistrée ci-dessous.
+
+## Publication vérifiée
+
+Publication effectuée sur https://miraath.netlify.app avec le commit
+89e7ec6f02442095db58fd75165757ffba2663c7, arbre
+6259bce6bc41c6fc20af77b50f9809a371a8ed32. Un seul changement de référence
+de production a déclenché Netlify. Contrôles HTTP 200 réussis sur :
+
+- accueil : aide de dictée et mention du service vocal du téléphone présents ;
+- /recherche?q=Fajr&collection=muwatta : nouveau formulaire et résultats
+  /hadith/muwatta/ présents ;
+- confidentialité : parcours APK Android et annulation par Retour présents.
+
+Ces contrôles confirment la mise en ligne du correctif, pas un essai réel de
+microphone. Installer l’APK 1.4 puis la rouvrir avec Internet pour charger le
+pont web publié. Les navigateurs sans service Web Speech ne gagnent pas un
+moteur de transcription universel avec cette publication. Les prochains
+lots restent soumis à un nouveau signal utilisateur.
