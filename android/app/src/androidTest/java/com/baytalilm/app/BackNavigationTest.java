@@ -34,7 +34,7 @@ public class BackNavigationTest {
             if ("true".equals(read(scenario, expression))) return;
             Thread.sleep(150);
         }
-        fail("Navigation condition failed: " + expression + "; page=" + read(scenario, "location.href"));
+        fail("Navigation condition failed: " + expression + "; page=" + read(scenario, "JSON.stringify({url:location.href,state:history.state,installed:!!window.__mirathAndroidBack})"));
     }
     private void home(ActivityScenario<MainActivity> scenario) throws Exception {
         await(scenario, "location.origin === 'https://miraath.netlify.app' && !!document.querySelector('.mobile-app-dock[data-native=true]')");
@@ -65,7 +65,7 @@ public class BackNavigationTest {
         try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
             home(scenario);
             read(scenario, "document.querySelector('.mobile-app-dock a[href=\"/coran\"]').click()");
-            await(scenario, "location.pathname === '/coran' && !!document.querySelector('main a[href=\"/coran/1\"]')");
+            await(scenario, "location.pathname === '/coran' && (() => { const el=document.querySelector('main a[href=\"/coran/1\"]'); return el && Object.keys(el).some(key => key.startsWith('__reactProps$') && typeof el[key]?.onClick === 'function'); })()");
             read(scenario, "window.__backNavigationFixture = 'kept'; document.querySelector('main a[href=\"/coran/1\"]').click()");
             await(scenario, "location.pathname === '/coran/1' && !!document.querySelector('select[aria-label=\"Langue de l’audio\"]')");
             int width = InstrumentationRegistry.getInstrumentation().getTargetContext().getResources().getDisplayMetrics().widthPixels;
@@ -114,7 +114,7 @@ public class BackNavigationTest {
             assertEquals("Expired exit confirmation must not close the app", Lifecycle.State.RESUMED, scenario.getState());
             back(scenario);
             long deadline = System.currentTimeMillis() + 5000;
-            while (scenario.getState() == Lifecycle.State.RESUMED && System.currentTimeMillis() < deadline) Thread.sleep(100);
+            while (scenario.getState() != Lifecycle.State.CREATED && System.currentTimeMillis() < deadline) Thread.sleep(100);
             assertEquals("Two recent Back actions should background the root task", Lifecycle.State.CREATED, scenario.getState());
         }
     }

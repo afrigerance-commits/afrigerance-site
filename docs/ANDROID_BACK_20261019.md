@@ -12,9 +12,12 @@ système à l’historique de la WebView.
 - Un panneau Radix visible reçoit Échap avant toute navigation : menu,
   dialogue, liste et feuille. Les contrôles de fermeture peuvent toujours
   conserver le panneau ouvert, par exemple si son gestionnaire refuse Échap.
-- Sinon, retour à l’entrée précédente appartenant à l’origine MIRÂTH,
-  y compris les routes Next créées avec l’History API. Les pages externes
-  et about:blank ne deviennent pas la destination du retour.
+- Les routes Next sont suivies par un compteur dans l’état de chaque entrée
+  History API, sans retirer les champs de Next. Le retour utilise history.back
+  dans le rendu web pour ces routes ; les chargements de documents utilisent
+  l’historique natif limité à l’origine MIRÂTH. Le script est injecté uniquement
+  dans l’origine de l’application (dès le début du document si la WebView le
+  permet, puis au chargement visible comme repli) et ignore les iframes.
 - Une page ouverte directement sans historique revient à l’accueil. Son
   ancienne entrée est retirée pour éviter une boucle entre accueil et page.
 - À l’accueil sans historique, un premier Retour affiche une indication.
@@ -48,3 +51,15 @@ Sources :
 - https://developer.android.com/guide/navigation/navigation-custom-back
 - https://developer.android.com/guide/navigation/custom-back/predictive-back-gesture
 - Sources locales Capacitor 8.5.2 : BridgeActivity / BridgeWebViewClient.
+
+## Première vérification et adaptation
+
+Exécution 39298062461, commit 4149391c8b956bf23bc080531ff385ca6450fd78 :
+compilation et lint sans erreur, mais tests de retour entre routes échoués.
+L’historique des routes est désormais traité dans le rendu web, avec les
+métadonnées Next préservées. Quatre tests ciblés valident l’état de navigation,
+le retour sans rechargement, la fermeture préalable des panneaux et la
+coexistence avec un routeur enveloppant l’History API. Le test de sortie
+attend désormais l’arrêt complet de l’activité et le test de sélection audio
+attend l’attachement du gestionnaire React avant de simuler une modification.
+Cette APK intermédiaire n’a pas été livrée. Nouvelle compilation en cours.
