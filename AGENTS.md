@@ -143,3 +143,15 @@ HTTP 200 vérifié sur accueil, recherche naturelle, Hadith et confidentialité 
 micro présent, mots-clés retenus et résultats Muwatta affichés, information
 de confidentialité accessible. Dictée réelle et compatibilité APK non
 testées physiquement. Les futurs lots attendent un nouveau signal.
+
+Signalement suivant : « La recherche par audio ne marche toujours pas ».
+Correction préparée sur feature/voice-fix-20261019 : dictée Android par
+RecognizerIntent et pont Capacitor, APK 1.4 / code 5, messages de diagnostic
+web et distinction service bloqué / autorisation micro refusée. Le navigateur
+intégré de l’ancienne APK ne constitue pas un moteur vocal natif. Aucun nouveau
+signal de publication : ne pas déployer. Compilation Android autorisée sur
+branche de travail avec [skip netlify]. La nouvelle APK et la publication
+ultérieure du pont web sont toutes deux nécessaires à l’activation native.
+227 tests web et TypeScript réussis. Compilation et contrôles Android à relever
+dans docs/VOICE_SEARCH_FIX_20261019.md. Tests vocaux simulés : ne pas les
+présenter comme une validation d’une voix réelle ou du téléphone utilisateur.

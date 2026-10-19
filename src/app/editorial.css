@@ -205,6 +205,9 @@ html { scrollbar-gutter:stable; }
 .voice-search-meta p { flex:1 1 240px; padding-block:4px; }
 .voice-search-meta a { text-decoration:underline; text-underline-offset:3px; }
 .voice-search-status { min-height:20px; margin-top:6px; font-size:12px; color:var(--primary); line-height:1.7; }
+.voice-search-help { margin-top:8px; color:var(--muted); font-size:12px; line-height:1.7; }
+.voice-search-help summary { width:fit-content; min-height:44px; padding-block:10px; color:var(--primary); cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
+.voice-search-help p { max-width:68ch; margin-top:8px; }
 .voice-collection { flex-basis:100%; border-top:1px solid var(--border); padding-top:8px; }
 .voice-collection select { width:100%; min-height:44px; background:var(--surface); border-radius:8px; font-size:14px; }
 .voice-search-home .atelier-search { max-width:none; margin-top:0; border-width:0 0 1px; border-radius:0; background:transparent; padding-inline:0; }
