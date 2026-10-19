@@ -36,7 +36,7 @@ La compilation sur branche de travail utilise [skip netlify]. L’installation
 de l’APK 1.5 remplace l’APK précédente ; une actualisation du site seule
 ne corrige pas la gestion native du Retour.
 
-## Vérifications en cours
+## Vérifications finales
 
 - Aucun fichier web fonctionnel modifié ; pas de répétition des 227 tests
   web ou de la compilation Next pour un lot purement Android.
@@ -44,7 +44,16 @@ ne corrige pas la gestion native du Retour.
   gestuelle sur émulateur ; retour successif entre routes Next sans rechargement
   global ; fermeture du panneau avant retour ; repli accueil sans boucle ;
   confirmation de sortie limitée dans le temps.
-- Compilation, lint et essais sur émulateur : en attente.
+- Quatre tests unitaires du script History API réussis ; TypeScript sans erreur.
+- Compilation APK et tests Android, lint sans erreur, signature vérifiée.
+- Treize tests instrumentés réussis sur Android 15 AOSP x86_64 / Pixel 7,
+  sans échec ni test ignoré : geste réel depuis le bord, routes Next sans
+  rechargement global, fermeture des panneaux, repli accueil, double Retour
+  à durée limitée, rendu ralenti, lecture/arabe, audio écran éteint, alarme
+  d’adhan et résultats vocaux simulés.
+- Capture native après installation inspectée : accueil et navigation
+  visibles, sans fenêtre système devant l’application. Cette inspection
+  ne constitue pas une revue visuelle de tous les écrans.
 - Aucun essai sur le téléphone physique de l’utilisateur.
 
 Sources :
@@ -62,7 +71,7 @@ le retour sans rechargement, la fermeture préalable des panneaux et la
 coexistence avec un routeur enveloppant l’History API. Le test de sortie
 attend désormais l’arrêt complet de l’activité et le test de sélection audio
 attend l’attachement du gestionnaire React avant de simuler une modification.
-Cette APK intermédiaire n’a pas été livrée. Nouvelle compilation en cours.
+Cette APK intermédiaire n’a pas été livrée. La vérification suivante porte sur cette adaptation.
 
 ## Deuxième vérification : fenêtre système de l’émulateur
 
@@ -79,7 +88,7 @@ pour éviter le redémarrage du lanceur pendant le scénario. L’émulateur re�
 3 Go de mémoire et les scénarios qui interagissent avec le système attendent
 explicitement le focus réel de MainActivity. Les assertions de navigation et
 le véritable balayage sont conservés. Aucun échec n’est masqué ou relancé
-automatiquement. Troisième vérification en cours ; aucune APK intermédiaire
+automatiquement. La troisième vérification est consignée ci-dessous ; aucune APK intermédiaire
 livrée ni publication Netlify.
 
 ## Troisième vérification et environnement isolé
@@ -97,4 +106,23 @@ La fenêtre de réponse laisse 1 500 ms à un rendu chargé, sans retarder
 une réponse normale. En cas de délai dépassé, aucun retour natif ne se
 superpose au JavaScript susceptible de s’exécuter tardivement. Un scénario
 supplémentaire bloque volontairement le rendu 2,3 s pour vérifier qu’une
-seule action Retour ne saute pas deux pages. Vérification de 13 tests en cours.
+seule action Retour ne saute pas deux pages. Les treize tests passent dans l’exécution ci-dessous.
+
+## Livraison validée
+
+- Exécution réussie : https://github.com/afrigerance-commits/afrigerance-site/actions/runs/39335865416
+- Source compilée : 2438a5ff68e7d0b75f993a84da9e6aafd1772866.
+- APK : MIRATH-Android-1.5.apk, versionCode 6, 15 531 247 octets.
+- SHA-256 : cd41461d2dd1b6a9822eb5a871854cd37529b371bf20dc0c6162f3b06e315535.
+- Certificat SHA-256 : 106f6e6781b824308b1729feb65434c785f31fa82d4a6c0ade6f00891874c596,
+  identité de test identique à celle de l’APK 1.4.
+- Fichier conservé : libfile_e43d30c1bd408191bb61b7d5a49172fb.
+- L’asset de navigation embarqué correspond exactement au source ; le
+  pont vocal est présent et SpeechTestActivity est exclue de l’APK livrée.
+- Aucun déploiement Netlify. Branche de production inchangée :
+  89e7ec6f02442095db58fd75165757ffba2663c7.
+- Installer cette APK par-dessus la version précédente. Le correctif natif
+  ne s’active pas par une simple actualisation de la version web.
+
+Les versions des vérifications intermédiaires échouées n’ont pas été livrées.
+Le comportement sur le téléphone physique de l’utilisateur reste à confirmer.

@@ -190,3 +190,16 @@ rapproché à la racine pour mettre l’application en arrière-plan. Aucun
 changement de source web nécessaire, aucune publication Netlify autorisée
 pour ce nouveau lot. Compiler/tester sur la branche avec [skip netlify] et
 livrer l’APK sans modifier la production 89e7ec6f02442095db58fd75165757ffba2663c7.
+
+Correction Retour Android livrée le 19 octobre 2026 : APK 1.5 / code 6,
+source 2438a5ff68e7d0b75f993a84da9e6aafd1772866, exécution 39335865416
+réussie. Compilation, lint, 13 tests instrumentés sur Android 15 AOSP et
+signature stable vérifiés ; 4 tests du script History API et TypeScript
+également réussis. Le geste réel, les panneaux, la navigation Next sans
+rechargement et un rendu volontairement ralenti sont couverts. Les alertes
+ANR du lanceur Google dans les essais intermédiaires ont motivé l’image
+AOSP de contrôle ; aucune APK échouée livrée. Fichier conservé sous
+libfile_e43d30c1bd408191bb61b7d5a49172fb. Aucun essai physique revendiqué.
+Aucun déploiement Netlify ni changement de la production
+89e7ec6f02442095db58fd75165757ffba2663c7. Les prochains lots web
+restent soumis à un nouveau signal explicite.
