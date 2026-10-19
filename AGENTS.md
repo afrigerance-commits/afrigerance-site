@@ -137,3 +137,38 @@ et variantes, références existantes uniquement. Pas d’écoute automatique ni
 de service de transcription facturé ajouté. Compatibilité variable, notamment
 WebView APK ; repli saisie/dictée du clavier explicite. Pas de nouveau code
 natif ni APK. Les lots suivants exigent un nouveau signal utilisateur.
+
+Publication recherche vocale effectuée : ede45978703cca2f8997ec8056c51a73865da052.
+HTTP 200 vérifié sur accueil, recherche naturelle, Hadith et confidentialité :
+micro présent, mots-clés retenus et résultats Muwatta affichés, information
+de confidentialité accessible. Dictée réelle et compatibilité APK non
+testées physiquement. Les futurs lots attendent un nouveau signal.
+
+Signalement suivant : « La recherche par audio ne marche toujours pas ».
+Correction préparée sur feature/voice-fix-20261019 : dictée Android par
+RecognizerIntent et pont Capacitor, APK 1.4 / code 5, messages de diagnostic
+web et distinction service bloqué / autorisation micro refusée. Le navigateur
+intégré de l’ancienne APK ne constitue pas un moteur vocal natif. Aucun nouveau
+signal de publication : ne pas déployer. Compilation Android autorisée sur
+branche de travail avec [skip netlify]. La nouvelle APK et la publication
+ultérieure du pont web sont toutes deux nécessaires à l’activation native.
+227 tests web et TypeScript réussis. Compilation et contrôles Android à relever
+dans docs/VOICE_SEARCH_FIX_20261019.md. Tests vocaux simulés : ne pas les
+présenter comme une validation d’une voix réelle ou du téléphone utilisateur.
+
+Précision suivante : « Les 2 » = site et APK affectés. Cette précision
+n’est pas un signal de publication. L’exécution Android 39286158576 est
+terminée avec succès : APK 1.4 compilée, lint sans erreur, 9 tests sur
+émulateur Android 15 réussis (résultats vocaux simulés). APK sauvegardée
+sous libfile_fa2e0228c4008191b33c0ac4d3876bf8. Son activation native
+nécessite toujours le pont web en attente de publication autorisée. Le
+navigateur et le message d’erreur web restent à préciser ; ne pas annoncer
+la compatibilité vocale universelle ni la panne de l’utilisateur résolue.
+
+Signal « publie » reçu le 19 octobre 2026 à 17:42 UTC : publication
+autorisée du correctif vocal préparé sur feature/voice-fix-20261019.
+227 tests web, TypeScript, compilation de 972 pages et 9 tests Android
+sur émulateur réussis ; résultats vocaux simulés. APK 1.4 déjà compilée
+et signature vérifiée. Publier ce lot uniquement ; aucune garantie de
+compatibilité universelle du navigateur ni d’essai vocal réel. Les lots
+suivants restent soumis à un nouveau signal de publication utilisateur.
