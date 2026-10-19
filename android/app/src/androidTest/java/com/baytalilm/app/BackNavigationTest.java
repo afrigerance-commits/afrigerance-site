@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -47,6 +48,18 @@ public class BackNavigationTest {
     private void back(ActivityScenario<MainActivity> scenario) {
         scenario.onActivity(activity -> activity.getOnBackPressedDispatcher().onBackPressed());
     }
+    private void awaitWindowFocus(ActivityScenario<MainActivity> scenario) throws Exception {
+        AtomicBoolean focused = new AtomicBoolean();
+        long deadline = System.currentTimeMillis() + 15000;
+        while (System.currentTimeMillis() < deadline) {
+            scenario.onActivity(activity -> focused.set(activity.hasWindowFocus()));
+            if (focused.get()) return;
+            Thread.sleep(150);
+        }
+        fail("MainActivity is covered by another window before the system gesture: " + shell("dumpsys window windows").lines()
+            .filter(line -> line.contains("mCurrentFocus") || line.contains("Not Responding") || line.contains("mFocusedApp"))
+            .reduce("", (a, b) -> a + b + "\n"));
+    }
     private String shell(String command) throws Exception {
         try (ParcelFileDescriptor fd = InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(command);
              FileInputStream stream = new FileInputStream(fd.getFileDescriptor());
@@ -68,6 +81,7 @@ public class BackNavigationTest {
             await(scenario, "location.pathname === '/coran' && (() => { const el=document.querySelector('main a[href=\"/coran/1\"]'); return el && Object.keys(el).some(key => key.startsWith('__reactProps$') && typeof el[key]?.onClick === 'function'); })()");
             read(scenario, "window.__backNavigationFixture = 'kept'; document.querySelector('main a[href=\"/coran/1\"]').click()");
             await(scenario, "location.pathname === '/coran/1' && !!document.querySelector('select[aria-label=\"Langue de l’audio\"]')");
+            awaitWindowFocus(scenario);
             int width = InstrumentationRegistry.getInstrumentation().getTargetContext().getResources().getDisplayMetrics().widthPixels;
             int height = InstrumentationRegistry.getInstrumentation().getTargetContext().getResources().getDisplayMetrics().heightPixels;
             shell("input swipe 1 " + (height / 2) + " " + (width * 2 / 3) + " " + (height / 2) + " 350");

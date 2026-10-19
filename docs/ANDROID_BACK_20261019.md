@@ -63,3 +63,21 @@ coexistence avec un routeur enveloppant l’History API. Le test de sortie
 attend désormais l’arrêt complet de l’activité et le test de sélection audio
 attend l’attachement du gestionnaire React avant de simuler une modification.
 Cette APK intermédiaire n’a pas été livrée. Nouvelle compilation en cours.
+
+## Deuxième vérification : fenêtre système de l’émulateur
+
+Exécution 39300723587, commit 338ca979b3a242f0182eb9fb793bf52540d7b16f :
+compilation et lint réussis, 10 tests sur 12 réussis. Les retours par le
+dispatcher, la fermeture du panneau et le repli accueil passent. Le journal
+InputDispatcher montre que le véritable balayage arrive sur « Application Not
+Responding: com.google.android.apps.nexuslauncher », devant MIRÂTH. Le contrôle
+vocal échoue également sur une fenêtre sans focus, après un résultat simulé
+correctement transmis. Le parcours web conserve bien son compteur à 2.
+
+La navigation gestuelle est désormais activée avant de lancer les tests,
+pour éviter le redémarrage du lanceur pendant le scénario. L’émulateur reçoit
+3 Go de mémoire et les scénarios qui interagissent avec le système attendent
+explicitement le focus réel de MainActivity. Les assertions de navigation et
+le véritable balayage sont conservés. Aucun échec n’est masqué ou relancé
+automatiquement. Troisième vérification en cours ; aucune APK intermédiaire
+livrée ni publication Netlify.

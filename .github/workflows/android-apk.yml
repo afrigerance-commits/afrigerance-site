@@ -62,8 +62,11 @@ jobs:
           arch: x86_64
           target: google_apis
           profile: pixel_7
+          ram-size: 3072M
           disable-animations: true
           script: |
+            adb shell cmd overlay enable-exclusive --user current --category com.android.internal.systemui.navbar.gestural
+            sleep 5
             (cd android && ./gradlew --no-daemon :app:connectedDebugAndroidTest)
             adb install -r android-delivery/MIRATH-Android-test.apk
             adb shell am start -n com.baytalilm.app/.MainActivity
