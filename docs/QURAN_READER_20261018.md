@@ -34,3 +34,17 @@ déploiement Netlify. Les vérifications listées ci-dessus sont réussies.
 L’écoute native en arrière-plan requiert l’installation de l’APK 1.3 ; le
 navigateur et les anciennes APK conservent le lecteur web. Essais physiques
 Android et rendu visuel sur téléphone restant à effectuer.
+
+
+## Publication vérifiée
+
+Publié sur https://miraath.netlify.app avec le commit de production
+213b2cee89be0c77e83fc2dc94a2121e8eb2a228. Les pages /coran,
+/coran/lecture/page/1, /coran/lecture/page/604, /coran/lecture/juz/2,
+/coran/lecture/hizb/2 et /coran/2 répondent en HTTP 200 et présentent
+les nouvelles options ; les cinq lecteurs présentent la jauge correspondant
+à leur portion. Contrôle du HTML et des routes, sans essai visuel ou physique.
+Un seul changement de référence de production et déploiement Netlify demandé.
+Le workflow Android a démarré automatiquement ; l’APK 1.3 du même code natif
+avait déjà passé ses cinq tests instrumentés. Cette publication n’est pas
+un nouvel essai sur téléphone.

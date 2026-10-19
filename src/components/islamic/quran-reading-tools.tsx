@@ -14,6 +14,7 @@ import { QuranLanguageSelector, useQuranLanguage, type QuranLanguage } from "@/c
 import { QuranDisplayOptions, useQuranDisplay } from "./quran-display-options";
 
 interface ReadingState {
+  continuous: boolean;
   language: QuranLanguage;
   bookmarked: number | null;
   setBookmark: (verse: number) => void;
@@ -26,7 +27,7 @@ interface ReadingState {
 
 const ReadingContext = createContext<ReadingState | null>(null);
 
-export function QuranReadingTools({ chapter, children, collapsible = false }: { chapter: number; children: ReactNode; collapsible?: boolean }) {
+export function QuranReadingTools({ chapter, children, collapsible = false, controls = true, continuous = false }: { chapter: number; children: ReactNode; collapsible?: boolean; controls?: boolean; continuous?: boolean }) {
   const audioPlayer = useQuranAudioContext();
   const [bookmarked, setBookmarked] = useState<number | null>(null);
   const [hideArabic, setHideArabic] = useState(false);
@@ -96,7 +97,7 @@ export function QuranReadingTools({ chapter, children, collapsible = false }: { 
     try { setPersonalItem("mirath:quran:font-size", String(size)); } catch { /* Stockage désactivé. */ }
   }
 
-  const controls = <>
+  const toolbar = <>
     <div className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-gold-600/25 bg-[#f8f4e9] p-3 text-sm dark:bg-emerald-900/15 sm:p-4" aria-label="Options de lecture">
       <span className="mr-auto font-semibold text-emerald-950 dark:text-ivory-50">Ma lecture</span>
       {bookmarked && <a href={`#verset-${audioPlayer.section ? `${chapter}-` : ""}${bookmarked}`} className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-emerald-800 underline underline-offset-4 hover:bg-emerald-900/10 dark:text-gold-500"><BookmarkCheck className="size-4" /> Reprendre au verset {bookmarked}</a>}
@@ -115,8 +116,8 @@ export function QuranReadingTools({ chapter, children, collapsible = false }: { 
       {tajweedError ? "Les annotations de tajwîd ne sont pas disponibles pour cette sourate ; le texte habituel reste affiché." : !tajweed ? "Chargement des annotations de tajwîd…" : <><span className="font-semibold text-foreground">Code couleur :</span> {Object.entries(tajweedRules).filter(([key]) => ["n", "q", "f", "i", "a", "g"].includes(key)).map(([key, rule]) => <span key={key} className="mr-3 inline-flex items-center gap-1"><span className="size-2.5 rounded-full" style={{ backgroundColor: rule.color }} />{rule.label}</span>)}<span className="block">Graphie annotée distincte de l’édition habituelle ; les signes de pause du texte original restent accessibles en désactivant l’option. Source : Al Quran Cloud.</span></>}
     </div>}
   </>;
-  return <ReadingContext.Provider value={{ language: language.value, bookmarked, setBookmark, hideArabic, hideVersion, showFrench, fontSize, tajweed: tajweedEnabled ? tajweed : null }}>
-    {collapsible ? <details className="reader-secondary my-3 rounded-xl border border-gold-600/20 px-3"><summary className="min-h-11 cursor-pointer py-3 text-sm text-primary">Options de cette sourate</summary>{controls}</details> : controls}
+  return <ReadingContext.Provider value={{ continuous, language: language.value, bookmarked, setBookmark, hideArabic, hideVersion, showFrench, fontSize, tajweed: tajweedEnabled ? tajweed : null }}>
+    {controls && (collapsible ? <details className="reader-secondary my-3 rounded-xl border border-gold-600/20 px-3"><summary className="min-h-11 cursor-pointer py-3 text-sm text-primary">Options de cette sourate</summary>{toolbar}</details> : toolbar)}
     {children}
   </ReadingContext.Provider>;
 }
@@ -130,7 +131,7 @@ export function QuranVerseContent({ chapter, number, arabic, french, audioNumber
   const saved = reading.bookmarked === number;
   const annotated = reading.tajweed?.get(number);
   const hidden = reading.hideArabic && revealed !== reading.hideVersion;
-  if (display.continuous && !hidden && !display.tafsir && !display.notes) {
+  if ((reading.continuous || display.continuous) && !hidden && !display.tafsir && !display.notes) {
     return <span data-quran-position={`${chapter}:${number}`} id={`verset-${player.section ? `${chapter}-` : ""}${number}`} className="scroll-mt-64">
       <button type="button" disabled={player.reciterId === "tvquran.hady-toure" && player.audioMode !== "french"} aria-label={`Écouter à partir de ${chapter}:${number}`} onClick={() => player.playVerse(audioNumber, true)} lang={reading.language === "french" ? "fr" : "ar"} dir={reading.language === "french" ? "ltr" : "rtl"} className={`rounded-lg px-1 focus-visible:outline-2 focus-visible:outline-gold-600 ${player.playingVerse === audioNumber ? "bg-gold-600/15 ring-1 ring-gold-600/30" : ""} ${reading.language === "french" ? "inline text-left text-lg leading-9" : "quran-quote inline text-right"}`} style={reading.language === "french" ? undefined : {fontSize:reading.fontSize}}>
         {reading.language === "french" ? french : annotated ? annotated.map((part, index) => part.rule ? <span key={index} title={tajweedRules[part.rule].label} style={{ color: tajweedRules[part.rule].color }}>{part.text}</span> : part.text) : <WaqfText text={arabic} />} <span className="ayah-seal">﴿{reading.language === "french" ? number : number.toLocaleString("ar")}﴾</span>

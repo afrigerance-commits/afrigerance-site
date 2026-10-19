@@ -1,5 +1,6 @@
+import { QuranBookReader } from "@/components/islamic/quran-book-reader";
+import { bookSpreadNumbers, type QuranBookPage } from "@/lib/quran/book";
 import { QuranPortionSheet } from "@/components/islamic/quran-portion-sheet";
-import { QuranPageNavigation } from "@/components/islamic/quran-page-navigation";
 import { chapterName } from "@/lib/quran/chapter-name";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -32,6 +33,20 @@ export default async function PortionPage({ params }: { params: Promise<{ type: 
   const { type, numero } = await params;
   const p = resolve(type, numero);
   if (!p) notFound();
+  if (type === "page") {
+    let position = 0;
+    const pages: QuranBookPage[] = bookSpreadNumbers(p.number).map(number => {
+      const bounds = getPartitions("page")[number - 1];
+      const parts = [];
+      for (let chapter = bounds.start.chapter; chapter <= bounds.end.chapter; chapter++) {
+        parts.push({ chapter, title: chapterName(getChapterMeta(chapter)!), verses: getChapterVerses(chapter)
+          .filter(v => v.globalNumber! >= bounds.first && v.globalNumber! <= bounds.last)
+          .map(v => ({ ...v, globalNumber: v.globalNumber!, position: ++position })) });
+      }
+      return { number, juz: verseReadingLocation(bounds.start.chapter, bounds.start.verse).juz, parts };
+    });
+    return <QuranBookReader key={p.number} pages={pages} current={p.number} />;
+  }
   const parts = [];
   let position = 0;
   for (let chapter = p.start.chapter; chapter <= p.end.chapter; chapter++) {
@@ -49,7 +64,6 @@ export default async function PortionPage({ params }: { params: Promise<{ type: 
     <QuranAudioProvider chapter={p.start.chapter} verses={audio}>
       <details className="reader-settings reader-secondary mt-5 rounded-2xl border border-accent/30 bg-surface p-4"><summary className="min-h-11 cursor-pointer py-2 font-semibold text-primary">Réglages · audio, mémorisation et téléchargements</summary><QuranAudioToolbar chapter={p.start.chapter} /><MemorizationPanel /><QuranDownloadPanel chapter={p.start.chapter} /></details>
       <p className="mt-4 text-sm text-muted">Cliquez sur le texte d’un verset pour écouter à partir de celui-ci. La récitation poursuit la portion, y compris au changement de sourate, puis s’arrête à sa fin.</p>
-      {type === "page" && <QuranPageNavigation current={p.number} />}
       <QuranPositionRail locations={locations} scope={{label,number:p.number}}>
       {parts.map(part => <section key={part.chapter} className="mt-8">
         <h2 className="mb-4 font-display text-xl text-primary"><Link href={`/coran/${part.chapter}`}>{part.chapter}. {chapterName(part.meta)} · {part.meta.nameFrench}</Link></h2>
@@ -62,7 +76,6 @@ export default async function PortionPage({ params }: { params: Promise<{ type: 
       </QuranPositionRail>
       <QuranMiniPlayer />
     </QuranAudioProvider>
-    {type === "page" && <QuranPageNavigation current={p.number} />}
     <p className="reader-secondary mt-8 text-sm leading-7 text-muted">Pages : découpage du mushaf de Médine en 604 pages, avec une mise en page adaptée à l’écran (les lignes de l’édition imprimée ne sont pas reproduites). Texte arabe et traduction : Tanzil, édition uthmani Hafs et Muhammad Hamidullah. Découpage : <a href="https://tanzil.net/docs/Quran_Metadata" className="underline">métadonnées Tanzil</a> (CC BY). Les signes d’arrêt proviennent du texte original ; aucune pause n’est ajoutée. Le mode tajwîd affiche une édition annotée distincte.</p>
     <nav aria-label="Portions précédente et suivante" className="reader-secondary mt-6 flex justify-between gap-4 border-t border-border pt-5">
       {p.number > 1 ? <Link href={`/coran/lecture/${type}/${p.number - 1}`}>{label} {p.number - 1}</Link> : <span />}
