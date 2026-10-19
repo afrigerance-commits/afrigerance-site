@@ -1,6 +1,5 @@
 import { HadithGradeGuide } from "@/components/islamic/hadith-grade-guide";
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { PageHeader } from "@/components/layout/page-header";
 import { Reveal } from "@/components/motion/reveal";
@@ -24,17 +23,7 @@ export default function HadithPage() {
         description="Texte arabe et traduction française, organisés par livre, avec le degré d'authenticité lorsqu'il est fourni par l'édition source."
         divider
       />
-      <Reveal className="mx-auto mb-12 max-w-4xl overflow-hidden rounded-[1.75rem] border border-gold-500/40 bg-emerald-900 shadow-xl">
-        <Image
-          src="/images/mirath/hadith_etude.webp"
-          alt="Illustration de livres sans titres sur une table d’étude."
-          width={1536}
-          height={1024}
-          sizes="(min-width:1024px) 900px, 90vw"
-          className="aspect-[2.7] w-full object-cover sm:aspect-[3.6]"
-          priority
-        />
-      </Reveal>
+
       <form action="/recherche" className="mb-6 flex flex-wrap gap-3"><input name="q" aria-label="Rechercher dans les hadiths" placeholder="Fajr, prière, jeûne…" required minLength={2} maxLength={120} className="min-h-12 min-w-0 flex-1 rounded-xl border border-border bg-surface px-4" /><button className="min-h-12 rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground">Rechercher</button></form>
       <HadithGradeGuide />
       <SavedHadiths />

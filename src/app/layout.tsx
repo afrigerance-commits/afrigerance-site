@@ -14,6 +14,7 @@ import { PersistentQuranAudio } from "@/components/islamic/quran-audio-player";
 import { MobileBottomNavigation } from "@/components/layout/mobile-bottom-navigation";
 import { AppHeader } from "@/components/mobile/app-header";
 import "./globals.css";
+import "./editorial.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -51,8 +52,8 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F8F5EE" },
-    { media: "(prefers-color-scheme: dark)", color: "#091C2B" },
+    { media: "(prefers-color-scheme: light)", color: "#F7F4EC" },
+    { media: "(prefers-color-scheme: dark)", color: "#101D1C" },
   ],
 };
 
@@ -64,7 +65,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       data-scroll-behavior="smooth"
       className={`${fontDisplay.variable} ${fontBody.variable} ${fontArabic.variable} ${fontQuran.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-background text-foreground">
+      <body className="mirath-app flex min-h-full flex-col bg-background text-foreground">
         <JsonLd
           data={{
             "@context": "https://schema.org",

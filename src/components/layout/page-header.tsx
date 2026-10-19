@@ -17,9 +17,9 @@ export function PageHeader({
 }) {
   const Heading = level === 1 ? "h1" : "h2";
   return (
-    <div className="relative mb-12 flex flex-col items-center gap-6 border-b border-border pb-10">
-      <Reveal className="mx-auto flex max-w-2xl flex-col gap-4 text-center">
-        {eyebrow && <span className="eyebrow mx-auto">{eyebrow}</span>}
+    <div className="atelier-page-heading">
+      <Reveal className="flex max-w-3xl flex-col gap-4">
+        {eyebrow && <span className="eyebrow">{eyebrow}</span>}
         <Heading className="section-title text-balance">{title}</Heading>
         {description && <p className="text-pretty leading-8 text-muted">{description}</p>}
       </Reveal>

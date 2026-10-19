@@ -6,6 +6,7 @@ import { QuranReadingTools, QuranVerseContent } from "@/components/islamic/quran
 afterEach(() => { cleanup(); localStorage.clear(); });
 it("hides the verse and its translation, reveals it on request and can hide it again", () => {
   render(<QuranReadingTools chapter={1}><QuranVerseContent chapter={1} number={1} arabic="Texte arabe test" french="Traduction test" /></QuranReadingTools>);
+  fireEvent.click(screen.getByText("Ma lecture · langue, taille et affichage"));
   expect(screen.getByText(/Texte arabe test/)).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button",{ name:"Masquer le texte" }));
   expect(screen.queryByText(/Texte arabe test/)).toBeNull();
@@ -18,6 +19,7 @@ it("hides the verse and its translation, reveals it on request and can hide it a
 });
 it("switches between original Arabic, French meaning and both without losing verse controls", () => {
   render(<QuranReadingTools chapter={1}><QuranVerseContent chapter={1} number={1} arabic="Texte arabe test" french="Traduction test" /></QuranReadingTools>);
+  fireEvent.click(screen.getByText("Ma lecture · langue, taille et affichage"));
   fireEvent.click(screen.getByRole("button", { name: "Français seulement" }));
   expect(screen.queryByText(/Texte arabe test/)).toBeNull();
   expect(screen.getByText("Traduction test")).toBeInTheDocument();

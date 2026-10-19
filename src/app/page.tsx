@@ -2,10 +2,9 @@ import Link from "next/link";
 import { BookOpen, Check, Library } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/reveal";
-import { MobileHome } from "@/components/mobile/home";
+import { ReadingHub } from "@/components/home/reading-hub";
 import { HomeHero } from "@/components/home/hero";
 import { PrayerClock } from "@/components/islamic/prayer-clock";
-import { ReadingResume } from "@/components/islamic/reading-resume";
 import { FeaturedGateways } from "@/components/content/featured-gateways";
 import { ArticleCard } from "@/components/content/article-card";
 import { BookCard } from "@/components/content/book-card";
@@ -19,10 +18,10 @@ export default async function HomePage() {
   const [articles, videos] = await Promise.all([getPublishedArticles(), getPublishedVideos()]);
   const verse = getChapterVerses(1)[1];
   return <>
-    <div className="app-desktop-home"><HomeHero /></div>
-    <MobileHome><PrayerClock /></MobileHome>
-    <div className="app-desktop-home">
-    <div className="premium-container"><ReadingResume chapters={getChapters()} /></div>
+    <HomeHero />
+    <ReadingHub chapters={getChapters()} />
+    <PrayerClock />
+    <div className="atelier-home-content">
     <section id="lecture-decouverte" className="premium-container scroll-mt-24 py-10 sm:py-14">
       <Reveal className="reading-discovery grid gap-8 rounded-3xl border border-accent/30 bg-surface p-6 sm:p-10 lg:grid-cols-[.65fr_1.35fr] lg:gap-14">
         <div><p className="eyebrow flex items-center gap-2"><BookOpen className="size-4" aria-hidden="true" /> Une première lecture</p><h2 className="mt-4 font-display text-3xl leading-tight sm:text-4xl">La louange,<br /><span className="text-primary">au commencement.</span></h2><p className="mt-4 text-base leading-7 text-muted">Un verset d’Al-Fâtiha, puis une leçon pour en découvrir le sens.</p></div>
@@ -30,7 +29,7 @@ export default async function HomePage() {
       </Reveal>
     </section>
     <FeaturedGateways />
-    <section className="premium-container pb-12"><div className="grid gap-5 md:grid-cols-2"><Link href="/routine" className="gateway-card rounded-3xl border border-accent/40 bg-accent/10 p-7"><p className="eyebrow">Un rendez-vous personnel</p><h2 className="mt-3 font-display text-3xl">Ma routine</h2><p className="mt-4 leading-7 text-muted">Homme ou femme, 10, 20 ou 40 minutes : composer un moment de lecture, d’apprentissage et de réflexion, puis suivre sa journée.</p><span className="mt-5 block font-semibold text-primary">Composer ma routine →</span></Link><Link href="/sira" className="gateway-card rounded-3xl border border-border bg-surface p-7"><p className="eyebrow">Lire l’histoire à sa source</p><h2 className="mt-3 font-display text-3xl">Sîra et récits</h2><p className="mt-4 leading-7 text-muted">Dix étapes de la vie du Prophète ﷺ, les figures coraniques et huit portraits de compagnons et compagnonnes.</p><span className="mt-5 block font-semibold text-primary">Découvrir les parcours →</span></Link></div></section>
+    <section className="premium-container atelier-side-paths pb-12"><div className="grid gap-5 md:grid-cols-2"><Link href="/routine" className="gateway-card rounded-3xl border border-accent/40 bg-accent/10 p-7"><p className="eyebrow">Un rendez-vous personnel</p><h2 className="mt-3 font-display text-3xl">Ma routine</h2><p className="mt-4 leading-7 text-muted">Homme ou femme, 10, 20 ou 40 minutes : composer un moment de lecture, d’apprentissage et de réflexion, puis suivre sa journée.</p><span className="mt-5 block font-semibold text-primary">Composer ma routine →</span></Link><Link href="/sira" className="gateway-card rounded-3xl border border-border bg-surface p-7"><p className="eyebrow">Lire l’histoire à sa source</p><h2 className="mt-3 font-display text-3xl">Sîra et récits</h2><p className="mt-4 leading-7 text-muted">La vie du Prophète ﷺ, les récits des prophètes et les portraits de compagnons et compagnonnes.</p><span className="mt-5 block font-semibold text-primary">Découvrir les parcours →</span></Link></div></section>
     {(videos.length > 0 || articles.length > 0) && <section className="border-y border-border bg-surface py-12 sm:py-16"><div className="premium-container">
       <Reveal className="section-heading"><div><p className="eyebrow">La sélection MIRÂTH</p><h2 className="section-title mt-3">À lire. À écouter.</h2></div><Link href="/blog" className="editorial-link py-3 text-sm font-semibold text-primary">Tous les articles</Link></Reveal>
       <div className="mt-8 grid items-start gap-6 lg:grid-cols-2">

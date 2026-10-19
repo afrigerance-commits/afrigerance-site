@@ -1,33 +1,22 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowDown, ArrowUpRight, Search } from "lucide-react";
+import { ArrowUpRight, BookOpen, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function HomeHero() {
-  return <section className="mirath-hero relative isolate overflow-hidden">
-    <div aria-hidden="true" className="hero-orbit hero-orbit-one" /><div aria-hidden="true" className="hero-orbit hero-orbit-two" />
-    <div className="premium-container relative grid items-center gap-10 py-10 sm:py-14 lg:grid-cols-[1.12fr_.88fr] lg:gap-16">
-      <div className="relative z-10">
-        <p className="eyebrow hero-enter">MIRÂTH · Le savoir en partage</p>
-        <h1 className="hero-enter mt-5 max-w-2xl font-display text-[clamp(2.75rem,5.3vw,5rem)] font-medium leading-[1.06] tracking-[-.045em]" style={{ animationDelay: "60ms" }}>Un héritage à lire.<br /><span className="text-primary">Une lumière<br className="hidden lg:block" /> à transmettre.</span></h1>
-        <p className="hero-enter mt-6 max-w-lg text-base leading-8 text-muted sm:text-lg" style={{ animationDelay: "120ms" }}>Le Coran, les hadiths et des leçons guidées. Lisez, écoutez et comprenez, avec les sources à portée de main.</p>
-        <div className="hero-enter mt-6 flex flex-wrap items-center gap-4" style={{ animationDelay: "180ms" }}><Button asChild size="lg"><Link href="/coran/1">Lire Al-Fâtiha</Link></Button><Link href="/apprendre" className="editorial-link py-3 text-sm font-semibold text-primary">Choisir une leçon</Link></div>
-        <form action="/recherche" className="hero-enter mt-8 flex max-w-lg items-center gap-2 rounded-full border border-border bg-surface/80 p-2" style={{ animationDelay: "320ms" }}>
-          <Search aria-hidden="true" className="ml-3 size-4 shrink-0 text-primary" /><input name="q" aria-label="Rechercher sur MIRÂTH" placeholder="Une sourate, un thème, un ouvrage…" className="min-w-0 flex-1 bg-transparent py-2 text-sm outline-none placeholder:text-muted" /><button type="submit" aria-label="Lancer la recherche" className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-colors hover:bg-emerald-700"><Search className="size-4" /></button>
-        </form>
-        <div className="mt-8 flex items-center gap-5 text-xs text-muted"><span>114 sourates</span><span className="h-4 w-px bg-border" /><span>Arabe & français</span><span className="h-4 w-px bg-border" /><span>Accès libre</span></div>
+  return <section className="atelier-hero" aria-labelledby="home-title">
+    <div className="premium-container atelier-hero-grid">
+      <div className="atelier-hero-copy">
+        <p className="eyebrow"><span className="atelier-seal" aria-hidden="true">✧</span> Une bibliothèque. Un héritage.</p>
+        <h1 id="home-title">Le savoir éclaire.<br /><em>La lecture transmet.</em></h1>
+        <p className="atelier-hero-description">Un espace pour le Coran, les paroles transmises et les chemins du savoir. À votre rythme, avec les sources à portée de main.</p>
+        <div className="atelier-hero-actions"><Button asChild size="lg"><Link href="/coran/lecture/page/1"><BookOpen aria-hidden="true" /> Ouvrir le Coran</Link></Button><Link href="/apprendre" className="atelier-text-link">Trouver mon parcours <ArrowUpRight className="size-4" aria-hidden="true" /></Link></div>
+        <form action="/recherche" className="atelier-search" role="search"><Search className="size-5" aria-hidden="true" /><input name="q" aria-label="Rechercher sur MIRÂTH" placeholder="Une sourate, un thème, un ouvrage…" minLength={2} maxLength={120} /><button type="submit" aria-label="Lancer la recherche"><ArrowUpRight className="size-5" aria-hidden="true" /></button></form>
       </div>
-      <div className="hero-scene relative mx-auto w-full max-w-[400px]">
-        <span aria-hidden="true" className="hero-arch-outline" />
-        <div className="hero-arch relative overflow-hidden bg-emerald-900">
-          <Image src="/images/mirath/coran_etude.webp" alt="Illustration d’un livre ouvert aux pages vierges dans une bibliothèque baignée de lumière" fill sizes="(min-width: 1024px) 44vw, 90vw" priority className="hero-photo object-cover" />
-          <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[#082c26] via-transparent to-[#123f38]/15" />
-          <div className="absolute inset-x-7 bottom-8 text-ivory-50"><p lang="ar" dir="rtl" className="font-arabic text-5xl text-gold-500">ميراث</p><p className="mt-3 border-t border-white/25 pt-4 text-[10px] font-medium uppercase tracking-[.24em]">Lire · Comprendre · Transmettre</p></div>
-        </div>
-        <Link href="/coran/1" className="hero-reading-note absolute -left-3 bottom-20 flex max-w-[230px] items-center gap-3 rounded-2xl border border-white/60 bg-surface p-4 shadow-xl sm:-left-8"><span className="flex size-10 shrink-0 items-center justify-center rounded-full border border-accent/40 font-display text-primary">01</span><span><span className="block text-[10px] uppercase tracking-widest text-muted">Votre première lecture</span><span className="mt-1 block text-sm font-semibold">Sourate Al-Fâtiha</span></span><ArrowUpRight className="size-4 shrink-0 text-primary" /></Link>
-        <span className="absolute -right-2 top-12 rounded-full border border-accent/40 bg-background/95 px-4 py-2 text-[10px] font-semibold uppercase tracking-widest text-accent-text sm:-right-6">Une bibliothèque vivante</span>
+      <div className="atelier-hero-art">
+        <div className="atelier-image-frame"><Image src="/images/mirath/coran_etude.webp" alt="Illustration d’un livre ouvert aux pages vierges, dans une bibliothèque lumineuse" fill sizes="(min-width:1024px) 420px, (min-width:640px) 45vw, 90vw" loading="lazy" className="object-cover" /><span className="atelier-image-shade" aria-hidden="true" /><div className="atelier-image-caption"><span lang="ar" dir="rtl">ميراث</span><p>Lire. Comprendre. Transmettre.</p></div></div>
+        <p className="atelier-image-colophon"><span>01 / LE LIVRE OUVERT</span><span>Un moment pour l’essentiel</span></p>
       </div>
     </div>
-    <a href="#lecture-decouverte" className="premium-container flex w-fit items-center gap-3 pb-5 text-sm text-muted"><span className="scroll-cue flex size-8 items-center justify-center rounded-full border border-border"><ArrowDown className="size-3.5" /></span> Une première lecture</a>
   </section>;
 }

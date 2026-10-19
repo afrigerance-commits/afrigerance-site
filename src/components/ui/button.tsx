@@ -18,9 +18,9 @@ const buttonVariants = cva(
       },
       size: {
         default: "h-11 px-5 py-2",
-        sm: "h-9 px-4 text-sm",
+        sm: "min-h-11 px-4 text-sm",
         lg: "h-13 px-7 text-base",
-        icon: "h-10 w-10",
+        icon: "h-11 w-11",
       },
     },
     defaultVariants: {
@@ -39,7 +39,7 @@ export interface ButtonProps
 function Button({ className, variant, size, asChild = false, ...props }: ButtonProps) {
   const Comp = asChild ? Slot : "button";
   return (
-    <Comp className={cn(buttonVariants({ variant, size, className }))} {...props} />
+    <Comp data-ui="button" className={cn(buttonVariants({ variant, size, className }))} {...props} />
   );
 }
 
