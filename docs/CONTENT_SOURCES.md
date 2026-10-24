@@ -178,3 +178,7 @@ Les tests contrôlent une couverture contiguë des 6 236 versets, sans trou ni d
 Il s’agit des limites des pages du mushaf de Médine, pas d’un fac-similé ni
 d’une reproduction des 15 lignes imprimées. Le texte arabe et les signes de
 pause existants ne sont pas modifiés.
+
+## Sélection de recueils — 24 octobre 2026 (non publiée)
+
+Deux fiches initiales, non une importation complète : Riyad 1 (extrait des intentions) et Bulugh 1 (réponse sur la mer). Références contrôlées sur https://sunnah.com/riyadussalihin:1 et https://sunnah.com/bulugh:1. Les courts textes prophétiques anciens sont transcrits sans les notes éditoriales modernes ; traductions françaises du sens et commentaires originaux MIRÂTH. Ne pas importer les traductions commerciales ou les annotations des pages sources sans droits vérifiés. La Risâla possède une présentation dans Fiqh malikite et un accès depuis Hadith ; aucun texte intégral de traduction moderne reproduit. Import complet, indexation de recherche et validation scientifique approfondie restent à réaliser.
