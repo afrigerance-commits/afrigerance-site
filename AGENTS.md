@@ -211,3 +211,12 @@ variable désactivée en production : séparation automatique des textes,
 passage vide dans Bulugh et traductions françaises à contrôler. Sources,
 licences, empreintes et limites dans docs/CONTENT_SOURCES.md. Ne pas
 présenter ces brouillons comme les ouvrages complets vérifiés en français.
+
+Copie française Kechrid fournie : accès au PDF externe original et errata
+préparés dans l’aperçu, sans publication. L’extraction intégrale est
+conservée PRIVÉE (libfile_91acb9ddabd881919f3c11cfab5a06be), pas dans
+le dépôt public. 515 pages, 99 marqueurs de commentaire ; 34 numéros
+non reconnus par le détecteur, pas 34 hadiths déclarés absents. Ne pas
+fusionner automatiquement avec l’arabe ni annoncer une édition validée.
+Voir docs/CONTENT_SOURCES.md pour droits, source et limites. Aucun
+nouveau signal Netlify reçu.
