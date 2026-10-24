@@ -227,3 +227,12 @@ et mention de révision. La route française est désormais publique et liée
 depuis Hadith ; les corpus arabes importés restent masqués sans
 MIRATH_STUDY_PREVIEW (ne pas activer cette variable). Aucun texte privé
 français extrait n’est publié ni aucune validation savante revendiquée.
+
+Publication effectuée le 24 octobre 2026 :
+331c98cc9a76417d0239f0e22a3ce855c6ccd751. La page française avec
+errata répond HTTP 200 sur Netlify (page 14 vérifiée). Six tests ciblés,
+TypeScript et compilation de 974 pages réussis. La lecture proposée
+charge le PDF original externe ; pas de test visuel sur téléphone ni de
+validation savante intégrale revendiquée. Les corpus arabes en révision
+restent masqués, l’extraction française reste privée. Les prochaines
+publications attendent un nouveau signal utilisateur.
