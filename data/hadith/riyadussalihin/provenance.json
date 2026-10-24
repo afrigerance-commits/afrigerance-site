@@ -1,0 +1,9 @@
+{
+  "source": "Jaguar16/open-hadith-data",
+  "version": "v1.1.0",
+  "license": "CC0 for structure; classical Arabic text only; no English translations imported",
+  "status": "draft",
+  "count": 1896,
+  "empty": 0,
+  "inputSha256": "bf9d66e492df4d899c751192a64c8620be95f41787d03a7bf3cf8ce397de73fd"
+}

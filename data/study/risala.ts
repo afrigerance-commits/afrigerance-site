@@ -1,0 +1,14 @@
+import metadata from "./risala-metadata.json";
+import part0 from "./risala-00.json";
+import part4 from "./risala-01.json";
+import part8 from "./risala-02.json";
+import part12 from "./risala-03.json";
+import part16 from "./risala-04.json";
+import part20 from "./risala-05.json";
+import part24 from "./risala-06.json";
+import part28 from "./risala-07.json";
+import part32 from "./risala-08.json";
+import part36 from "./risala-09.json";
+import part40 from "./risala-10.json";
+import part44 from "./risala-11.json";
+export default {...metadata,chapters:[...part0,...part4,...part8,...part12,...part16,...part20,...part24,...part28,...part32,...part36,...part40,...part44]};

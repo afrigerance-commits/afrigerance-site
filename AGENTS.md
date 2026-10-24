@@ -203,3 +203,11 @@ libfile_e43d30c1bd408191bb61b7d5a49172fb. Aucun essai physique revendiqué.
 Aucun déploiement Netlify ni changement de la production
 89e7ec6f02442095db58fd75165757ffba2663c7. Les prochains lots web
 restent soumis à un nouveau signal explicite.
+
+24 octobre 2026 : corpus d’étude supplémentaires préparés, sans publication.
+MIRATH_STUDY_PREVIEW=1 active uniquement l’aperçu de révision des imports
+Riyad (1896), Bulugh (1557) et Risâla OpenITI (46 parties). Garder cette
+variable désactivée en production : séparation automatique des textes,
+passage vide dans Bulugh et traductions françaises à contrôler. Sources,
+licences, empreintes et limites dans docs/CONTENT_SOURCES.md. Ne pas
+présenter ces brouillons comme les ouvrages complets vérifiés en français.
