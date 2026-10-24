@@ -55,6 +55,8 @@ public class MirathLaunchTest {
             assertEquals("true", read(scenario, "(() => { const nav = document.querySelector('.mobile-app-dock'); const bounds = nav.getBoundingClientRect(); return nav.querySelectorAll('a,button').length === 5 && bounds.height > 0 && bounds.bottom <= innerHeight + 2; })()"));
             scenario.onActivity(activity -> activity.getBridge().getWebView().loadUrl("https://miraath.netlify.app/coran/1"));
             awaitPage(scenario, "location.pathname === '/coran/1' && !!document.querySelector('.mobile-app-dock[data-native=true]') && !!Array.from(document.querySelectorAll('select')).find(el => el.getAttribute('aria-label') === 'Langue de l’audio')");
+            // Server-rendered controls can exist before their event handlers are attached.
+            awaitPage(scenario, "(() => { const el = document.querySelector('select[aria-label=\"Langue de l’audio\"]'); return el && Object.keys(el).some(key => key.startsWith('__reactProps$') && typeof el[key]?.onChange === 'function'); })()");
             read(scenario, "(() => { const input = Array.from(document.querySelectorAll('select')).find(el => el.getAttribute('aria-label') === 'Langue de l’audio'); input.value = 'both'; input.dispatchEvent(new Event('change', { bubbles: true })); })()");
             awaitPage(scenario, "localStorage.getItem('mirath:quran:audio-mode') === 'both' && localStorage.getItem('mirath:quran:french-audio') === 'true'");
             assertEquals("true", read(scenario, "document.documentElement.scrollWidth <= innerWidth + 2"));

@@ -69,7 +69,7 @@ export default async function HadithBookPage({
               <div className="pointer-events-none absolute left-3 top-3 h-8 w-8 border-l border-t border-gold-500/60" aria-hidden="true" />
               <div className="pointer-events-none absolute bottom-3 right-3 h-8 w-8 border-b border-r border-gold-500/60" aria-hidden="true" />
               <div className="flex flex-wrap items-center gap-2 border-b border-border bg-surface-muted/60 px-6 py-4 sm:px-9">
-                <Badge variant="outline">N° {h.numero}</Badge>
+                <Badge variant="outline">{h.sourceReference || `N° ${h.numero}`}</Badge>
                 {h.grade && (
                   <Link href="/hadith#comprendre-authenticite" className="rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent" aria-label={`Comprendre le statut ${h.grade}${h.gradePar ? ` — ${h.gradePar}` : ""}`}>
                     <Badge variant="outline" className="min-h-11 cursor-pointer gap-2 border-gold-500/40">
@@ -82,6 +82,8 @@ export default async function HadithBookPage({
               <div className="px-6 py-7 sm:px-10 sm:py-9">
                 <ArabicText as="p" className="text-xl leading-[2.35] text-foreground sm:text-2xl">{h.arabe}</ArabicText>
               </div>
+              {h.sourceUrl && <p className="px-6 py-4 text-sm text-muted">Brouillon documentaire — texte et attributions à contrôler. <a href={h.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">Vérifier la source</a></p>}
+              {!h.francais && h.sourceUrl && <p className="px-6 pb-4 text-sm text-muted">Traduction française non disponible dans cette édition.</p>}
               {h.francais && (
                 <div className="border-t border-border bg-background/50 px-6 py-6 sm:px-10">
                   <p className="mb-3 text-[11px] font-semibold uppercase tracking-[.2em] text-accent-text">Traduction française</p>

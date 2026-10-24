@@ -1,3 +1,4 @@
+import { StudyCollections } from "@/components/islamic/study-collections";
 import { VoiceSearchForm } from "@/components/search/voice-search-form";
 import { HadithGradeGuide } from "@/components/islamic/hadith-grade-guide";
 import type { Metadata } from "next";
@@ -28,6 +29,8 @@ export default function HadithPage() {
       <VoiceSearchForm collections />
       <HadithGradeGuide />
       <SavedHadiths />
+      <StudyCollections />
+      <div className="my-10"><Link href="/fiqh/malikite#risala" className="text-sm underline underline-offset-4">Étudier la Risâla dans le fiqh malikite →</Link></div>
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
         {hadithCollections.map((c, i) => (
           <Reveal key={c.slug} delay={i * 0.06}>

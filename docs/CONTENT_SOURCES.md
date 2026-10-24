@@ -178,3 +178,31 @@ Les tests contrôlent une couverture contiguë des 6 236 versets, sans trou ni d
 Il s’agit des limites des pages du mushaf de Médine, pas d’un fac-similé ni
 d’une reproduction des 15 lignes imprimées. Le texte arabe et les signes de
 pause existants ne sont pas modifiés.
+
+## Sélection de recueils — 24 octobre 2026 (non publiée)
+
+Deux fiches initiales, non une importation complète : Riyad 1 (extrait des intentions) et Bulugh 1 (réponse sur la mer). Références contrôlées sur https://sunnah.com/riyadussalihin:1 et https://sunnah.com/bulugh:1. Les courts textes prophétiques anciens sont transcrits sans les notes éditoriales modernes ; traductions françaises du sens et commentaires originaux MIRÂTH. Ne pas importer les traductions commerciales ou les annotations des pages sources sans droits vérifiés. La Risâla possède une présentation dans Fiqh malikite et un accès depuis Hadith ; aucun texte intégral de traduction moderne reproduit. Import complet, indexation de recherche et validation scientifique approfondie restent à réaliser.
+
+## Corpus d’étude importés — 24 octobre 2026, révision uniquement
+
+- Riyad as-Salihin : 1 896 notices arabes, 20 livres.
+- Bulugh al-Maram : 1 557 notices, 16 livres ; un champ matn arabe vide dans l’extraction. Le champ matn est utilisé pour écarter les notes modernes incluses dans text_ar. Sa séparation automatique n’est pas une validation scientifique.
+- Origine : Jaguar16/open-hadith-data, release v1.1.0, collections-json.zip. Schéma/organisation CC0 ; texte arabe ancien seulement. Aucune traduction anglaise ni gradation non attribuée importée. Empreintes des entrées et compteurs dans provenance.json de chaque corpus. Le numéro séquentiel technique est distinct de sourceReference, qui préserve notamment les références groupées.
+- Risâla : OpenITI/0400AH, JK000171-ara1, version nettoyée de ses paratextes modernes (métadonnées OpenITI). 46 parties, dont introduction. Source et empreinte dans risala-metadata.json. Texte adapté sous CC BY-NC-SA 4.0 : attribution OpenITI, lien vers licence, usage non commercial et partage sous la même licence affichés dans le lecteur. Adaptation : retrait du balisage technique et découpage ; aucune traduction ajoutée.
+- Sources de contrôle : https://github.com/Jaguar16/open-hadith-data/blob/main/DATA_LICENSE.md ; https://github.com/OpenITI/documentation/blob/master/index.md ; https://github.com/OpenITI/0400AH/tree/master/data/0386IbnAbiZaydQayrawani/0386IbnAbiZaydQayrawani.Risala.
+
+Accès de révision serveur seulement avec MIRATH_STUDY_PREVIEW=1. Par défaut les deux corpus restent absents du catalogue et de la recherche, et le lecteur Risâla répond 404. Ne pas activer cette variable sur Netlify avant contrôle éditorial ; les fiches initiales explicitement vérifiées restent seules visibles. Les traductions françaises intégrales, le contrôle des variantes, des attributions et des limites des extraits restent à faire. Ne pas annoncer les ouvrages français complets ni une validation individuelle des 3 453 notices. Aucun signal de publication reçu.
+
+## Copie française fournie par l’utilisateur — préparation du 24 octobre 2026
+
+PDF Kechrid : 515 pages, couverture datée du 18 novembre 2006, numérotation allant jusqu’à 1896. Le fichier utilisateur reste inchangé. `scripts/prepare-riyad-french.py` prépare une archive privée : texte brut de chaque page, 99 marqueurs de commentaires (frontières non validées), candidats de numérotation et rapport de contrôle. 1862 numéros distincts reconnus par ce détecteur ; 34 non reconnus et plusieurs doublons de détection. Ces défauts du détecteur ne démontrent pas une absence dans l’ouvrage. Aucune association automatique français/arabe effectuée et aucune traduction canonique remplacée.
+
+Archive privée de révision : libfile_91acb9ddabd881919f3c11cfab5a06be. Aucun texte français intégral de cette extraction n’est versé dans ce dépôt public. La source officielle a été retrouvée : https://d1.islamhouse.com/data/fr/ih_books/fr-jardindesvertueux_Kechrid.pdf (515 pages, même couverture), mais la comparaison binaire tentée a répondu HTTP 403. La FAQ https://d1.islamhouse.com/html/faq.htm annonce la redistribution avec attribution sans modification du contenu scientifique ; les usages commerciaux de productions tierces y nécessitent une discussion avec leur source. Ne pas conclure à une licence sans restriction ni à une validation scientifique.
+
+Un accès de lecture au PDF ORIGINAL EXTERNE est préparé sous `/hadith/riyadussalihin/edition-francaise`, derrière MIRATH_STUDY_PREVIEW=1. Pas de copie PDF publique hébergée par MIRÂTH, pas de traduction modifiée. Pagination 1–515, accès sommaire, lien externe de secours et avertissement de connexion requise. Les références imprimées erronées de la page 14 sont signalées séparément : 98:48 → 98:5 et 78:37 → 22:37, contrôlées sur Quran.com et visuellement dans le PDF fourni. Ne pas corriger silencieusement l’édition. Les commentaires du traducteur ne sont pas des paroles prophétiques.
+
+Vérifications de cette préparation : génération des types et TypeScript réussis ; compilation de 976 pages en mode aperçu réussie. Six tests ciblés réussis (masquage hors aperçu, liens source et errata distincts, bornes de pagination et intégrité des imports). Le lecteur PDF externe n’a pas été testé dans un navigateur ni sur téléphone ; son fonctionnement dépend du navigateur et des règles du serveur distant. Aucun déploiement Netlify.
+
+## Publication autorisée — signal du 24 octobre 2026
+
+Le lecteur du PDF français original externe devient public, avec son errata et sa mention de révision, et son accès est ajouté à Hadith. Cela remplace le masquage de cette seule route décrit plus haut. Les imports arabes non validés restent sous MIRATH_STUDY_PREVIEW, désactivé en production. L’extraction française privée et l’alignement français/arabe ne sont pas publiés. Tests ciblés : 6 réussis ; aucune vérification visuelle ou sur téléphone revendiquée.

@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,6 +43,16 @@ public class VoiceSearchTest {
         read(scenario, "window.__speechResult = null; window.Capacitor.nativePromise('MirathVoiceSearch', 'recognize', {language:'" + language + "'}).then(result => window.__speechResult = result).catch(error => window.__speechResult = {error:error.code}); true");
         await(scenario, "window.__speechResult !== null");
     }
+    private void awaitWindowFocus(ActivityScenario<MainActivity> scenario) throws Exception {
+        AtomicBoolean focused = new AtomicBoolean();
+        long deadline = System.currentTimeMillis() + 15000;
+        while (System.currentTimeMillis() < deadline) {
+            scenario.onActivity(activity -> focused.set(activity.hasWindowFocus()));
+            if (focused.get()) return;
+            Thread.sleep(150);
+        }
+        fail("MainActivity did not regain window focus after the simulated speech activity");
+    }
     @Test public void speechIntentRequestsSelectedLanguageAndTextOnly() {
         for (String language : Arrays.asList("fr-FR", "ar-SA")) {
             Intent intent = VoiceSearchPlugin.speechIntent(language);
@@ -64,6 +75,7 @@ public class VoiceSearchTest {
             intending(hasAction(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, data));
             request(scenario, "ar-SA");
             assertEquals("true", read(scenario, "window.__speechResult.text === 'صلاة الفجر' && window.__speechResult.cancelled === false"));
+            awaitWindowFocus(scenario);
             intended(hasAction(RecognizerIntent.ACTION_RECOGNIZE_SPEECH));
         } finally { release(); }
         assertEquals("network", VoiceSearchPlugin.errorCode(RecognizerIntent.RESULT_NETWORK_ERROR));

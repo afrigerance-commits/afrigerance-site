@@ -172,3 +172,58 @@ sur émulateur réussis ; résultats vocaux simulés. APK 1.4 déjà compilée
 et signature vérifiée. Publier ce lot uniquement ; aucune garantie de
 compatibilité universelle du navigateur ni d’essai vocal réel. Les lots
 suivants restent soumis à un nouveau signal de publication utilisateur.
+
+Publication du correctif vocal effectuée :
+89e7ec6f02442095db58fd75165757ffba2663c7. Contrôles HTTP 200 réussis sur
+accueil, recherche Fajr/Muwatta et confidentialité : aide de dictée,
+mentions du service vocal Android et résultats existants présents. Le
+pont natif est publié ; installation de l’APK 1.4 nécessaire. Aucun essai
+de microphone réel revendiqué, compatibilité navigateur toujours
+conditionnelle. Les prochains lots exigent un nouveau signal utilisateur.
+
+Signalement suivant : geste Retour vers la droite dans l’APK ferme
+l’application au lieu de revenir à la page précédente. Correction native
+préparée sur feature/android-back-20261019, APK 1.5 / code 6 : callback
+AndroidX pour geste/bouton Retour, fermeture préalable des panneaux web,
+historique des pages MIRÂTH, repli accueil sans boucle et double Retour
+rapproché à la racine pour mettre l’application en arrière-plan. Aucun
+changement de source web nécessaire, aucune publication Netlify autorisée
+pour ce nouveau lot. Compiler/tester sur la branche avec [skip netlify] et
+livrer l’APK sans modifier la production 89e7ec6f02442095db58fd75165757ffba2663c7.
+
+Correction Retour Android livrée le 19 octobre 2026 : APK 1.5 / code 6,
+source 2438a5ff68e7d0b75f993a84da9e6aafd1772866, exécution 39335865416
+réussie. Compilation, lint, 13 tests instrumentés sur Android 15 AOSP et
+signature stable vérifiés ; 4 tests du script History API et TypeScript
+également réussis. Le geste réel, les panneaux, la navigation Next sans
+rechargement et un rendu volontairement ralenti sont couverts. Les alertes
+ANR du lanceur Google dans les essais intermédiaires ont motivé l’image
+AOSP de contrôle ; aucune APK échouée livrée. Fichier conservé sous
+libfile_e43d30c1bd408191bb61b7d5a49172fb. Aucun essai physique revendiqué.
+Aucun déploiement Netlify ni changement de la production
+89e7ec6f02442095db58fd75165757ffba2663c7. Les prochains lots web
+restent soumis à un nouveau signal explicite.
+
+24 octobre 2026 : corpus d’étude supplémentaires préparés, sans publication.
+MIRATH_STUDY_PREVIEW=1 active uniquement l’aperçu de révision des imports
+Riyad (1896), Bulugh (1557) et Risâla OpenITI (46 parties). Garder cette
+variable désactivée en production : séparation automatique des textes,
+passage vide dans Bulugh et traductions françaises à contrôler. Sources,
+licences, empreintes et limites dans docs/CONTENT_SOURCES.md. Ne pas
+présenter ces brouillons comme les ouvrages complets vérifiés en français.
+
+Copie française Kechrid fournie : accès au PDF externe original et errata
+préparés dans l’aperçu, sans publication. L’extraction intégrale est
+conservée PRIVÉE (libfile_91acb9ddabd881919f3c11cfab5a06be), pas dans
+le dépôt public. 515 pages, 99 marqueurs de commentaire ; 34 numéros
+non reconnus par le détecteur, pas 34 hadiths déclarés absents. Ne pas
+fusionner automatiquement avec l’arabe ni annoncer une édition validée.
+Voir docs/CONTENT_SOURCES.md pour droits, source et limites. Aucun
+nouveau signal Netlify reçu.
+
+Signal « Publie » reçu le 24 octobre 2026 : publication autorisée des fiches
+initiales et de la lecture du PDF français ORIGINAL EXTERNE avec errata
+et mention de révision. La route française est désormais publique et liée
+depuis Hadith ; les corpus arabes importés restent masqués sans
+MIRATH_STUDY_PREVIEW (ne pas activer cette variable). Aucun texte privé
+français extrait n’est publié ni aucune validation savante revendiquée.

@@ -99,4 +99,22 @@ Publication du lot autorisée le 19 octobre 2026 à 17:42 UTC. Le navigateur
 et le message d’erreur de l’utilisateur restent inconnus : la publication
 active le pont natif de l’APK 1.4 et améliore le diagnostic web, elle
 n’ajoute aucun moteur vocal universel. Les prochains lots attendent
-un nouveau signal. La confirmation HTTP sera enregistrée après déploiement.
+un nouveau signal. La confirmation HTTP est enregistrée ci-dessous.
+
+## Publication vérifiée
+
+Publication effectuée sur https://miraath.netlify.app avec le commit
+89e7ec6f02442095db58fd75165757ffba2663c7, arbre
+6259bce6bc41c6fc20af77b50f9809a371a8ed32. Un seul changement de référence
+de production a déclenché Netlify. Contrôles HTTP 200 réussis sur :
+
+- accueil : aide de dictée et mention du service vocal du téléphone présents ;
+- /recherche?q=Fajr&collection=muwatta : nouveau formulaire et résultats
+  /hadith/muwatta/ présents ;
+- confidentialité : parcours APK Android et annulation par Retour présents.
+
+Ces contrôles confirment la mise en ligne du correctif, pas un essai réel de
+microphone. Installer l’APK 1.4 puis la rouvrir avec Internet pour charger le
+pont web publié. Les navigateurs sans service Web Speech ne gagnent pas un
+moteur de transcription universel avec cette publication. Les prochains
+lots restent soumis à un nouveau signal utilisateur.

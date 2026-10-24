@@ -15,7 +15,7 @@ import path from "node:path";
 
 const DATA_DIR = path.join(process.cwd(), "data", "hadith");
 
-export const hadithCollections = [
+const coreCollections = [
   {
     slug: "muwatta",
     dir: "malik",
@@ -43,6 +43,14 @@ export const hadithCollections = [
   },
 ] as const;
 
+// Imported editions stay out of public navigation/search until editorial validation.
+export const hadithCollections = [ ...coreCollections,
+ ...(process.env.MIRATH_STUDY_PREVIEW === "1" ? [
+ {slug:"bulugh",dir:"bulugh",nom:"Bulûgh al-Marâm · brouillon arabe",nomArabe:"بلوغ المرام",auteur:"Ibn Hajar al-‘Asqalânî",description:"Édition numérique importée en révision. Traduction française non disponible ; ne constitue pas une édition validée."},
+ {slug:"riyadussalihin",dir:"riyadussalihin",nom:"Riyâd as-Sâlihîn · brouillon arabe",nomArabe:"رياض الصالحين",auteur:"An-Nawawî",description:"Édition numérique importée en révision. Traduction française non disponible ; ne constitue pas une édition validée."},
+ ] : [])
+];
+
 export type HadithCollectionSlug = (typeof hadithCollections)[number]["slug"];
 
 export function getCollection(slug: string) {
@@ -51,6 +59,8 @@ export function getCollection(slug: string) {
 
 interface RawHadith {
   hadithnumber: number;
+  sourceReference?: string;
+  sourceUrl?: string;
   arabicnumber?: number;
   text: string;
   grades?: { name: string; grade: string }[];
@@ -58,6 +68,7 @@ interface RawHadith {
 }
 
 interface RawEdition {
+  chunks?: string[];
   metadata: { name: string; sections: Record<string, string> };
   hadiths: RawHadith[];
 }
@@ -70,6 +81,8 @@ export interface HadithBook {
 }
 
 export interface Hadith {
+  sourceReference?: string;
+  sourceUrl?: string;
   numero: number;
   numeroArabe?: number;
   arabe: string;
@@ -89,7 +102,11 @@ function readJson<T>(dir: string, file: string): T {
 }
 
 function loadAr(dir: string): RawEdition {
-  if (!arCache.has(dir)) arCache.set(dir, readJson<RawEdition>(dir, "ar.json"));
+  if (!arCache.has(dir)) {
+    const edition = readJson<RawEdition>(dir, "ar.json");
+    if (edition.chunks) edition.hadiths = edition.chunks.flatMap(file => readJson<RawHadith[]>(dir,file));
+    arCache.set(dir,edition);
+  }
   return arCache.get(dir)!;
 }
 function loadFr(dir: string): RawEdition {
@@ -136,6 +153,8 @@ export function getHadithsForBook(collectionSlug: string, bookNumber: number): H
     .map((h) => {
       const grade = h.grades?.[0];
       return {
+        sourceReference: h.sourceReference,
+        sourceUrl: h.sourceUrl,
         numero: h.hadithnumber,
         numeroArabe: h.arabicnumber,
         arabe: h.text,

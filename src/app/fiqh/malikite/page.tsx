@@ -39,6 +39,14 @@ export default function AcademieFiqhMalikitePage() {
         <h1 className="font-display text-4xl font-semibold sm:text-5xl">Apprendre le fiqh, étape par étape</h1>
         <p className="mx-auto max-w-2xl text-muted">{siteConfig.madhhab.note}</p>
       </Reveal>
+      <section id="risala" className="mt-8 scroll-mt-24 rounded-2xl border border-gold-500/35 bg-surface p-6">
+        <p className="text-sm text-accent-text">Ouvrage de référence</p>
+        {process.env.MIRATH_STUDY_PREVIEW === "1" && <a href="/fiqh/malikite/risala" className="mt-4 inline-block text-sm underline">Lire le brouillon arabe de la Risâla →</a>}
+        <h2 className="mt-2 font-display text-2xl">La Risâla d’Ibn Abî Zayd al-Qayrawânî</h2>
+        <p className="mt-4 text-sm leading-relaxed text-muted">Ce manuel présente des enseignements de croyance et de jurisprudence malikite. Les formulations de son auteur doivent être distinguées des hadiths qu’il peut citer. Son étude gagne à être accompagnée par un enseignant.</p>
+        <p className="mt-3 text-sm leading-relaxed text-muted">Pour commencer : suivre ci-dessous les cours sur la purification et la prière. Ce parcours MIRÂTH est une introduction pédagogique ; il ne constitue pas une édition ni un commentaire intégral de la Risâla.</p>
+        <a href="https://www.iium.edu.my/deed/lawbase/risalah_maliki/index.html" target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-sm underline underline-offset-4">Consulter la présentation et le sommaire de l’ouvrage (anglais)</a>
+      </section>
       <LightDivider className="mt-8" />
       <Image
         src="/images/mirath/fiqh_purification.svg"
